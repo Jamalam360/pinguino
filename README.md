@@ -1,1 +1,2 @@
-# JamCordDiscord Bot Template
+# Pinguino
+Pinguino is a multipurpose discord bot

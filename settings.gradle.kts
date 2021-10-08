@@ -12,9 +12,7 @@ pluginManagement {
     }
 }
 
-
-// TODO: Update
-rootProject.name = "template"
+rootProject.name = "pinguino"
 
 enableFeaturePreview("VERSION_CATALOGS")
 
