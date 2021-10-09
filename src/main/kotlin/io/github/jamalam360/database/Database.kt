@@ -10,9 +10,9 @@ import org.litote.kmongo.KMongo
 class Database {
     private val client = KMongo.createClient()
     private val db = if (PRODUCTION) {
-        client.getDatabase("ProductionDatabase")
+        client.getDatabase("PinguinoProductionDatabase")
     } else {
-        client.getDatabase("TestingDatabase")
+        client.getDatabase("PinguinoTestingDatabase")
     }
 
     val config = ConfigCollection(db)
