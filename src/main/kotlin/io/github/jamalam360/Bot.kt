@@ -3,7 +3,8 @@ package io.github.jamalam360
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.entity.Snowflake
-import io.github.jamalam360.extensions.TestExtension
+import io.github.jamalam360.extensions.BotStatusExtension
+import io.github.jamalam360.extensions.QuoteExtension
 
 val TEST_SERVER_ID = Snowflake(
     env("TEST_SERVER_ID").toLong()
@@ -19,8 +20,15 @@ private val TOKEN = if (PRODUCTION) {
 
 suspend fun main() {
     val bot = ExtensibleBot(TOKEN) {
+        applicationCommands {
+            if (!PRODUCTION) {
+                defaultGuild(TEST_SERVER_ID)
+            }
+        }
+
         extensions {
-            add(::TestExtension)
+            add(::QuoteExtension)
+            add(::BotStatusExtension)
         }
     }
 

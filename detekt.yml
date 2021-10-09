@@ -85,12 +85,12 @@ complexity:
     threshold: 600
   LongMethod:
     active: false
-    threshold: 60
+    threshold: 1000
   LongParameterList:
     active: false
     functionThreshold: 6
     constructorThreshold: 7
-    ignoreDefaultParameters: false
+    ignoreDefaultParameters: falsef
     ignoreDataClasses: true
     ignoreAnnotated: []
   MethodOverloading:
@@ -556,7 +556,7 @@ style:
     active: true
     maxJumpCount: 3
   MagicNumber:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
