@@ -32,7 +32,7 @@ dependencies {
     implementation(libs.groovy)
     implementation(libs.logback)
     implementation(libs.logging)
-    //implementation(libs.kmongo)
+    implementation(libs.kmongo)
 }
 
 application {

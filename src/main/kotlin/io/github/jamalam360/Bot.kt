@@ -3,6 +3,7 @@ package io.github.jamalam360
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.entity.Snowflake
+import io.github.jamalam360.database.Database
 import io.github.jamalam360.extensions.BotStatusExtension
 import io.github.jamalam360.extensions.QuoteExtension
 
@@ -17,6 +18,8 @@ private val TOKEN = if (PRODUCTION) {
 } else {
     env("TEST_BOT_TOKEN")
 }
+
+val DATABASE = Database()
 
 suspend fun main() {
     val bot = ExtensibleBot(TOKEN) {
