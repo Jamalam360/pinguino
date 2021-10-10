@@ -37,7 +37,7 @@ class BotStatusExtension : Extension() {
     private suspend fun editPresence(kord: Kord) {
         kord.editPresence {
             status = PresenceStatus.Online
-            watching("over ${kord.guilds.count()} server")
+            watching("over ${kord.guilds.count()} servers")
         }
     }
 }
