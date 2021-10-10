@@ -13,6 +13,11 @@
   </tr>
   
   <tr>
+    <td>Starboard/Quotes</td>
+    <td>Yes</td>
+  </tr>
+
+  <tr>
     <td>Logging</td>
     <td>No</td>
   </tr>
@@ -29,7 +34,7 @@
 
   <tr>
     <td>Web Based Config Editor</td>
-    <td>Yes</td>
+    <td>No</td>
   </tr>
 
 </table>
