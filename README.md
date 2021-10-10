@@ -16,7 +16,12 @@
     <td>Starboard/Quotes</td>
     <td>Yes</td>
   </tr>
-
+  
+  <tr>
+    <td>Moderation</td>
+    <td>No</td>
+  </tr>
+  
   <tr>
     <td>Logging</td>
     <td>No</td>
