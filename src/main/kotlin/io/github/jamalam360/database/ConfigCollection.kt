@@ -51,5 +51,5 @@ data class ServerConfig(
 data class ServerQuotesConfig(
     var enabled: Boolean,
     var channel: Long?,
-    var logQuotes: Boolean
+    var log: Boolean
 )
