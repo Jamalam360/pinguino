@@ -1,13 +1,35 @@
-# Pinguino
-Pinguino is a multipurpose discord bot
+<h1 align="center">Pinguino</h1>
 
-Features:
+<p align="center">Pinguino is a <i>multipurpose</i> discord bot built using <i><a href="https://kotlinlang.org/">Kotlin</a></i> and <i><a href="https://kordex.kotlindiscord.com/">Kordex</a></i></p>
 
-- [ ] Quotes/Starboard
-- [ ] Logging
-- [ ] Moderation
-- [ ] Fun
-- [ ] Lots of config
-- [ ] Web based config editor?
+<p align="center"><img src="https://user-images.githubusercontent.com/56727311/136711100-33c45895-51dd-4c3e-9937-c02aebae18dc.jpg" /></p>
 
-This projects aims to stay 100% open source and does _not_ collect any unnecessary data. You can easily see what data the bot stores in its database in [the database package](https://github.com/JamCoreDiscord/Pinguino/tree/main/src/main/kotlin/io/github/jamalam360/database)
+<p align="center">This projects aims to stay 100% open source and does <b>not</b> collect any unnecessary data. You can easily see what data the bot stores in its database in <a href="https://github.com/JamCoreDiscord/Pinguino/tree/main/src/main/kotlin/io/github/jamalam360/database">the database package</a></p>
+
+<table align="center">
+  <tr>
+    <th>Feature</th>
+    <th>Implemented?</th>
+  </tr>
+  
+  <tr>
+    <td>Logging</td>
+    <td>No</td>
+  </tr>
+
+  <tr>
+    <td>Fun</td>
+    <td>No</td>
+  </tr>
+
+  <tr>
+    <td>Extensive Configuration Options</td>
+    <td>No</td>
+  </tr>
+
+  <tr>
+    <td>Web Based Config Editor</td>
+    <td>Yes</td>
+  </tr>
+
+</table>
