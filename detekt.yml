@@ -513,7 +513,7 @@ style:
     active: true
     conversionFunctionPrefix: 'to'
   DataClassShouldBeImmutable:
-    active: true
+    active: false
   EqualsNullCall:
     active: true
   EqualsOnSignatureLine:
@@ -619,7 +619,7 @@ style:
     active: false
     max: 2
   TrailingWhitespace:
-    active: true
+    active: false
   UnderscoresInNumericLiterals:
     active: true
     acceptableDecimalLength: 5
