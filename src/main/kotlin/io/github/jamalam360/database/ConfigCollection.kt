@@ -28,8 +28,13 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         val config = ServerConfig(
             id.value,
 
-            null
+            ServerQuotesConfig(
+                true,
+                null,
+                true
+            )
         )
+
         collection.insertOne(config)
         return config
     }
@@ -40,5 +45,11 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
 data class ServerConfig(
     var id: Long,
 
-    var quoteChannel: Long?
+    var quotesConfig: ServerQuotesConfig
+)
+
+data class ServerQuotesConfig(
+    var enabled: Boolean,
+    var channel: Long?,
+    var logQuotes: Boolean
 )

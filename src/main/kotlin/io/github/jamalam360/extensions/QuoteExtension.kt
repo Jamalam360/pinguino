@@ -1,9 +1,9 @@
 package io.github.jamalam360.extensions
 
+import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.message
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
@@ -28,7 +29,9 @@ import io.github.jamalam360.DATABASE
 @OptIn(KordPreview::class)
 class QuoteExtension : Extension() {
     override val name = "quotes"
+
     private val quoteText: String = "quote"
+    private val quotesNotEnabled: String = "The quotes module is not enabled, please ask a moderator to enable it!"
 
     override suspend fun setup() {
         // region Slash commands
@@ -37,14 +40,23 @@ class QuoteExtension : Extension() {
             name = "quote-channel-set"
             description = "Set the channel for quotes to be sent to"
 
+            check {
+                hasPermission(Permission.ManageChannels)
+            }
+
             action {
-                val conf = DATABASE.config.getConfig(guild!!.id)
-                conf.quoteChannel = arguments.channel.id.value
+                if (checkQuotesEnabled(guild!!.asGuild())) {
+                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    conf.quotesConfig.channel = arguments.channel.id.value
+                    DATABASE.config.updateConfig(guild!!.id, conf)
 
-                DATABASE.config.updateConfig(guild!!.id, conf)
-
-                respond {
-                    content = "Successfully update quotes channel to ${arguments.channel.mention}"
+                    respond {
+                        content = "Successfully update quotes channel to ${arguments.channel.mention}"
+                    }
+                } else {
+                    respond {
+                        content = quotesNotEnabled
+                    }
                 }
             }
         }
@@ -58,22 +70,28 @@ class QuoteExtension : Extension() {
                 description = "Uses a user mention as the author"
 
                 action {
-                    val kord = this@QuoteExtension.kord
+                    if (checkQuotesEnabled(guild!!.asGuild())) {
+                        val kord = this@QuoteExtension.kord
 
-                    if (arguments.author.id == kord.selfId) {
-                        respond {
-                            content = "Cannot quote my own messages!"
+                        if (arguments.author.id == kord.selfId) {
+                            respond {
+                                content = "Cannot quote my own messages!"
+                            }
+                        } else {
+                            sendQuote(
+                                this.guild!!.asGuild(),
+                                arguments.quote,
+                                arguments.author.username,
+                                arguments.author.avatar.url
+                            )
+
+                            respond {
+                                content = "Quoted successfully"
+                            }
                         }
                     } else {
-                        sendQuote(
-                            this.guild!!.asGuild(),
-                            arguments.quote,
-                            arguments.author.username,
-                            arguments.author.avatar.url
-                        )
-
                         respond {
-                            content = "Quoted successfully"
+                            content = quotesNotEnabled
                         }
                     }
                 }
@@ -84,20 +102,15 @@ class QuoteExtension : Extension() {
                 description = "Uses any person as the author"
 
                 action {
-                    sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null)
-                }
-            }
-
-            /*publicSubCommand(::QuoteArgsMessage) {
-                name = "message"
-                description = "Uses a message ID or a message link"
-
-                action {
-                    respond {
-                        content = "${arguments.message.content} - ${arguments.message.author!!.mention}"
+                    if (checkQuotesEnabled(guild!!.asGuild())) {
+                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null)
+                    } else {
+                        respond {
+                            content = quotesNotEnabled
+                        }
                     }
                 }
-            }*/
+            }
         }
 
         //endregion
@@ -142,11 +155,13 @@ class QuoteExtension : Extension() {
         //endregion
     }
 
-    private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?) {
-        val config = DATABASE.config.getConfig(guild.id)
+    //region Util Methods
 
-        if (config.quoteChannel != null) {
-            val channel = guild.getChannel(Snowflake(config.quoteChannel!!))
+    private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?) {
+        val conf = DATABASE.config.getConfig(guild.id)
+
+        if (conf.quotesConfig.channel != null) {
+            val channel = guild.getChannel(Snowflake(conf.quotesConfig.channel!!))
 
             if (channel.type == ChannelType.GuildText) {
                 val embedAuthor = EmbedBuilder.Author()
@@ -163,6 +178,9 @@ class QuoteExtension : Extension() {
             }
         }
     }
+
+    private fun checkQuotesEnabled(guild: Guild): Boolean = DATABASE.config.getConfig(guild.id).quotesConfig.enabled
+    //endregion
 
     // region Arguments
 
@@ -189,13 +207,6 @@ class QuoteExtension : Extension() {
         val author by string(
             "author",
             "The author of the quote"
-        )
-    }
-
-    inner class QuoteArgsMessage : Arguments() {
-        val message by message(
-            "message",
-            "The link or ID of the message to quote"
         )
     }
 
