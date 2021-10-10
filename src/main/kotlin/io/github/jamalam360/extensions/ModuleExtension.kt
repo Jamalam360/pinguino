@@ -39,7 +39,7 @@ class ModuleExtension : Extension() {
                     val conf = DATABASE.config.getConfig(guild!!.id)
 
                     when (arguments.module) {
-                        Module.QUOTES -> conf.quotesEnabled = true
+                        Module.QUOTES -> conf.quotesConfig.enabled = true
                     }
 
                     DATABASE.config.updateConfig(guild!!.id, conf)
@@ -62,7 +62,7 @@ class ModuleExtension : Extension() {
                     val conf = DATABASE.config.getConfig(guild!!.id)
 
                     when (arguments.module) {
-                        Module.QUOTES -> conf.quotesEnabled = false
+                        Module.QUOTES -> conf.quotesConfig.enabled = false
                     }
 
                     DATABASE.config.updateConfig(guild!!.id, conf)
