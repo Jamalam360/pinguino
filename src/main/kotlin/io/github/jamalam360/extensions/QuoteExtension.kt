@@ -1,9 +1,7 @@
 package io.github.jamalam360.extensions
 
-import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
-import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -13,10 +11,10 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
-import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
+import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -35,31 +33,6 @@ class QuoteExtension : Extension() {
 
     override suspend fun setup() {
         // region Slash commands
-
-        publicSlashCommand(::QuoteChannelSetArgs) {
-            name = "quote-channel-set"
-            description = "Set the channel for quotes to be sent to"
-
-            check {
-                hasPermission(Permission.ManageChannels)
-            }
-
-            action {
-                if (checkQuotesEnabled(guild!!.asGuild())) {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
-                    conf.quotesConfig.channel = arguments.channel.id.value
-                    DATABASE.config.updateConfig(guild!!.id, conf)
-
-                    respond {
-                        content = "Successfully update quotes channel to ${arguments.channel.mention}"
-                    }
-                } else {
-                    respond {
-                        content = quotesNotEnabled
-                    }
-                }
-            }
-        }
 
         publicSlashCommand {
             name = quoteText
@@ -82,7 +55,8 @@ class QuoteExtension : Extension() {
                                 this.guild!!.asGuild(),
                                 arguments.quote,
                                 arguments.author.username,
-                                arguments.author.avatar.url
+                                arguments.author.avatar.url,
+                                user.asUser()
                             )
 
                             respond {
@@ -103,7 +77,7 @@ class QuoteExtension : Extension() {
 
                 action {
                     if (checkQuotesEnabled(guild!!.asGuild())) {
-                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null)
+                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
                     } else {
                         respond {
                             content = quotesNotEnabled
@@ -132,7 +106,8 @@ class QuoteExtension : Extension() {
                         this.guild!!.asGuild(),
                         targetMessages.first().content,
                         targetMessages.first().author!!.username,
-                        targetMessages.first().author!!.avatar.url
+                        targetMessages.first().author!!.avatar.url,
+                        user.asUser()
                     )
                 }
             }
@@ -147,7 +122,13 @@ class QuoteExtension : Extension() {
                 if (event.emoji.name == "\u2B50") {
                     val msg = event.channel.getMessage(event.messageId)
 
-                    sendQuote(event.guild!!.asGuild(), msg.content, msg.author!!.username, msg.author!!.avatar.url)
+                    sendQuote(
+                        event.guild!!.asGuild(),
+                        msg.content,
+                        msg.author!!.username,
+                        msg.author!!.avatar.url,
+                        event.user.asUser()
+                    )
                 }
             }
         }
@@ -157,7 +138,7 @@ class QuoteExtension : Extension() {
 
     //region Util Methods
 
-    private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?) {
+    private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?, quoter: User) {
         val conf = DATABASE.config.getConfig(guild.id)
 
         if (conf.quotesConfig.channel != null) {
@@ -175,6 +156,13 @@ class QuoteExtension : Extension() {
                     title = quote
                     author = embedAuthor
                 }
+
+                (bot.extensions["logging"] as LoggingExtension).logAction(
+                    "Quote Sent",
+                    "$quote - $quoteAuthor",
+                    quoter,
+                    guild
+                )
             }
         }
     }
@@ -183,13 +171,6 @@ class QuoteExtension : Extension() {
     //endregion
 
     // region Arguments
-
-    inner class QuoteChannelSetArgs : Arguments() {
-        val channel by channel(
-            "channel",
-            "The channel to send quotes to"
-        )
-    }
 
     inner class QuoteArgsMention : Arguments() {
         val quote by string(

@@ -2,9 +2,9 @@ package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
-import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.enumChoice
+import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
@@ -20,58 +20,134 @@ import io.github.jamalam360.DATABASE
 class ModuleExtension : Extension() {
     override val name: String = "modules"
 
+    //region Module Names
+
+    private val quotesModule: String = "the Quotes module"
+    private val loggingModule: String = "the Logging module"
+
+    //endregion
+
+    @Suppress("DuplicatedCode")
     override suspend fun setup() {
         //region Slash Commands
 
         publicSlashCommand {
             name = "module"
-            description = "Alter the settings of bot modules"
+            description = "Alter the settings of a specific module"
 
-            publicSubCommand(::ModuleToggleArgs) {
-                name = "enable"
-                description = "Enable a module"
+            //region Quotes Module
+
+            group("quotes") {
+                description = "Alter the settings of $quotesModule"
 
                 check {
                     hasPermission(Permission.Administrator)
                 }
 
-                action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                publicSubCommand {
+                    name = "enable"
+                    description = "Enable $quotesModule"
 
-                    when (arguments.module) {
-                        Module.QUOTES -> conf.quotesConfig.enabled = true
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.quotesConfig.enabled = true
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully enabled $quotesModule"
+                        }
                     }
+                }
 
-                    DATABASE.config.updateConfig(guild!!.id, conf)
+                publicSubCommand {
+                    name = "disable"
+                    description = "Disable $quotesModule"
 
-                    respond {
-                        content = "Successfully enabled module '${arguments.module.readableName}'"
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.quotesConfig.enabled = false
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully disabled $quotesModule"
+                        }
+                    }
+                }
+
+                publicSubCommand(::SingleChannelArgs) {
+                    name = "set-channel"
+                    description = "Set the channel quote embeds will be sent to"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.quotesConfig.channel = arguments.channel.id.value
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully set Quotes channel to ${arguments.channel.mention}"
+                        }
                     }
                 }
             }
 
-            publicSubCommand(::ModuleToggleArgs) {
-                name = "disable"
-                description = "Disable a module"
+            //endregion
+
+            //region Logging Module
+
+            group("logging") {
+                description = "Alter the settings of $loggingModule"
 
                 check {
-                    hasPermission(Permission.ManageGuild)
+                    hasPermission(Permission.Administrator)
                 }
 
-                action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                publicSubCommand {
+                    name = "enable"
+                    description = "Enable $loggingModule"
 
-                    when (arguments.module) {
-                        Module.QUOTES -> conf.quotesConfig.enabled = false
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.loggingConfig.enabled = true
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully enabled $loggingModule"
+                        }
                     }
+                }
 
-                    DATABASE.config.updateConfig(guild!!.id, conf)
+                publicSubCommand {
+                    name = "disable"
+                    description = "Disable $loggingModule"
 
-                    respond {
-                        content = "Successfully disabled module '${arguments.module.readableName}'"
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.loggingConfig.enabled = false
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully disabled $loggingModule"
+                        }
+                    }
+                }
+
+                publicSubCommand(::SingleChannelArgs) {
+                    name = "set-channel"
+                    description = "Set the channel logging embeds will be sent to"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.loggingConfig.channel = arguments.channel.id.value
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = "Successfully set Logging channel to ${arguments.channel.mention}"
+                        }
                     }
                 }
             }
+
+            //endregion
         }
 
         //endregion
@@ -79,19 +155,12 @@ class ModuleExtension : Extension() {
 
     //region Arguments
 
-    inner class ModuleToggleArgs : Arguments() {
-        val module by enumChoice<Module>(
-            "module",
-            "the module to enable/disable",
-            "module"
+    inner class SingleChannelArgs : Arguments() {
+        val channel by channel(
+            "channel",
+            description = "The channel"
         )
     }
 
     //endregion
-}
-
-enum class Module : ChoiceEnum {
-    QUOTES {
-        override val readableName: String = "quotes"
-    }
 }

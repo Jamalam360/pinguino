@@ -32,6 +32,11 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
                 true,
                 null,
                 true
+            ),
+
+            ServerLoggingConfig(
+                true,
+                null
             )
         )
 
@@ -45,11 +50,17 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
 data class ServerConfig(
     var id: Long,
 
-    var quotesConfig: ServerQuotesConfig
+    var quotesConfig: ServerQuotesConfig,
+    var loggingConfig: ServerLoggingConfig
 )
 
 data class ServerQuotesConfig(
     var enabled: Boolean,
     var channel: Long?,
     var log: Boolean
+)
+
+data class ServerLoggingConfig(
+    var enabled: Boolean,
+    var channel: Long?
 )
