@@ -92,7 +92,7 @@ class QuoteExtension : Extension() {
         //region Message commands
 
         publicMessageCommand {
-            name = quoteText
+            name = "Quote"
 
             action {
                 val kord = this@QuoteExtension.kord
@@ -109,6 +109,10 @@ class QuoteExtension : Extension() {
                         targetMessages.first().author!!.avatar.url,
                         user.asUser()
                     )
+
+                    respond {
+                        content = "Quoted successfully"
+                    }
                 }
             }
         }
