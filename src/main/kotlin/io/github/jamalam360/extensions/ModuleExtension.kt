@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
@@ -88,6 +89,25 @@ class ModuleExtension : Extension() {
                         }
                     }
                 }
+
+                publicSubCommand(::SingleBooleanArgs) {
+                    name = "enable-logging"
+                    description = "Whether to log quotes in the moderator log channel"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.quotesConfig.log = arguments.boolean
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        respond {
+                            content = if (arguments.boolean) {
+                                "Successfully enabled logging for $quotesModule"
+                            } else {
+                                "Successfully disabled logging for $quotesModule"
+                            }
+                        }
+                    }
+                }
             }
 
             //endregion
@@ -158,7 +178,14 @@ class ModuleExtension : Extension() {
     inner class SingleChannelArgs : Arguments() {
         val channel by channel(
             "channel",
-            description = "The channel"
+            "The channel"
+        )
+    }
+
+    inner class SingleBooleanArgs : Arguments() {
+        val boolean by boolean(
+            "enabled",
+            "Whether to enable this option"
         )
     }
 
