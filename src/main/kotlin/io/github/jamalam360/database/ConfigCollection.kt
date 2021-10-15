@@ -27,6 +27,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
     private fun createDefaultConfig(id: Snowflake): ServerConfig {
         val config = ServerConfig(
             id.value,
+            0,
 
             ServerQuotesConfig(
                 true,
@@ -45,10 +46,21 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
     }
 
     private fun hasConfig(id: Snowflake): Boolean = collection.findOne(ServerConfig::id eq id.value) != null
+
+    fun isModuleEnabled(id: Snowflake, module: Modules): Boolean {
+        val config = getConfig(id)
+
+        return when (module) {
+            Modules.Quotes -> config.quotesConfig.enabled
+            Modules.Moderation -> true
+            Modules.Logging -> config.loggingConfig.enabled
+        }
+    }
 }
 
 data class ServerConfig(
     var id: Long,
+    var moderatorRole: Long,
 
     var quotesConfig: ServerQuotesConfig,
     var loggingConfig: ServerLoggingConfig
@@ -64,3 +76,9 @@ data class ServerLoggingConfig(
     var enabled: Boolean,
     var channel: Long?
 )
+
+enum class Modules(val readableName: String) {
+    Quotes("quotes"),
+    Moderation("moderation"),
+    Logging("logging")
+}

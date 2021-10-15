@@ -19,6 +19,8 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
+import io.github.jamalam360.database.Modules
+import io.github.jamalam360.moduleEnabled
 
 /**
  * @author  Jamalam360
@@ -29,11 +31,9 @@ class QuoteExtension : Extension() {
     override val name = "quotes"
 
     private val quoteText: String = "quote"
-    private val quotesNotEnabled: String = "The quotes module is not enabled, please ask a moderator to enable it!"
 
     override suspend fun setup() {
         // region Slash commands
-
         publicSlashCommand {
             name = quoteText
             description = "Record a quote!"
@@ -42,30 +42,28 @@ class QuoteExtension : Extension() {
                 name = "user"
                 description = "Uses a user mention as the author"
 
+                check {
+                    moduleEnabled(Modules.Quotes)
+                }
+
                 action {
-                    if (checkQuotesEnabled(guild!!.asGuild())) {
-                        val kord = this@QuoteExtension.kord
+                    val kord = this@QuoteExtension.kord
 
-                        if (arguments.author.id == kord.selfId) {
-                            respond {
-                                content = "Cannot quote my own messages!"
-                            }
-                        } else {
-                            sendQuote(
-                                this.guild!!.asGuild(),
-                                arguments.quote,
-                                arguments.author.username,
-                                arguments.author.avatar.url,
-                                user.asUser()
-                            )
-
-                            respond {
-                                content = "Quoted successfully"
-                            }
+                    if (arguments.author.id == kord.selfId) {
+                        respond {
+                            content = "Cannot quote my own messages!"
                         }
                     } else {
+                        sendQuote(
+                            this.guild!!.asGuild(),
+                            arguments.quote,
+                            arguments.author.username,
+                            arguments.author.avatar.url,
+                            user.asUser()
+                        )
+
                         respond {
-                            content = quotesNotEnabled
+                            content = "Quoted successfully"
                         }
                     }
                 }
@@ -75,24 +73,24 @@ class QuoteExtension : Extension() {
                 name = "non-user"
                 description = "Uses any person as the author"
 
+                check {
+                    moduleEnabled(Modules.Quotes)
+                }
+
                 action {
-                    if (checkQuotesEnabled(guild!!.asGuild())) {
-                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
-                    } else {
-                        respond {
-                            content = quotesNotEnabled
-                        }
-                    }
+                    sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
                 }
             }
         }
-
         //endregion
 
         //region Message commands
-
         publicMessageCommand {
             name = "Quote"
+
+            check {
+                moduleEnabled(Modules.Quotes)
+            }
 
             action {
                 val kord = this@QuoteExtension.kord
@@ -120,8 +118,11 @@ class QuoteExtension : Extension() {
         //endregion
 
         //region Events
-
         event<ReactionAddEvent> {
+            check {
+                moduleEnabled(Modules.Quotes)
+            }
+
             action {
                 if (event.emoji.name == "\u2B50") {
                     val msg = event.channel.getMessage(event.messageId)
@@ -136,12 +137,10 @@ class QuoteExtension : Extension() {
                 }
             }
         }
-
         //endregion
     }
 
     //region Util Methods
-
     private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?, quoter: User) {
         val conf = DATABASE.config.getConfig(guild.id)
 
@@ -170,12 +169,9 @@ class QuoteExtension : Extension() {
             }
         }
     }
-
-    private fun checkQuotesEnabled(guild: Guild): Boolean = DATABASE.config.getConfig(guild.id).quotesConfig.enabled
     //endregion
 
     // region Arguments
-
     inner class QuoteArgsMention : Arguments() {
         val quote by string(
             quoteText,
@@ -194,6 +190,5 @@ class QuoteExtension : Extension() {
             "The author of the quote"
         )
     }
-
     // endregion
 }
