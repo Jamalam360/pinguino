@@ -1,7 +1,7 @@
 package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -17,7 +17,7 @@ class UtilExtension : Extension() {
     override val name: String = "util"
 
     override suspend fun setup() {
-        publicSlashCommand {
+        ephemeralSlashCommand {
             name = "invite"
             description = "Get an invite link for Pinguino!"
 

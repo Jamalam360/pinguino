@@ -1,13 +1,13 @@
 package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ephemeralMessageCommand
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
-import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
@@ -34,11 +34,11 @@ class QuoteExtension : Extension() {
 
     override suspend fun setup() {
         // region Slash commands
-        publicSlashCommand {
+        ephemeralSlashCommand {
             name = quoteText
             description = "Record a quote!"
 
-            publicSubCommand(::QuoteArgsMention) {
+            ephemeralSubCommand(::QuoteArgsMention) {
                 name = "user"
                 description = "Uses a user mention as the author"
 
@@ -69,7 +69,7 @@ class QuoteExtension : Extension() {
                 }
             }
 
-            publicSubCommand(::QuoteArgsString) {
+            ephemeralSubCommand(::QuoteArgsString) {
                 name = "non-user"
                 description = "Uses any person as the author"
 
@@ -85,7 +85,7 @@ class QuoteExtension : Extension() {
         //endregion
 
         //region Message commands
-        publicMessageCommand {
+        ephemeralMessageCommand {
             name = "Quote"
 
             check {

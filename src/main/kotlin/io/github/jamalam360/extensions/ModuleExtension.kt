@@ -1,16 +1,19 @@
 package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.role
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.DATABASE
+import io.github.jamalam360.database.Modules
 import io.github.jamalam360.hasModeratorRole
 
 /**
@@ -30,7 +33,7 @@ class ModuleExtension : Extension() {
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
         //region Slash Commands
-        publicSlashCommand {
+        ephemeralSlashCommand {
             name = "module"
             description = "Alter the settings of a specific module"
 
@@ -42,7 +45,7 @@ class ModuleExtension : Extension() {
             group("quotes") {
                 description = "Alter the settings of $quotesModule"
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "enable"
                     description = "Enable $quotesModule"
 
@@ -51,13 +54,15 @@ class ModuleExtension : Extension() {
                         conf.quotesConfig.enabled = true
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleEnabled(Modules.Quotes.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully enabled $quotesModule"
                         }
                     }
                 }
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "disable"
                     description = "Disable $quotesModule"
 
@@ -66,13 +71,15 @@ class ModuleExtension : Extension() {
                         conf.quotesConfig.enabled = false
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleDisabled(Modules.Quotes.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully disabled $quotesModule"
                         }
                     }
                 }
 
-                publicSubCommand(::SingleChannelArgs) {
+                ephemeralSubCommand(::SingleChannelArgs) {
                     name = "set-channel"
                     description = "Set the channel quote embeds will be sent to"
 
@@ -81,13 +88,15 @@ class ModuleExtension : Extension() {
                         conf.quotesConfig.channel = arguments.channel.id.value
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        log("Quotes Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
+
                         respond {
                             content = "Successfully set Quotes channel to ${arguments.channel.mention}"
                         }
                     }
                 }
 
-                publicSubCommand(::SingleBooleanArgs) {
+                ephemeralSubCommand(::SingleBooleanArgs) {
                     name = "enable-logging"
                     description = "Whether to log quotes in the moderator log channel"
 
@@ -95,6 +104,8 @@ class ModuleExtension : Extension() {
                         val conf = DATABASE.config.getConfig(guild!!.id)
                         conf.quotesConfig.log = arguments.boolean
                         DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log(if (arguments.boolean) "Quotes Log Enabled" else "Quotes Log Disabled", "", user, guild!!)
 
                         respond {
                             content = if (arguments.boolean) {
@@ -112,7 +123,7 @@ class ModuleExtension : Extension() {
             group("logging") {
                 description = "Alter the settings of $loggingModule"
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "enable"
                     description = "Enable $loggingModule"
 
@@ -121,13 +132,15 @@ class ModuleExtension : Extension() {
                         conf.loggingConfig.enabled = true
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleEnabled(Modules.Logging.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully enabled $loggingModule"
                         }
                     }
                 }
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "disable"
                     description = "Disable $loggingModule"
 
@@ -136,13 +149,15 @@ class ModuleExtension : Extension() {
                         conf.loggingConfig.enabled = false
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleDisabled(Modules.Logging.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully disabled $loggingModule"
                         }
                     }
                 }
 
-                publicSubCommand(::SingleChannelArgs) {
+                ephemeralSubCommand(::SingleChannelArgs) {
                     name = "set-channel"
                     description = "Set the channel logging embeds will be sent to"
 
@@ -150,6 +165,8 @@ class ModuleExtension : Extension() {
                         val conf = DATABASE.config.getConfig(guild!!.id)
                         conf.loggingConfig.channel = arguments.channel.id.value
                         DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Logging Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
 
                         respond {
                             content = "Successfully set Logging channel to ${arguments.channel.mention}"
@@ -163,7 +180,7 @@ class ModuleExtension : Extension() {
             group("moderation") {
                 description = "Alter the settings of $moderationModule"
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "enable"
                     description = "Enable $moderationModule"
 
@@ -172,13 +189,15 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.enabled = true
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleEnabled(Modules.Moderation.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully enabled $moderationModule"
                         }
                     }
                 }
 
-                publicSubCommand {
+                ephemeralSubCommand {
                     name = "disable"
                     description = "Disable $moderationModule"
 
@@ -187,13 +206,15 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.enabled = false
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        logModuleDisabled(Modules.Moderation.readableName, user, guild!!)
+
                         respond {
                             content = "Successfully disabled $moderationModule"
                         }
                     }
                 }
 
-                publicSubCommand(::SingleRoleArgs) {
+                ephemeralSubCommand(::SingleRoleArgs) {
                     name = "set-role"
                     description = "Set role required to run moderator level commands"
 
@@ -202,13 +223,15 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.moderatorRole = arguments.role.id.value
                         DATABASE.config.updateConfig(guild!!.id, conf)
 
+                        log("Moderator Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
+
                         respond {
                             content = "Successfully set moderator role to ${arguments.role.mention}"
                         }
                     }
                 }
 
-                publicSubCommand(::SingleBooleanArgs) {
+                ephemeralSubCommand(::SingleBooleanArgs) {
                     name = "log-actions"
                     description = "Enable logging for actions by moderators"
 
@@ -216,6 +239,13 @@ class ModuleExtension : Extension() {
                         val conf = DATABASE.config.getConfig(guild!!.id)
                         conf.moderationConfig.enabled = arguments.boolean
                         DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log(
+                            if (arguments.boolean) "Moderation Log Enabled" else "Moderation Log Disabled",
+                            "",
+                            user,
+                            guild!!
+                        )
 
                         respond {
                             content =
@@ -227,6 +257,23 @@ class ModuleExtension : Extension() {
             //endregion
         }
         //endregion
+    }
+
+    private suspend fun logModuleEnabled(module: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
+        log("Module Enabled", "Module '_${module}_' enabled", responsibleMod.asUser(), guild.asGuild())
+    }
+
+    private suspend fun logModuleDisabled(module: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
+        log("Module Disabled", "Module '_${module}_' disabled", responsibleMod.asUser(), guild.asGuild())
+    }
+
+    private suspend fun log(action: String, extraContent: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
+        (bot.extensions["logging"] as LoggingExtension).logAction(
+            action,
+            extraContent,
+            responsibleMod.asUser(),
+            guild.asGuild()
+        )
     }
 
     //region Arguments

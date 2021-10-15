@@ -33,7 +33,6 @@ suspend fun main() {
             add(::BotStatusExtension)
             add(::ModuleExtension)
             add(::LoggingExtension)
-            add(::FunExtension)
             add(::ModerationExtension)
             add(::UtilExtension)
         }
