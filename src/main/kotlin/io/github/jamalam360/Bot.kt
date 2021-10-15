@@ -35,6 +35,7 @@ suspend fun main() {
             add(::LoggingExtension)
             add(::FunExtension)
             add(::ModerationExtension)
+            add(::UtilExtension)
         }
     }
 
