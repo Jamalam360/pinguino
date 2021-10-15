@@ -27,7 +27,6 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
     private fun createDefaultConfig(id: Snowflake): ServerConfig {
         val config = ServerConfig(
             id.value,
-            0,
 
             ServerQuotesConfig(
                 true,
@@ -38,6 +37,12 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             ServerLoggingConfig(
                 true,
                 null
+            ),
+
+            ServerModerationConfig(
+                enabled = true,
+                logActions = true,
+                moderatorRole = 0
             )
         )
 
@@ -60,10 +65,10 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
 
 data class ServerConfig(
     var id: Long,
-    var moderatorRole: Long,
 
     var quotesConfig: ServerQuotesConfig,
-    var loggingConfig: ServerLoggingConfig
+    var loggingConfig: ServerLoggingConfig,
+    var moderationConfig: ServerModerationConfig
 )
 
 data class ServerQuotesConfig(
@@ -75,6 +80,12 @@ data class ServerQuotesConfig(
 data class ServerLoggingConfig(
     var enabled: Boolean,
     var channel: Long?
+)
+
+data class ServerModerationConfig(
+    var enabled: Boolean,
+    var logActions: Boolean,
+    var moderatorRole: Long
 )
 
 enum class Modules(val readableName: String) {
