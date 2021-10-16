@@ -1,20 +1,15 @@
 package io.github.jamalam360.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
-import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.role
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
-import io.github.jamalam360.DATABASE
+import io.github.jamalam360.*
 import io.github.jamalam360.database.Modules
-import io.github.jamalam360.hasModeratorRole
 
 /**
  * @author  Jamalam360
@@ -275,27 +270,4 @@ class ModuleExtension : Extension() {
             guild.asGuild()
         )
     }
-
-    //region Arguments
-    inner class SingleChannelArgs : Arguments() {
-        val channel by channel(
-            "channel",
-            "The channel"
-        )
-    }
-
-    inner class SingleRoleArgs : Arguments() {
-        val role by role(
-            "role",
-            "The role"
-        )
-    }
-
-    inner class SingleBooleanArgs : Arguments() {
-        val boolean by boolean(
-            "enabled",
-            "Whether to enable this option"
-        )
-    }
-    //endregion
 }

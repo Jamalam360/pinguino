@@ -1,9 +1,7 @@
 package io.github.jamalam360.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.role
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
@@ -14,6 +12,7 @@ import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import io.github.jamalam360.DATABASE
+import io.github.jamalam360.SingleRoleArgs
 import io.github.jamalam360.hasModeratorRole
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
@@ -124,16 +123,6 @@ class ModerationExtension : Extension() {
                 }
             }
         }
-
         //endregion
     }
-
-    //region Arguments
-    inner class SingleRoleArgs : Arguments() {
-        val role by role(
-            "role",
-            "The role"
-        )
-    }
-//endregion
 }
