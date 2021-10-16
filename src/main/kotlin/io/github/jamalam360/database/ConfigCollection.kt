@@ -12,16 +12,29 @@ import org.litote.kmongo.updateOne
  */
 @Suppress("RemoveExplicitTypeArguments")
 class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.getCollection<ServerConfig>()) {
+    private val configCache: HashMap<Long, ServerConfig> = HashMap<Long, ServerConfig>()
+
     fun getConfig(id: Snowflake): ServerConfig {
-        return if (!hasConfig(id)) {
-            createDefaultConfig(id)
+        val conf: ServerConfig
+
+        if (!hasConfig(id)) { // Create a default config and save it to the cache
+            conf = createDefaultConfig(id)
+            configCache[id.value] = conf
         } else {
-            collection.findOne(ServerConfig::id eq id.value)!!
+            if (!configCache.containsKey(id.value)) { // Get the config  from the DB and save it to the cache
+                conf = collection.findOne(ServerConfig::id eq id.value)!!
+                configCache[id.value] = conf
+            } else { // Get the config from the cache
+                conf = configCache[id.value]!!
+            }
         }
+
+        return conf
     }
 
     fun updateConfig(id: Snowflake, updated: ServerConfig) {
         collection.updateOne(ServerConfig::id eq id.value, updated)
+        configCache[id.value] = updated
     }
 
     private fun createDefaultConfig(id: Snowflake): ServerConfig {
