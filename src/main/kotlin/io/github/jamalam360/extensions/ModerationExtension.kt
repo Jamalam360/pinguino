@@ -2,6 +2,7 @@ package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.converters.impl.role
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
@@ -30,52 +31,56 @@ class ModerationExtension : Extension() {
     override suspend fun setup() {
         //region Slash Commands
         ephemeralSlashCommand {
-            name = "thread-auto-join"
-            description = "Commands for the management of the thread auto-joiner feature"
+            name = "moderation"
+            description = "Commands for moderators"
 
             check {
                 hasModeratorRole()
             }
 
-            ephemeralSubCommand(::SingleRoleArgs) {
-                name = "add-role"
-                description = "Add a role to the thread auto-join list"
+            group("thread-auto-join") {
+                description = "Commands for the management of the thread auto-joiner feature"
 
-                action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                ephemeralSubCommand(::SingleRoleArgs) {
+                    name = "add-role"
+                    description = "Add a role to the thread auto-join list"
 
-                    if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
-                        respond {
-                            content = "${arguments.role.mention} is already on the auto-join list!"
-                        }
-                    } else {
-                        conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value)
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
 
-                        respond {
-                            content = "Successfully added ${arguments.role.mention} to the auto-join list"
+                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
+                            respond {
+                                content = "${arguments.role.mention} is already on the auto-join list!"
+                            }
+                        } else {
+                            conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value)
+                            DATABASE.config.updateConfig(guild!!.id, conf)
+
+                            respond {
+                                content = "Successfully added ${arguments.role.mention} to the auto-join list"
+                            }
                         }
                     }
                 }
-            }
 
-            ephemeralSubCommand(::SingleRoleArgs) {
-                name = "remove-role"
-                description = "Remove a role from the thread auto-join list"
+                ephemeralSubCommand(::SingleRoleArgs) {
+                    name = "remove-role"
+                    description = "Remove a role from the thread auto-join list"
 
-                action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
 
-                    if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
-                        conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value)
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
+                            conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value)
+                            DATABASE.config.updateConfig(guild!!.id, conf)
 
-                        respond {
-                            content = "Successfully removed ${arguments.role.mention} from the auto-join list"
-                        }
-                    } else {
-                        respond {
-                            content = "${arguments.role.mention} is not on the auto-join list"
+                            respond {
+                                content = "Successfully removed ${arguments.role.mention} from the auto-join list"
+                            }
+                        } else {
+                            respond {
+                                content = "${arguments.role.mention} is not on the auto-join list"
+                            }
                         }
                     }
                 }
