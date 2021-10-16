@@ -55,7 +55,9 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             ServerModerationConfig(
                 enabled = true,
                 logActions = true,
-                moderatorRole = 0
+                moderatorRole = 0,
+
+                mutableListOf<Long>()
             )
         )
 
@@ -98,7 +100,9 @@ data class ServerLoggingConfig(
 data class ServerModerationConfig(
     var enabled: Boolean,
     var logActions: Boolean,
-    var moderatorRole: Long
+    var moderatorRole: Long,
+
+    var threadAutoJoinRoles: MutableList<Long>
 )
 
 enum class Modules(val readableName: String) {
