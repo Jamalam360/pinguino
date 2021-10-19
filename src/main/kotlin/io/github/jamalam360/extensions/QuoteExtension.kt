@@ -79,6 +79,10 @@ class QuoteExtension : Extension() {
 
                 action {
                     sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
+
+                    respond {
+                        content = "Quoted successfully"
+                    }
                 }
             }
         }
