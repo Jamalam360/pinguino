@@ -20,7 +20,7 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.database.Modules
-import io.github.jamalam360.moduleEnabled
+import io.github.jamalam360.isModuleEnabled
 
 /**
  * @author  Jamalam360
@@ -43,7 +43,7 @@ class QuoteExtension : Extension() {
                 description = "Uses a user mention as the author"
 
                 check {
-                    moduleEnabled(Modules.Quotes)
+                    isModuleEnabled(Modules.Quotes)
                 }
 
                 action {
@@ -74,7 +74,7 @@ class QuoteExtension : Extension() {
                 description = "Uses any person as the author"
 
                 check {
-                    moduleEnabled(Modules.Quotes)
+                    isModuleEnabled(Modules.Quotes)
                 }
 
                 action {
@@ -93,7 +93,7 @@ class QuoteExtension : Extension() {
             name = "Quote"
 
             check {
-                moduleEnabled(Modules.Quotes)
+                isModuleEnabled(Modules.Quotes)
             }
 
             action {
@@ -124,7 +124,7 @@ class QuoteExtension : Extension() {
         //region Events
         event<ReactionAddEvent> {
             check {
-                moduleEnabled(Modules.Quotes)
+                isModuleEnabled(Modules.Quotes)
             }
 
             action {

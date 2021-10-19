@@ -14,7 +14,7 @@ import mu.KotlinLogging
  * @author  Jamalam360
  */
 
-suspend fun <T : Event> CheckContext<T>.moduleEnabled(module: Modules) {
+suspend fun <T : Event> CheckContext<T>.isModuleEnabled(module: Modules) {
     if (!passed) {
         return
     }
