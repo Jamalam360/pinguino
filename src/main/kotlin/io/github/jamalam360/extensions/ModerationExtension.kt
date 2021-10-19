@@ -100,7 +100,7 @@ class ModerationExtension : Extension() {
                         event.channel.createMessage("Nice thread ${event.channel.owner.mention}! Hold on while I get some people in here!")
 
                     event.channel.withTyping {
-                        delay(Duration.Companion.seconds(3))
+                        delay(Duration.Companion.seconds(6))
                     }
 
                     var mentions = ""
@@ -115,7 +115,7 @@ class ModerationExtension : Extension() {
                     }
 
                     event.channel.withTyping {
-                        delay(Duration.Companion.seconds(3))
+                        delay(Duration.Companion.seconds(6))
                     }
 
                     msg.edit {
