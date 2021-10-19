@@ -13,7 +13,9 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.SingleRoleArgs
+import io.github.jamalam360.database.Modules
 import io.github.jamalam360.hasModeratorRole
+import io.github.jamalam360.isModuleEnabled
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -35,6 +37,7 @@ class ModerationExtension : Extension() {
 
             check {
                 hasModeratorRole()
+                isModuleEnabled(Modules.Moderation)
             }
 
             group("thread-auto-join") {
