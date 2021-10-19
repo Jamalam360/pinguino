@@ -1,5 +1,6 @@
 package io.github.jamalam360.database
 
+import com.mongodb.client.MongoDatabase
 import io.github.jamalam360.PRODUCTION
 import org.litote.kmongo.KMongo
 
@@ -9,7 +10,7 @@ import org.litote.kmongo.KMongo
 
 class Database {
     private val client = KMongo.createClient()
-    private val db = if (PRODUCTION) {
+    val db: MongoDatabase = if (PRODUCTION) {
         client.getDatabase("PinguinoProductionDatabase")
     } else {
         client.getDatabase("PinguinoTestingDatabase")

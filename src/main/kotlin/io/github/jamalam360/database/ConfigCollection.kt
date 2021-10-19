@@ -1,7 +1,10 @@
 package io.github.jamalam360.database
 
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
+import io.github.jamalam360.DATABASE
+import io.github.jamalam360.database.migration.migrate
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
@@ -65,7 +68,14 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         return config
     }
 
-    private fun hasConfig(id: Snowflake): Boolean = collection.findOne(ServerConfig::id eq id.value) != null
+    private fun hasConfig(id: Snowflake): Boolean {
+        return try {
+            collection.findOne(ServerConfig::id eq id.value) != null
+        } catch (e: MissingKotlinParameterException) {
+            migrate(DATABASE.db)
+            hasConfig(id)
+        }
+    }
 
     fun isModuleEnabled(id: Snowflake, module: Modules): Boolean {
         val config = getConfig(id)
