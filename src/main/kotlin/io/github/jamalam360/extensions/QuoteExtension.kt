@@ -122,6 +122,8 @@ class QuoteExtension : Extension() {
         //endregion
 
         //region Events
+
+        // TODO: This is deprecated, for removal when discord adds message command support to mobile
         event<ReactionAddEvent> {
             check {
                 isModuleEnabled(Modules.Quotes)
