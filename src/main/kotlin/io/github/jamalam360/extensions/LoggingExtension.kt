@@ -1,6 +1,7 @@
 package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
@@ -9,6 +10,8 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.event.guild.MemberJoinEvent
+import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 
@@ -20,8 +23,20 @@ import io.github.jamalam360.DATABASE
 class LoggingExtension : Extension() {
     override val name: String = "logging"
 
-    @Suppress("EmptyFunctionBlock")
     override suspend fun setup() {
+        //region Events
+        event<MemberJoinEvent> {
+            action {
+                logAction("Member Joined", "", event.member, event.guild.asGuild())
+            }
+        }
+
+        event<MemberLeaveEvent> {
+            action {
+                logAction("Member Left", "", event.user, event.guild.asGuild())
+            }
+        }
+        //endregion
     }
 
     suspend fun logAction(action: String, extraContent: String?, user: User, guild: Guild): Message? {

@@ -74,6 +74,13 @@ class UtilExtension : Extension() {
                             content = "This thread is already archived"
                         }
                     }
+
+                    (bot.extensions["logging"] as LoggingExtension).logAction(
+                        "Thread archived",
+                        "",
+                        user.asUser(),
+                        guild!!.asGuild()
+                    )
                 } else {
                     respond {
                         content = "You do not have permission to archive this thread"
@@ -90,7 +97,6 @@ class UtilExtension : Extension() {
                 isInThread()
             }
 
-            // Thanks to Cozy for teaching me how to do this
             action {
                 val channel = channel.asChannel() as ThreadChannel
                 val roles = user.asMember(guild!!.id).roles.toList()
@@ -98,6 +104,8 @@ class UtilExtension : Extension() {
 
                 if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
                 ) {
+                    val before = channel.name
+
                     channel.edit {
                         this.name = arguments.name
                         reason = "Renamed by ${user.mention}"
@@ -106,6 +114,13 @@ class UtilExtension : Extension() {
                     respond {
                         content = "Successfully renamed thread"
                     }
+
+                    (bot.extensions["logging"] as LoggingExtension).logAction(
+                        "Thread renamed",
+                        "'$before' --> '${arguments.name}",
+                        user.asUser(),
+                        guild!!.asGuild()
+                    )
                 } else {
                     respond {
                         content = "You do not have permission to rename this thread"
