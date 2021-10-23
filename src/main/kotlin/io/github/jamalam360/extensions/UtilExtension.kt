@@ -37,7 +37,9 @@ class UtilExtension : Extension() {
                             "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
                             "31f51ffc334fac125089f7ea.png"
                 embed.title = "Invite Pinguino!"
-                embed.description = "Click [here](https://google.com/) to invite Pinguino to your own server"
+                embed.description = "Click [here]" +
+                        "(https://discord.com/api/oauth2/authorize?client_id=896758540784500797&permissions=8&scope=bot%20applications.commands)" +
+                        " to invite Pinguino to your own server"
 
                 respond {
                     embeds.add(embed)
