@@ -23,7 +23,22 @@ jobs:
 
       - name: Gradle (Build)
         run: sh gradlew build
-
+        
+      - name: Create Issue on Failed workflow
+        if: ${{ failure() }}
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Action Workflow Failed
+          body: |
+            ### Context
+            [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Codebase](https://github.com/${{ github.repository }}/tree/${{ github.sha }})
+            Workflow name - `${{ github.workflow }}`
+            Job -           `${{ github.job }}`
+            status -        `${{ job.status }}`
+          assignees: Jamalam360
+      
       - name: Upload artifacts (Main JAR)
         uses: actions/upload-artifact@v2
 
