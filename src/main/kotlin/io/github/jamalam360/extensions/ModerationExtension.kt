@@ -17,6 +17,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.*
 import io.github.jamalam360.database.Modules
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -137,9 +138,15 @@ class ModerationExtension : Extension() {
             check { failIf(event.channel.member != null) }
 
             action {
+                val author = if (event.channel.owner.id == this@ModerationExtension.kord.selfId) {
+                    event.channel.messages.first().author!!
+                } else {
+                    event.channel.owner
+                }
+
                 if (DATABASE.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
                     val msg =
-                        event.channel.createMessage("Nice thread ${event.channel.owner.mention}! Hold on while I get some people in here!")
+                        event.channel.createMessage("Nice thread ${author.mention}! Hold on while I get some people in here!")
 
                     event.channel.withTyping {
                         delay(Duration.Companion.seconds(6))
@@ -161,10 +168,10 @@ class ModerationExtension : Extension() {
                     }
 
                     msg.edit {
-                        content = "Welcome to your thread ${event.channel.owner.mention}, enjoy!"
+                        content = "Welcome to your thread ${author.mention}, enjoy!"
                     }
                 } else {
-                    event.channel.createMessage("Welcome to your thread ${event.channel.owner.mention}, enjoy!")
+                    event.channel.createMessage("Welcome to your thread ${author.mention}, enjoy!")
                 }
             }
         }
