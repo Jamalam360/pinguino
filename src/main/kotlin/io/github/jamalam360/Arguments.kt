@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 /**
  * @author  Jamalam360
  */
-class SingleChannelArgs : Arguments() {
+open class SingleChannelArgs : Arguments() {
     val channel by channel(
         "channel",
         "The channel"
