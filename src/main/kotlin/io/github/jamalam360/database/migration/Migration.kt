@@ -1,10 +1,11 @@
 package io.github.jamalam360.database.migration
 
 import com.mongodb.client.MongoDatabase
-import io.github.jamalam360.database.ServerConfig
-import io.github.jamalam360.database.ServerLoggingConfig
-import io.github.jamalam360.database.ServerModerationConfig
-import io.github.jamalam360.database.ServerQuotesConfig
+import io.github.jamalam360.database.entity.ServerConfig
+import io.github.jamalam360.database.entity.ServerLoggingConfig
+import io.github.jamalam360.database.entity.ServerModerationConfig
+import io.github.jamalam360.database.entity.ServerQuotesConfig
+import io.github.jamalam360.database.getDefault
 import org.litote.kmongo.exists
 import org.litote.kmongo.getCollection
 import org.litote.kmongo.setValue
@@ -19,34 +20,21 @@ fun migrate(db: MongoDatabase) {
         updateMany(
             ServerConfig::quotesConfig exists false,
             setValue(
-                ServerConfig::quotesConfig, ServerQuotesConfig(
-                    true,
-                    null,
-                    true
-                )
+                ServerConfig::quotesConfig, ServerQuotesConfig::class.getDefault()
             )
         )
 
         updateMany(
             ServerConfig::loggingConfig exists false,
             setValue(
-                ServerConfig::loggingConfig, ServerLoggingConfig(
-                    true,
-                    null
-                )
+                ServerConfig::loggingConfig, ServerLoggingConfig::class.getDefault()
             )
         )
 
         updateMany(
             ServerConfig::moderationConfig exists false,
             setValue(
-                ServerConfig::moderationConfig, ServerModerationConfig(
-                    enabled = true,
-                    logActions = true,
-                    moderatorRole = 0,
-
-                    mutableListOf()
-                )
+                ServerConfig::moderationConfig, ServerModerationConfig::class.getDefault()
             )
         )
     }

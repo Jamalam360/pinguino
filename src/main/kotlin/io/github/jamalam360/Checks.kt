@@ -6,7 +6,6 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.Event
 import dev.kord.core.exception.EntityNotFoundException
-import io.github.jamalam360.database.Modules
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 

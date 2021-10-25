@@ -4,6 +4,8 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam360.DATABASE
+import io.github.jamalam360.Modules
+import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.database.migration.migrate
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
@@ -29,7 +31,8 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         val conf: ServerConfig
 
         if (!hasConfig(id)) {
-            conf = createDefaultConfig(id)
+            conf = ServerConfig::class.getDefault(id)
+            collection.insertOne(conf)
             configCache[id.value] = conf
         } else {
             if (!configCache.containsKey(id.value)) {
@@ -52,34 +55,6 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
     fun updateConfig(id: Snowflake, updated: ServerConfig) {
         collection.updateOne(ServerConfig::id eq id.value, updated)
         configCache[id.value] = updated
-    }
-
-    private fun createDefaultConfig(id: Snowflake): ServerConfig {
-        val config = ServerConfig(
-            id.value,
-
-            ServerQuotesConfig(
-                true,
-                null,
-                true
-            ),
-
-            ServerLoggingConfig(
-                true,
-                null
-            ),
-
-            ServerModerationConfig(
-                enabled = true,
-                logActions = true,
-                moderatorRole = 0,
-
-                mutableListOf<Long>()
-            )
-        )
-
-        collection.insertOne(config)
-        return config
     }
 
     /**
@@ -112,37 +87,4 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             Modules.Logging -> config.loggingConfig.enabled
         }
     }
-}
-
-data class ServerConfig(
-    var id: Long,
-
-    var quotesConfig: ServerQuotesConfig,
-    var loggingConfig: ServerLoggingConfig,
-    var moderationConfig: ServerModerationConfig
-)
-
-data class ServerQuotesConfig(
-    var enabled: Boolean,
-    var channel: Long?,
-    var log: Boolean
-)
-
-data class ServerLoggingConfig(
-    var enabled: Boolean,
-    var channel: Long?
-)
-
-data class ServerModerationConfig(
-    var enabled: Boolean,
-    var logActions: Boolean,
-    var moderatorRole: Long,
-
-    var threadAutoJoinRoles: MutableList<Long>
-)
-
-enum class Modules(val readableName: String) {
-    Quotes("quotes"),
-    Moderation("moderation"),
-    Logging("logging")
 }

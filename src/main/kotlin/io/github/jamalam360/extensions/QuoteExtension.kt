@@ -19,7 +19,7 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
-import io.github.jamalam360.database.Modules
+import io.github.jamalam360.Modules
 import io.github.jamalam360.isModuleEnabled
 
 /**

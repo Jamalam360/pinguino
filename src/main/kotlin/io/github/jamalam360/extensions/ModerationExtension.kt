@@ -15,7 +15,6 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.*
-import io.github.jamalam360.database.Modules
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
