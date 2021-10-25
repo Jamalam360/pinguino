@@ -1,7 +1,10 @@
 package io.github.jamalam360.extensions
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
+import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
@@ -11,11 +14,8 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
-import io.github.jamalam360.DATABASE
-import io.github.jamalam360.SingleRoleArgs
+import io.github.jamalam360.*
 import io.github.jamalam360.database.Modules
-import io.github.jamalam360.hasModeratorRole
-import io.github.jamalam360.isModuleEnabled
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -87,6 +87,36 @@ class ModerationExtension : Extension() {
                     }
                 }
             }
+
+            group("discipline") {
+                ephemeralSubCommand(::SingleUserArgs) {
+                    name = "kick"
+                    description = "Kick a member"
+
+                    action {
+                        val member = guild!!.getMemberOrNull(arguments.user.id)
+
+                        if (member == null) {
+                            respond {
+                                content = "Cannot find that member!"
+                            }
+                        } else {
+                            member.kick("Kicked by ${user.mention}")
+
+                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                                "Member Kicked",
+                                "Kicked by ${user.mention}",
+                                member.asUser(),
+                                guild!!.asGuild()
+                            )
+
+                            respond {
+                                content = "Member ${arguments.user.mention} successfully kicked"
+                            }
+                        }
+                    }
+                }
+            }
         }
         //endregion
 
@@ -128,4 +158,17 @@ class ModerationExtension : Extension() {
         }
         //endregion
     }
+
+    //region Arguments
+    inner class MuteArguments : Arguments() {
+        val user by user(
+            "user",
+            "the user to mute"
+        )
+        val duration by optionalDuration(
+            "duration",
+            "The duration to mute the user for, if required"
+        )
+    }
+    //endregion
 }

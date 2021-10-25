@@ -28,3 +28,10 @@ class SingleBooleanArgs : Arguments() {
         "Whether to enable this option"
     )
 }
+
+class SingleUserArgs : Arguments() {
+    val user by user(
+        "user",
+        "The user"
+    )
+}
