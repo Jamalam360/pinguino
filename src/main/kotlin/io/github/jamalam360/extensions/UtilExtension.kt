@@ -2,17 +2,23 @@ package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalUser
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.threads.edit
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.PINGUINO_PFP
+import io.github.jamalam360.hasModeratorRole
 import kotlinx.coroutines.flow.toList
 
 /**
@@ -32,7 +38,6 @@ class UtilExtension : Extension() {
 
             action {
                 val embed = EmbedBuilder()
-                // TODO: Update invite link when bot goes public
                 embed.image = PINGUINO_PFP
                 embed.title = "Invite Pinguino!"
                 embed.description = "Click [here]" +
@@ -128,6 +133,33 @@ class UtilExtension : Extension() {
                 }
             }
         }
+
+        ephemeralSlashCommand(::EmbedCreateArgs) {
+            name = "embed"
+            description = "Post a customised embed"
+
+            check {
+                hasModeratorRole()
+            }
+
+            action {
+                (arguments.channel.asChannel() as MessageChannel).createEmbed {
+                    this.title = arguments.title
+                    this.description = arguments.description
+                    this.image = arguments.image
+                    this.author = EmbedBuilder.Author()
+
+                    if (arguments.author != null) {
+                        this.author!!.name = arguments.author!!.username
+                        this.author!!.icon = arguments.author!!.avatar.url
+                    }
+                }
+
+                respond {
+                    content = "Embed sent!"
+                }
+            }
+        }
     }
 
     //region Arguments
@@ -135,6 +167,29 @@ class UtilExtension : Extension() {
         val name by string(
             "name",
             "The threads new name"
+        )
+    }
+
+    inner class EmbedCreateArgs : Arguments() {
+        val channel by channel(
+            "channel",
+            "The channel to send the embed to"
+        )
+        val title by optionalString(
+            "title",
+            "The title of the embed"
+        )
+        val description by optionalString(
+            "description",
+            "The description of the embed"
+        )
+        val image by optionalString(
+            "image-url",
+            "The URL of the image of the embed"
+        )
+        val author by optionalUser(
+            "author",
+            "The author"
         )
     }
     //endregion
