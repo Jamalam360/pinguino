@@ -1,4 +1,4 @@
-package io.github.jamalam360.extensions
+package io.github.jamalam360.extensions.user
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
@@ -20,6 +20,7 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
+import io.github.jamalam360.extensions.moderation.LoggingExtension
 import io.github.jamalam360.isModuleEnabled
 
 /**

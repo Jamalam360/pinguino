@@ -1,4 +1,4 @@
-package io.github.jamalam360.extensions
+package io.github.jamalam360.extensions.user
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension

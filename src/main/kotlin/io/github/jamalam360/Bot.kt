@@ -4,7 +4,13 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam360.database.Database
-import io.github.jamalam360.extensions.*
+import io.github.jamalam360.extensions.bot.BotStatusExtension
+import io.github.jamalam360.extensions.moderation.LoggingExtension
+import io.github.jamalam360.extensions.moderation.ModerationExtension
+import io.github.jamalam360.extensions.moderation.ModuleExtension
+import io.github.jamalam360.extensions.user.FunExtension
+import io.github.jamalam360.extensions.user.QuoteExtension
+import io.github.jamalam360.extensions.user.UtilExtension
 
 val TEST_SERVER_ID = Snowflake(
     env("TEST_SERVER_ID").toLong()

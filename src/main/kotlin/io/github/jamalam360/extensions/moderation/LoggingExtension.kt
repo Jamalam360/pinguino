@@ -1,4 +1,4 @@
-package io.github.jamalam360.extensions
+package io.github.jamalam360.extensions.moderation
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event

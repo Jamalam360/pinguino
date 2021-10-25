@@ -1,4 +1,4 @@
-package io.github.jamalam360.extensions
+package io.github.jamalam360.extensions.user
 
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -16,6 +16,7 @@ import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.PINGUINO_PFP
+import io.github.jamalam360.extensions.moderation.LoggingExtension
 import io.github.jamalam360.hasModeratorRole
 import kotlinx.coroutines.flow.toList
 
