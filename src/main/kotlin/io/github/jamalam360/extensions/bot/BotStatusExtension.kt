@@ -30,7 +30,7 @@ class BotStatusExtension : Extension() {
         }
 
         scheduler.schedule(10, true, "UpdateInitialStatus", 1) {
-            editPresence(this.kord)
+            editPresence(ths.kord)
         }
     }
 
