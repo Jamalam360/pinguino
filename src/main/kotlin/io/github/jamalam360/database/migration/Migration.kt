@@ -10,6 +10,7 @@ import org.litote.kmongo.getCollection
 import org.litote.kmongo.setValue
 
 /**
+ * Migrates old versions of ServerConfig's to newer schemas, filling in missing values with defaults.
  * @author  Jamalam360
  */
 
