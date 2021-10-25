@@ -10,8 +10,6 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.event.guild.BanAddEvent
-import dev.kord.core.event.guild.BanRemoveEvent
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -36,18 +34,6 @@ class LoggingExtension : Extension() {
         event<MemberLeaveEvent> {
             action {
                 logAction("Member Left", "", event.user, event.guild.asGuild())
-            }
-        }
-
-        event<BanAddEvent> {
-            action {
-                logAction("Member Banned", "${event.getBan().reason}", event.user, event.guild.asGuild())
-            }
-        }
-
-        event<BanRemoveEvent> {
-            action {
-                logAction("Member Unbanned", "", event.user, event.guild.asGuild())
             }
         }
         //endregion

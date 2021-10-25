@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.role
+import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 
 /**
  * @author  Jamalam360
@@ -29,7 +30,7 @@ class SingleBooleanArgs : Arguments() {
     )
 }
 
-class SingleUserArgs : Arguments() {
+open class SingleUserArgs : Arguments() {
     val user by user(
         "user",
         "The user"

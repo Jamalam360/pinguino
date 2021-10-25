@@ -12,6 +12,7 @@ import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
+import io.github.jamalam360.PINGUINO_PFP
 import kotlinx.coroutines.flow.toList
 
 /**
@@ -32,10 +33,7 @@ class UtilExtension : Extension() {
             action {
                 val embed = EmbedBuilder()
                 // TODO: Update invite link when bot goes public
-                embed.image =
-                    "https://images-ext-2.discordapp.net/external/tM2ezTNgh6TK_9IW5eCGQLtuaarLJfjdRgJ3hmRQ5rs" +
-                            "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
-                            "31f51ffc334fac125089f7ea.png"
+                embed.image = PINGUINO_PFP
                 embed.title = "Invite Pinguino!"
                 embed.description = "Click [here]" +
                         "(https://discord.com/api/oauth2/authorize?client_id=896758540784500797&permissions=8&scope=bot%20applications.commands)" +

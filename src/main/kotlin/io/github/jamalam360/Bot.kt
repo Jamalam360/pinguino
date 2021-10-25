@@ -19,6 +19,9 @@ private val TOKEN = if (PRODUCTION) {
 }
 
 val DATABASE = Database()
+const val PINGUINO_PFP =  "https://images-ext-2.discordapp.net/external/tM2ezTNgh6TK_9IW5eCGQLtuaarLJfjdRgJ3hmRQ5rs" +
+        "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
+        "31f51ffc334fac125089f7ea.png"
 
 suspend fun main() {
     val bot = ExtensibleBot(TOKEN) {

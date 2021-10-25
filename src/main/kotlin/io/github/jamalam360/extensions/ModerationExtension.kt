@@ -1,19 +1,19 @@
 package io.github.jamalam360.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
-import com.kotlindiscord.kord.extensions.commands.converters.impl.user
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.dm
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
+import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.*
 import io.github.jamalam360.database.Modules
 import kotlinx.coroutines.delay
@@ -89,7 +89,9 @@ class ModerationExtension : Extension() {
             }
 
             group("discipline") {
-                ephemeralSubCommand(::SingleUserArgs) {
+                description = "Commands to discipline members"
+
+                ephemeralSubCommand(::KickArgs) {
                     name = "kick"
                     description = "Kick a member"
 
@@ -101,11 +103,21 @@ class ModerationExtension : Extension() {
                                 content = "Cannot find that member!"
                             }
                         } else {
-                            member.kick("Kicked by ${user.mention}")
+                            member.dm {
+                                val embed = EmbedBuilder()
+                                embed.title = "Kicked from ${guild!!.asGuild().name}!"
+                                embed.description = "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
+                                embed.footer = EmbedBuilder.Footer()
+                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+
+                                embeds.add(embed)
+                            }
+
+                            member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
                             (bot.extensions["logging"] as LoggingExtension).logAction(
                                 "Member Kicked",
-                                "Kicked by ${user.mention}",
+                                "Kicked by ${user.asUser().username} with reason '${arguments.reason}'",
                                 member.asUser(),
                                 guild!!.asGuild()
                             )
@@ -160,14 +172,10 @@ class ModerationExtension : Extension() {
     }
 
     //region Arguments
-    inner class MuteArguments : Arguments() {
-        val user by user(
-            "user",
-            "the user to mute"
-        )
-        val duration by optionalDuration(
-            "duration",
-            "The duration to mute the user for, if required"
+    inner class KickArgs : SingleUserArgs() {
+        val reason by string(
+            "reason",
+            "The reason for the kick"
         )
     }
     //endregion
