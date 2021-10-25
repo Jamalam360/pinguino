@@ -2,14 +2,18 @@ package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
+import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
@@ -27,6 +31,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(KordPreview::class)
 class ModerationExtension : Extension() {
     override val name: String = "moderation"
+    private val scheduler = Scheduler()
 
     @OptIn(ExperimentalTime::class)
     override suspend fun setup() {
@@ -91,6 +96,84 @@ class ModerationExtension : Extension() {
             group("discipline") {
                 description = "Commands to discipline members"
 
+                ephemeralSubCommand(::MuteArgs) {
+                    name = "mute"
+                    description = "Mute a member"
+
+                    action {
+                        val member = guild!!.getMemberOrNull(arguments.user.id)
+                        val role = DATABASE.config.getConfig(guild!!.id).moderationConfig.mutedRole
+
+                        if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
+                            respond {
+                                content = "The muted role is not yet configured for this server"
+                            }
+
+                            return@action
+                        }
+
+                        if (member == null) {
+                            respond {
+                                content = "Cannot find that member!"
+                            }
+                        } else {
+                            member.dm {
+                                val embed = EmbedBuilder()
+                                embed.title = "Muted in ${guild!!.asGuild().name}!"
+                                embed.description =
+                                    "You have been muted in ${guild!!.asGuild().name} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
+                                embed.footer = EmbedBuilder.Footer()
+                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+
+                                embeds.add(embed)
+                            }
+
+                            member.addRole(
+                                Snowflake(role),
+                                "Muted by ${user.asUser().username} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
+                            )
+
+                            if (arguments.duration != null) {
+                                scheduler.schedule(arguments.duration!!.seconds.toLong()) {
+                                    member.removeRole(
+                                        Snowflake(role),
+                                        "Automatic unmute from mute made ${arguments.duration} ago"
+                                    )
+                                }
+
+                                (bot.extensions["logging"] as LoggingExtension).logAction(
+                                    "Member Unmuted",
+                                    "Automatic unmute from mute made ${arguments.duration} ago",
+                                    member.asUser(),
+                                    guild!!.asGuild()
+                                )
+
+                                member.dm {
+                                    val embed = EmbedBuilder()
+                                    embed.title = "Unmuted in ${guild!!.asGuild().name}!"
+                                    embed.description =
+                                        "You have been automatically unmuted from a mute made ${arguments.duration} ago"
+                                    embed.footer = EmbedBuilder.Footer()
+                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+
+                                    embeds.add(embed)
+                                }
+                            }
+
+                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                                "Member Muted",
+                                "Muted by ${user.asUser().username} for ${arguments.duration.toString()} with the reason '${arguments.reason}'",
+                                member.asUser(),
+                                guild!!.asGuild()
+                            )
+
+                            respond {
+                                content = "Member ${arguments.user.mention} successfully muted"
+                            }
+                        }
+                    }
+                }
+
                 ephemeralSubCommand(::KickArgs) {
                     name = "kick"
                     description = "Kick a member"
@@ -106,7 +189,8 @@ class ModerationExtension : Extension() {
                             member.dm {
                                 val embed = EmbedBuilder()
                                 embed.title = "Kicked from ${guild!!.asGuild().name}!"
-                                embed.description = "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
+                                embed.description =
+                                    "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
                                 embed.footer = EmbedBuilder.Footer()
                                 embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
 
@@ -124,6 +208,53 @@ class ModerationExtension : Extension() {
 
                             respond {
                                 content = "Member ${arguments.user.mention} successfully kicked"
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::BanArgs) {
+                    name = "ban"
+                    description = "Ban a member"
+
+                    action {
+                        val member = guild!!.getMemberOrNull(arguments.user.id)
+
+                        if (member == null) {
+                            respond {
+                                content = "Cannot find that member!"
+                            }
+                        } else {
+                            member.dm {
+                                val embed = EmbedBuilder()
+                                embed.title = "Banned from ${guild!!.asGuild().name}!"
+                                embed.description =
+                                    "You have been banned from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
+                                embed.footer = EmbedBuilder.Footer()
+                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+
+                                embeds.add(embed)
+                            }
+
+                            member.ban {
+                                deleteMessagesDays = if (arguments.deleteMessages) {
+                                    7
+                                } else {
+                                    0
+                                }
+                                reason = "Banned by ${user.asUser().username} with reason '${arguments.reason}'"
+                            }
+
+
+                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                                "Member Banned",
+                                "Banned by ${user.asUser().username} with reason '${arguments.reason}'",
+                                member.asUser(),
+                                guild!!.asGuild()
+                            )
+
+                            respond {
+                                content = "Member ${arguments.user.mention} successfully banned"
                             }
                         }
                     }
@@ -178,10 +309,32 @@ class ModerationExtension : Extension() {
     }
 
     //region Arguments
+    inner class MuteArgs : SingleUserArgs() {
+        val reason by string(
+            "reason",
+            "The reason for the kick"
+        )
+        val duration by optionalDuration(
+            "duration",
+            "The duration of the mute - optionally"
+        )
+    }
+
     inner class KickArgs : SingleUserArgs() {
         val reason by string(
             "reason",
             "The reason for the kick"
+        )
+    }
+
+    inner class BanArgs : SingleUserArgs() {
+        val reason by string(
+            "reason",
+            "The reason for the kick"
+        )
+        val deleteMessages by boolean(
+            "delete-message-history",
+            "Whether to delete the users message history"
         )
     }
     //endregion

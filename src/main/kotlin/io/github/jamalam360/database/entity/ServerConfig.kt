@@ -3,6 +3,7 @@ package io.github.jamalam360.database.entity
 /**
  * @author  Jamalam360
  */
+
 data class ServerConfig(
     var id: Long,
     var quotesConfig: ServerQuotesConfig,
@@ -25,5 +26,6 @@ data class ServerModerationConfig(
     var enabled: Boolean,
     var logActions: Boolean,
     var moderatorRole: Long,
+    var mutedRole: Long,
     var threadAutoJoinRoles: MutableList<Long>
 )

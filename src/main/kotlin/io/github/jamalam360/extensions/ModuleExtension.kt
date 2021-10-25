@@ -225,6 +225,23 @@ class ModuleExtension : Extension() {
                     }
                 }
 
+                ephemeralSubCommand(::SingleRoleArgs) {
+                    name = "set-muted-role"
+                    description = "Set role to apply to muted users"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.moderationConfig.mutedRole = arguments.role.id.value
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Muted Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set muted role to ${arguments.role.mention}"
+                        }
+                    }
+                }
+
                 ephemeralSubCommand(::SingleBooleanArgs) {
                     name = "log-actions"
                     description = "Enable logging for actions by moderators"

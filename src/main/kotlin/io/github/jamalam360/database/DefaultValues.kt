@@ -42,6 +42,7 @@ fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
         enabled = true,
         logActions = true,
         moderatorRole = 0,
+        mutedRole = 0,
 
         mutableListOf()
     )
