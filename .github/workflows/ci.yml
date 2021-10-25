@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - root
       - develop
+      - main
 
   pull_request:
 
