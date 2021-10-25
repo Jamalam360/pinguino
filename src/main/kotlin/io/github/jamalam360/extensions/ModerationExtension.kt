@@ -280,9 +280,9 @@ class ModerationExtension : Extension() {
                     val channel = arguments.channel.asChannel() as TextChannel
 
                     channel.editRolePermission(guild!!.id) {
-                       speakingPermissions.forEach {
-                           denied += it
-                       }
+                        speakingPermissions.forEach {
+                            denied += it
+                        }
 
                         reason = arguments.reason
                     }
