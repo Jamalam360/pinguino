@@ -30,6 +30,7 @@ class UtilExtension : Extension() {
     override val name: String = "util"
     private val scheduler = Scheduler()
 
+    @Suppress("DuplicatedCode")
     override suspend fun setup() {
         ephemeralSlashCommand {
             name = "invite"
@@ -141,20 +142,40 @@ class UtilExtension : Extension() {
             }
 
             action {
-                (arguments.channel.asChannel() as MessageChannel).createEmbed {
-                    this.title = arguments.title
-                    this.description = arguments.description
-                    this.image = arguments.image
-                    this.author = EmbedBuilder.Author()
+                if (arguments.delay == null) {
+                    (arguments.channel.asChannel() as MessageChannel).createEmbed {
+                        this.title = arguments.title
+                        this.description = arguments.description
+                        this.image = arguments.image
+                        this.author = EmbedBuilder.Author()
 
-                    if (arguments.author != null) {
-                        this.author!!.name = arguments.author!!.username
-                        this.author!!.icon = arguments.author!!.avatar.url
+                        if (arguments.author != null) {
+                            this.author!!.name = arguments.author!!.username
+                            this.author!!.icon = arguments.author!!.avatar.url
+                        }
                     }
-                }
 
-                respond {
-                    content = "Embed sent!"
+                    respond {
+                        content = "Embed sent!"
+                    }
+                } else {
+                    scheduler.schedule(arguments.delay!!.seconds.toLong()) {
+                        (arguments.channel.asChannel() as MessageChannel).createEmbed {
+                            this.title = arguments.title
+                            this.description = arguments.description
+                            this.image = arguments.image
+                            this.author = EmbedBuilder.Author()
+
+                            if (arguments.author != null) {
+                                this.author!!.name = arguments.author!!.username
+                                this.author!!.icon = arguments.author!!.avatar.url
+                            }
+                        }
+                    }
+
+                    respond {
+                        content = "Embed scheduled!"
+                    }
                 }
             }
         }
@@ -191,6 +212,10 @@ class UtilExtension : Extension() {
         val channel by channel(
             "channel",
             "The channel to send the embed to"
+        )
+        val delay by optionalDuration(
+            "delay",
+            "The time until the embed should be sent - optional"
         )
         val title by optionalString(
             "title",
