@@ -2,13 +2,11 @@ package io.github.jamalam360.extensions
 
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalUser
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
@@ -30,6 +28,7 @@ import kotlinx.coroutines.flow.toList
 @OptIn(KordPreview::class)
 class UtilExtension : Extension() {
     override val name: String = "util"
+    private val scheduler = Scheduler()
 
     override suspend fun setup() {
         ephemeralSlashCommand {
@@ -107,8 +106,7 @@ class UtilExtension : Extension() {
                 val roles = user.asMember(guild!!.id).roles.toList()
                 val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
-                if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
-                ) {
+                if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
                     val before = channel.name
 
                     channel.edit {
@@ -160,6 +158,25 @@ class UtilExtension : Extension() {
                 }
             }
         }
+
+        ephemeralSlashCommand(::ScheduleMessageArgs) {
+            name = "schedule"
+            description = "Schedule a message to be sent"
+
+            check {
+                hasModeratorRole()
+            }
+
+            action {
+                scheduler.schedule(arguments.delay.seconds.toLong()) {
+                    (arguments.channel.asChannel() as MessageChannel).createMessage(arguments.message)
+                }
+
+                respond {
+                    content = "Message scheduled!"
+                }
+            }
+        }
     }
 
     //region Arguments
@@ -192,5 +209,20 @@ class UtilExtension : Extension() {
             "The author"
         )
     }
-    //endregion
+
+    inner class ScheduleMessageArgs : Arguments() {
+        val channel by channel(
+            "channel",
+            "The channel to send the message to"
+        )
+        val delay by duration(
+            "duration",
+            "The time until the message should be sent"
+        )
+        val message by string(
+            "message",
+            "The message to send"
+        )
+    }
+//endregion
 }
