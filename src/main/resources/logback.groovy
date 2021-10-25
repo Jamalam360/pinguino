@@ -1,9 +1,9 @@
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
-def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
+def production = System.getenv().getOrDefault("PRODUCTION", "false")
 def defaultLevel = INFO
 
-if (environment == "debug") {
+if (production == "true") {
     defaultLevel = DEBUG
 
     // Silence warning about missing native PRNG on Windows
