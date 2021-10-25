@@ -5,7 +5,7 @@ on:
     branches-ignore:
       - root
       - develop
-      - main
+      - main #TODO: uncomment when detekt is working again
 
   pull_request:
 
