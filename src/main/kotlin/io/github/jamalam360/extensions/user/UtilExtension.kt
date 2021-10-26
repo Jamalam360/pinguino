@@ -199,6 +199,24 @@ class UtilExtension : Extension() {
                 }
             }
         }
+
+        ephemeralSlashCommand {
+            name = "help"
+            description = "Get a link to the help page"
+
+            action {
+                val embed = EmbedBuilder()
+                embed.image = PINGUINO_PFP
+                embed.title = "Learn how to use Pinguino!"
+                embed.description = "Click [here]" +
+                        "(https://github.com/JamCoreDiscord/Pinguino/wiki)" +
+                        " to learn about Pinguino's features and commands"
+
+                respond {
+                    embeds.add(embed)
+                }
+            }
+        }
     }
 
     //region Arguments
