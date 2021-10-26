@@ -8,7 +8,8 @@ data class ServerConfig(
     var id: Long,
     var quotesConfig: ServerQuotesConfig,
     var loggingConfig: ServerLoggingConfig,
-    var moderationConfig: ServerModerationConfig
+    var moderationConfig: ServerModerationConfig,
+    var tagsConfig: ServerTagsConfig
 )
 
 data class ServerQuotesConfig(
@@ -28,4 +29,8 @@ data class ServerModerationConfig(
     var moderatorRole: Long,
     var mutedRole: Long,
     var threadAutoJoinRoles: MutableList<Long>
+)
+
+data class ServerTagsConfig(
+    var tags: MutableMap<String, String>
 )

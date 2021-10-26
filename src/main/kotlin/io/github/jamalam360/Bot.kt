@@ -10,6 +10,7 @@ import io.github.jamalam360.extensions.moderation.ModerationExtension
 import io.github.jamalam360.extensions.moderation.ModuleExtension
 import io.github.jamalam360.extensions.user.FunExtension
 import io.github.jamalam360.extensions.user.QuoteExtension
+import io.github.jamalam360.extensions.user.TagExtension
 import io.github.jamalam360.extensions.user.UtilExtension
 
 //region ENV Variables
@@ -50,6 +51,7 @@ suspend fun main() {
             add(::ModerationExtension)
             add(::UtilExtension)
             add(::FunExtension)
+            add(::TagExtension)
         }
     }
 

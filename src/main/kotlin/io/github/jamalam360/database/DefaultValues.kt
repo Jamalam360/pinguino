@@ -3,10 +3,7 @@
 package io.github.jamalam360.database
 
 import dev.kord.common.entity.Snowflake
-import io.github.jamalam360.database.entity.ServerConfig
-import io.github.jamalam360.database.entity.ServerLoggingConfig
-import io.github.jamalam360.database.entity.ServerModerationConfig
-import io.github.jamalam360.database.entity.ServerQuotesConfig
+import io.github.jamalam360.database.entity.*
 import kotlin.reflect.KClass
 
 /**
@@ -18,7 +15,8 @@ fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
         id.value,
         ServerQuotesConfig::class.getDefault(),
         ServerLoggingConfig::class.getDefault(),
-        ServerModerationConfig::class.getDefault()
+        ServerModerationConfig::class.getDefault(),
+        ServerTagsConfig::class.getDefault()
     )
 }
 
@@ -45,5 +43,11 @@ fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
         mutedRole = 0,
 
         mutableListOf()
+    )
+}
+
+fun KClass<ServerTagsConfig>.getDefault(): ServerTagsConfig {
+    return ServerTagsConfig(
+        HashMap()
     )
 }
