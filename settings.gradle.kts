@@ -12,7 +12,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "pinguino"
+rootProject.name = "Pinguino"
 
 enableFeaturePreview("VERSION_CATALOGS")
 
