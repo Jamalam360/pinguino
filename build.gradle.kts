@@ -46,6 +46,23 @@ gitHooks {
     )
 }
 
+tasks.build {
+    doFirst {
+        println("-----------------------------------------------------------------------------------")
+        println("-------------------------------------- Stop! --------------------------------------")
+        println("------------------------- Are you building a new version? -------------------------")
+        println("----------------- Did you update the version in build.gradle.kts? -----------------")
+        println("---------------------- Did you update the version in Bot.kt? ----------------------")
+        println("-----------------------------------------------------------------------------------")
+    }
+}
+
+tasks.detekt {
+    onlyIf {
+        false
+    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "16"
 
