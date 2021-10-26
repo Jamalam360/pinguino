@@ -12,22 +12,27 @@ import io.github.jamalam360.extensions.user.FunExtension
 import io.github.jamalam360.extensions.user.QuoteExtension
 import io.github.jamalam360.extensions.user.UtilExtension
 
+//region ENV Variables
 val TEST_SERVER_ID = Snowflake(
     env("TEST_SERVER_ID").toLong()
 )
-
 val PRODUCTION = env("PRODUCTION").toBoolean()
-
 private val TOKEN = if (PRODUCTION) {
     env("TOKEN")
 } else {
     env("TEST_BOT_TOKEN")
 }
+//endregion
 
-val DATABASE = Database()
+//region Constant Values
 const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh6TK_9IW5eCGQLtuaarLJfjdRgJ3hmRQ5rs" +
         "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
         "31f51ffc334fac125089f7ea.png"
+
+const val VERSION = "v0.1.2"
+//endregion
+
+val DATABASE = Database()
 
 suspend fun main() {
     val bot = ExtensibleBot(TOKEN) {
