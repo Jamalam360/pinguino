@@ -4,10 +4,10 @@ kotlin = "1.5.30"  # Note: Plugin versions must be updated in the settings.gradl
 
 groovy = "3.0.8"
 kord-extensions = "1.5.0-SNAPSHOT"
+kmongo = "4.3.0"
 kx-ser = "1.2.2"
 logging = "2.0.10"
 logback = "1.2.5"
-kmongo = "4.3.0"
 
 [libraries]
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }

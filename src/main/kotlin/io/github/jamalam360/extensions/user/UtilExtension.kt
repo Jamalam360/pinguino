@@ -217,6 +217,29 @@ class UtilExtension : Extension() {
                 }
             }
         }
+
+        ephemeralSlashCommand(::EchoArgs) {
+            name = "echo"
+            description = "Echo a message to a channel, or the current channel is no channel is specified"
+
+            check {
+                hasModeratorRole()
+            }
+
+            action {
+                val channel: MessageChannel = if (arguments.channel == null) {
+                    channel.asChannel()
+                } else {
+                    arguments.channel!!.asChannel() as MessageChannel
+                }
+
+                channel.createMessage(arguments.message)
+
+                respond {
+                    content = "Message sent!"
+                }
+            }
+        }
     }
 
     //region Arguments
@@ -224,6 +247,17 @@ class UtilExtension : Extension() {
         val name by string(
             "name",
             "The threads new name"
+        )
+    }
+
+    inner class EchoArgs : Arguments() {
+        val message by string(
+            "message",
+            "The message to be sent"
+        )
+        val channel by optionalChannel(
+            "channel",
+            "The channel to send the message to, optionally"
         )
     }
 

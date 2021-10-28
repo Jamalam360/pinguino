@@ -27,12 +27,12 @@ dependencies {
     implementation(libs.kord.extensions)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kx.ser)
+    implementation(libs.kmongo)
 
     // Logging dependencies
     implementation(libs.groovy)
     implementation(libs.logback)
     implementation(libs.logging)
-    implementation(libs.kmongo)
 }
 
 application {
