@@ -12,6 +12,8 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
+import dev.kord.core.event.message.MessageDeleteEvent
+import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 
@@ -34,6 +36,18 @@ class LoggingExtension : Extension() {
         event<MemberLeaveEvent> {
             action {
                 logAction("Member Left", "", event.user, event.guild.asGuild())
+            }
+        }
+
+        event<MessageDeleteEvent> {
+            action {
+                logAction("Message Deleted", event.message!!.content, event.message!!.author!!, event.guild!!.asGuild())
+            }
+        }
+
+        event<MessageUpdateEvent> {
+            action {
+                logAction("Message Edited", event.message.asMessage().content, event.message.asMessage().author!!, event.getMessage().getGuild())
             }
         }
         //endregion
