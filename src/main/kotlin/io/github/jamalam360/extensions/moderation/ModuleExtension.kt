@@ -9,7 +9,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.*
-import io.github.jamalam360.extensions.moderation.LoggingExtension
 
 /**
  * @author  Jamalam360
