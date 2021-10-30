@@ -14,8 +14,7 @@ data class ServerConfig(
 
 data class ServerQuotesConfig(
     var enabled: Boolean,
-    var channel: Long?,
-    var log: Boolean
+    var channel: Long?
 )
 
 data class ServerLoggingConfig(
@@ -25,7 +24,6 @@ data class ServerLoggingConfig(
 
 data class ServerModerationConfig(
     var enabled: Boolean,
-    var logActions: Boolean,
     var moderatorRole: Long,
     var mutedRole: Long,
     var threadAutoJoinRoles: MutableList<Long>

@@ -1,13 +1,18 @@
 package io.github.jamalam360.extensions.user
 
+import com.kotlindiscord.kord.extensions.DISCORD_RED
+import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
+import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.threads.edit
@@ -238,6 +243,60 @@ class UtilExtension : Extension() {
                 respond {
                     content = "Message sent!"
                 }
+            }
+        }
+
+        ephemeralSlashCommand {
+            name = "delete-config"
+            description = "Delete this servers config from the Pinguino database"
+
+            check {
+                hasModeratorRole()
+                hasPermission(Permission.Administrator)
+            }
+
+            action {
+                DATABASE.config.deleteConfig(guild!!.id)
+
+                respond {
+                    content = "Config Deleted"
+                }
+
+                (bot.extensions["logging"] as LoggingExtension).logAction(
+                    "!! Config deleted !!",
+                    "Pinguino bot config deleted!",
+                    user.asUser(),
+                    guild!!.asGuild(),
+                    DISCORD_RED
+                )
+            }
+        }
+
+        publicSlashCommand {
+            name = "leave"
+            description = "Make Pinguino leave the server :("
+
+            check {
+                hasModeratorRole()
+                hasPermission(Permission.Administrator)
+            }
+
+            action {
+                DATABASE.config.deleteConfig(guild!!.id)
+
+                respond {
+                    content = "Goodbye :wave:"
+                }
+
+                (bot.extensions["logging"] as LoggingExtension).logAction(
+                    "Pinguino Leaving",
+                    "Goodbye! If you had a specific issue with the bot, please report it on the GitHub repository",
+                    user.asUser(),
+                    guild!!.asGuild(),
+                    DISCORD_YELLOW
+                )
+
+                guild!!.leave()
             }
         }
     }

@@ -50,12 +50,15 @@ class LoggingExtension : Extension() {
 
         event<MessageUpdateEvent> {
             action {
-                logAction(
-                    "Message Edited",
-                    event.message.asMessage().content,
-                    event.message.asMessage().author!!,
-                    event.getMessage().getGuild()
-                )
+                @Suppress("SENSELESS_COMPARISON")
+                if (event.message.asMessage().content != null && event.message.asMessage().author != null) {
+                    logAction(
+                        "Message Edited",
+                        event.message.asMessage().content,
+                        event.message.asMessage().author!!,
+                        event.getMessage().getGuild()
+                    )
+                }
             }
         }
         //endregion
