@@ -1,7 +1,9 @@
 package io.github.jamalam360.extensions.moderation
 
+import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
+import dev.kord.common.Color
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
@@ -16,6 +18,7 @@ import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
+import kotlinx.datetime.Clock
 
 /**
  * @author  Jamalam360
@@ -47,13 +50,24 @@ class LoggingExtension : Extension() {
 
         event<MessageUpdateEvent> {
             action {
-                logAction("Message Edited", event.message.asMessage().content, event.message.asMessage().author!!, event.getMessage().getGuild())
+                logAction(
+                    "Message Edited",
+                    event.message.asMessage().content,
+                    event.message.asMessage().author!!,
+                    event.getMessage().getGuild()
+                )
             }
         }
         //endregion
     }
 
-    suspend fun logAction(action: String, extraContent: String?, user: User, guild: Guild): Message? {
+    suspend fun logAction(
+        action: String,
+        extraContent: String?,
+        user: User,
+        guild: Guild,
+        colour: Color = DISCORD_BLURPLE
+    ): Message? {
         val conf = DATABASE.config.getConfig(guild.id)
 
         if (conf.loggingConfig.channel != null) {
@@ -68,6 +82,8 @@ class LoggingExtension : Extension() {
                     title = action
                     description = extraContent
                     author = embedAuthor
+                    color = colour //Bri'ish spelling best
+                    timestamp = Clock.System.now()
                 }
             }
         }
