@@ -57,13 +57,17 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         configCache[id.value] = updated
     }
 
+    fun deleteConfig(id: Snowflake) {
+        collection.deleteOne(ServerConfig::id eq id.value)
+    }
+
     /**
      *  Checks whether the DB holds a config for a specific server, and if the config is incomplete/incompatible
      *  with the current schema, migrates it and returns the migrated config.
      *  @param id the id of the server
      *  @return whether the DB has the config
      */
-    private fun hasConfig(id: Snowflake): Boolean {
+    fun hasConfig(id: Snowflake): Boolean {
         return try {
             collection.findOne(ServerConfig::id eq id.value) != null
         } catch (e: MissingKotlinParameterException) {

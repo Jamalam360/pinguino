@@ -90,27 +90,6 @@ class ModuleExtension : Extension() {
                         }
                     }
                 }
-
-                ephemeralSubCommand(::SingleBooleanArgs) {
-                    name = "enable-logging"
-                    description = "Whether to log quotes in the moderator log channel"
-
-                    action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
-                        conf.quotesConfig.log = arguments.boolean
-                        DATABASE.config.updateConfig(guild!!.id, conf)
-
-                        log(if (arguments.boolean) "Quotes Log Enabled" else "Quotes Log Disabled", "", user, guild!!)
-
-                        respond {
-                            content = if (arguments.boolean) {
-                                "Successfully enabled logging for $quotesModule"
-                            } else {
-                                "Successfully disabled logging for $quotesModule"
-                            }
-                        }
-                    }
-                }
             }
             //endregion
 
@@ -239,29 +218,6 @@ class ModuleExtension : Extension() {
 
                         respond {
                             content = "Successfully set muted role to ${arguments.role.mention}"
-                        }
-                    }
-                }
-
-                ephemeralSubCommand(::SingleBooleanArgs) {
-                    name = "log-actions"
-                    description = "Enable logging for actions by moderators"
-
-                    action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
-                        conf.moderationConfig.enabled = arguments.boolean
-                        DATABASE.config.updateConfig(guild!!.id, conf)
-
-                        log(
-                            if (arguments.boolean) "Moderation Log Enabled" else "Moderation Log Disabled",
-                            "",
-                            user,
-                            guild!!
-                        )
-
-                        respond {
-                            content =
-                                if (arguments.boolean) "Successfully enabled logging for moderation actions" else "Successfully disabled logging for moderation actions"
                         }
                     }
                 }

@@ -24,7 +24,6 @@ fun KClass<ServerQuotesConfig>.getDefault(): ServerQuotesConfig {
     return ServerQuotesConfig(
         true,
         null,
-        true
     )
 }
 
@@ -38,7 +37,6 @@ fun KClass<ServerLoggingConfig>.getDefault(): ServerLoggingConfig {
 fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
     return ServerModerationConfig(
         enabled = true,
-        logActions = true,
         moderatorRole = 0,
         mutedRole = 0,
 
