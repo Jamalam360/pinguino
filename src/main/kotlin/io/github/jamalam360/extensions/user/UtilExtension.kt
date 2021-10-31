@@ -56,7 +56,7 @@ class UtilExtension : Extension() {
             }
         }
 
-        ephemeralSlashCommand {
+        ephemeralSlashCommand(::ThreadArchiveArgs) {
             name = "archive"
             description = "Archive the thread you are in, if you have permission"
 
@@ -72,13 +72,35 @@ class UtilExtension : Extension() {
                 if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
                 ) {
                     if (!channel.isArchived) {
-                        channel.edit {
-                            this.archived = true
-                            reason = "Archived by ${user.mention}"
-                        }
+                        if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock == true) {
+                            channel.edit {
+                                locked = true
+                                this.archived = true
+                                reason = "Thread archived and locked by ${user.mention}"
+                            }
 
-                        respond {
-                            content = "Successfully archived thread"
+                            respond {
+                                content = "Successfully archived and locked thread"
+                            }
+                        } else if (arguments.lock == true) {
+                            channel.edit {
+                                this.archived = true
+                                reason = "Archived by ${user.mention}"
+                            }
+
+                            respond {
+                                content =
+                                    "Successfully archived thread, but you do not have permission to lock this thread"
+                            }
+                        } else {
+                            channel.edit {
+                                this.archived = true
+                                reason = "Archived by ${user.mention}"
+                            }
+
+                            respond {
+                                content = "Successfully archived thread"
+                            }
                         }
                     } else {
                         respond {
@@ -88,13 +110,13 @@ class UtilExtension : Extension() {
 
                     (bot.extensions["logging"] as LoggingExtension).logAction(
                         "Thread archived",
-                        "",
+                        "Locked: ${roles.contains(guild!!.getRoleOrNull(modRole)) && (arguments.lock ?: false)}",
                         user.asUser(),
                         guild!!.asGuild()
                     )
                 } else {
                     respond {
-                        content = "You do not have permission to archive this thread"
+                        content = "You do not have permission to archive or lock this thread"
                     }
                 }
             }
@@ -215,7 +237,9 @@ class UtilExtension : Extension() {
                 embed.title = "Learn how to use Pinguino!"
                 embed.description = "Click [here]" +
                         "(https://github.com/JamCoreDiscord/Pinguino/wiki)" +
-                        " to learn about Pinguino's features and commands"
+                        " to learn about Pinguino's features and commands. " +
+                        "If you have any issues or further questions, join the" +
+                        " [support server](https://discord.gg/88PWg5TySd)"
 
                 respond {
                     embeds.add(embed)
@@ -361,5 +385,12 @@ class UtilExtension : Extension() {
             "The message to send"
         )
     }
-//endregion
+
+    inner class ThreadArchiveArgs : Arguments() {
+        val lock by optionalBoolean(
+            "lock",
+            "Whether to lock the thread as well, if you are a moderator"
+        )
+    }
+    //endregion
 }
