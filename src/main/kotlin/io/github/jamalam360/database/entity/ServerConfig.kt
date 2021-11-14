@@ -9,7 +9,8 @@ data class ServerConfig(
     var quotesConfig: ServerQuotesConfig,
     var loggingConfig: ServerLoggingConfig,
     var moderationConfig: ServerModerationConfig,
-    var tagsConfig: ServerTagsConfig
+    var tagsConfig: ServerTagsConfig,
+    var notificationsConfig: ServerNotificationsConfig
 )
 
 data class ServerQuotesConfig(
@@ -31,4 +32,11 @@ data class ServerModerationConfig(
 
 data class ServerTagsConfig(
     var tags: MutableMap<String, String>
+)
+
+data class ServerNotificationsConfig(
+    var enabled: Boolean,
+    var greetingChannel: Long?,
+    var greetingMessage: String?,
+    var farewellMessage: String?
 )

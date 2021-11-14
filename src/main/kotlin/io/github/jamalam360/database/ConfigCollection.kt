@@ -89,6 +89,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             Modules.Quotes -> config.quotesConfig.enabled
             Modules.Moderation -> config.moderationConfig.enabled
             Modules.Logging -> config.loggingConfig.enabled
+            Modules.Notifications -> config.notificationsConfig.enabled
         }
     }
 }

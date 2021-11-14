@@ -16,7 +16,8 @@ fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
         ServerQuotesConfig::class.getDefault(),
         ServerLoggingConfig::class.getDefault(),
         ServerModerationConfig::class.getDefault(),
-        ServerTagsConfig::class.getDefault()
+        ServerTagsConfig::class.getDefault(),
+        ServerNotificationsConfig::class.getDefault()
     )
 }
 
@@ -47,5 +48,14 @@ fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
 fun KClass<ServerTagsConfig>.getDefault(): ServerTagsConfig {
     return ServerTagsConfig(
         HashMap()
+    )
+}
+
+fun KClass<ServerNotificationsConfig>.getDefault(): ServerNotificationsConfig {
+    return ServerNotificationsConfig(
+        enabled = false,
+        greetingChannel = null,
+        greetingMessage = null,
+        farewellMessage = null
     )
 }

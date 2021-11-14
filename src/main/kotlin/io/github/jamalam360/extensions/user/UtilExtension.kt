@@ -16,6 +16,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.threads.edit
+import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -110,7 +111,7 @@ class UtilExtension : Extension() {
 
                     (bot.extensions["logging"] as LoggingExtension).logAction(
                         "Thread archived",
-                        "Locked: ${roles.contains(guild!!.getRoleOrNull(modRole)) && (arguments.lock ?: false)}",
+                        "Locked: ${roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock ?: false}",
                         user.asUser(),
                         guild!!.asGuild()
                     )
@@ -270,6 +271,31 @@ class UtilExtension : Extension() {
             }
         }
 
+        ephemeralSlashCommand(::VoteArgs) {
+            name = "ask"
+            description = "Ask a yes/no question!"
+
+            check {
+                hasModeratorRole()
+            }
+
+            action {
+                val message = channel.createEmbed {
+                    this.title = arguments.string
+                    this.author = EmbedBuilder.Author()
+                    this.author!!.name = user.asUser().username
+                    this.author!!.icon = user.asUser().avatar.url
+                }
+
+                message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4D"))
+                message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4E"))
+
+                respond {
+                    content = "Vote created!"
+                }
+            }
+        }
+
         ephemeralSlashCommand {
             name = "delete-config"
             description = "Delete this servers config from the Pinguino database"
@@ -330,6 +356,13 @@ class UtilExtension : Extension() {
         val name by string(
             "name",
             "The threads new name"
+        )
+    }
+
+    inner class VoteArgs : Arguments() {
+        val string by string(
+            "question",
+            "The question to vote upon"
         )
     }
 

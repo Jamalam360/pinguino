@@ -1,7 +1,9 @@
 package io.github.jamalam360.extensions.moderation
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
@@ -22,6 +24,7 @@ class ModuleExtension : Extension() {
     private val quotesModule: String = "the Quotes module"
     private val loggingModule: String = "the Logging module"
     private val moderationModule: String = "the Moderation module"
+    private val notificationsModule: String = "the Greetings module"
     //endregion
 
     @Suppress("DuplicatedCode")
@@ -222,6 +225,97 @@ class ModuleExtension : Extension() {
                 }
             }
             //endregion
+
+            //region Notifications Module
+            group("greetings") {
+                description = "Alter the settings of $notificationsModule"
+
+                ephemeralSubCommand {
+                    name = "enable"
+                    description = "Enable $notificationsModule"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.notificationsConfig.enabled = true
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        logModuleEnabled(Modules.Notifications.readableName, user, guild!!)
+
+                        respond {
+                            content = "Successfully enabled $notificationsModule"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand {
+                    name = "disable"
+                    description = "Disable $notificationsModule"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.notificationsConfig.enabled = false
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        logModuleDisabled(Modules.Notifications.readableName, user, guild!!)
+
+                        respond {
+                            content = "Successfully disabled $notificationsModule"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::SingleChannelArgs) {
+                    name = "set-channel"
+                    description = "Set the channel to send greetings and farewells to"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.notificationsConfig.greetingChannel = arguments.channel.id.value
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Greetings Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set channel to ${arguments.channel.mention}"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::GreetingArgs) {
+                    name = "set-greeting"
+                    description = "Set the message to send to the greeting channel when a member joins"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.notificationsConfig.greetingMessage = arguments.string
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Greeting Message Updated", "Updated to ${arguments.string}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set message to ${arguments.string}"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::GreetingArgs) {
+                    name = "set-farewell"
+                    description = "Set the message to send to the greeting channel when a member leaves"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.notificationsConfig.farewellMessage = arguments.string
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Farewell Message Updated", "Updated to ${arguments.string}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set message to ${arguments.string}"
+                        }
+                    }
+                }
+            }
+            //endregion
         }
         //endregion
     }
@@ -240,6 +334,13 @@ class ModuleExtension : Extension() {
             extraContent,
             responsibleMod.asUser(),
             guild.asGuild()
+        )
+    }
+
+    class GreetingArgs : Arguments() {
+        val string by string(
+            "value",
+            "The value - use \$user to use the username of the user in your message"
         )
     }
 }
