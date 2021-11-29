@@ -4,7 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam360.database.Database
-import io.github.jamalam360.extensions.bot.BotStatusExtension
+import io.github.jamalam360.extensions.bot.BotUtilityExtension
 import io.github.jamalam360.extensions.moderation.LoggingExtension
 import io.github.jamalam360.extensions.moderation.ModerationExtension
 import io.github.jamalam360.extensions.moderation.ModuleExtension
@@ -24,6 +24,7 @@ private val TOKEN = if (PRODUCTION) {
 } else {
     env("TEST_BOT_TOKEN")
 }
+val ERROR_WEBHOOK_URL = env("ERROR_WEBHOOK_URL")
 //endregion
 
 //region Constant Values
@@ -31,7 +32,7 @@ const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh
         "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
         "31f51ffc334fac125089f7ea.png"
 
-const val VERSION = "v0.3.0"
+const val VERSION = "v0.3.1"
 //endregion
 
 val DATABASE = Database()
@@ -46,7 +47,7 @@ suspend fun main() {
 
         extensions {
             add(::QuoteExtension)
-            add(::BotStatusExtension)
+            add(::BotUtilityExtension)
             add(::ModuleExtension)
             add(::LoggingExtension)
             add(::ModerationExtension)
