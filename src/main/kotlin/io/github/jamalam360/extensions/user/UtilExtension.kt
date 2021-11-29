@@ -248,6 +248,25 @@ class UtilExtension : Extension() {
             }
         }
 
+        ephemeralSlashCommand {
+            name = "bugs"
+            description = "Get a link to the bug tracker"
+
+            action {
+                val embed = EmbedBuilder()
+                embed.image = PINGUINO_PFP
+                embed.title = "Report bugs with Pinguino"
+                embed.description = "Click [here]" +
+                        "(https://github.com/JamCoreDiscord/Pinguino/issues)" +
+                        " to report bugs with Pinguino. Reports are appareciated " +
+                        "and we will get to your report ASAP."
+
+                respond {
+                    embeds.add(embed)
+                }
+            }
+        }
+
         ephemeralSlashCommand(::EchoArgs) {
             name = "echo"
             description = "Echo a message to a channel, or the current channel is no channel is specified"

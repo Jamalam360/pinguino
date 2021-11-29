@@ -25,6 +25,7 @@ private val TOKEN = if (PRODUCTION) {
     env("TEST_BOT_TOKEN")
 }
 val ERROR_WEBHOOK_URL = env("ERROR_WEBHOOK_URL")
+val DBL_TOKEN = env("DBL_TOKEN")
 //endregion
 
 //region Constant Values
@@ -33,6 +34,7 @@ const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh
         "31f51ffc334fac125089f7ea.png"
 
 const val VERSION = "v0.3.1"
+const val DBL_URL = "https://top.gg/api/bots/896758540784500797/stats"
 //endregion
 
 val DATABASE = Database()
