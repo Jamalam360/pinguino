@@ -55,25 +55,27 @@ class BotUtilityExtension : Extension() {
 
         event<CommandFailedWithExceptionEvent<*, *>> {
             action {
-                client.post(ERROR_WEBHOOK_URL) {
-                    contentType(ContentType.Application.Json)
-                    body = ErrorWebhookBody(
-                        username = "Pinguino",
-                        avatarUrl = PINGUINO_PFP,
-                        content = "",
-                        embeds = listOf(
-                            ErrorWebhookEmbed(
-                            description =
-                            "Command: `" + event.command.name + "`"
-                                    + "\n" + "Error: `" + event.throwable.message + "`"
-                                    + "\n" + "Stacktrace: ```" + event.throwable.stackTrace.joinToString("\n") { "     $it" } + "```",
-                            color = DISCORD_RED.rgb,
-                            title = "Command Failed",
-                            author = ErrorWebhookAuthor(
-                                name = "Pinguino",
-                                icon = PINGUINO_PFP
-                            )
-                        )))
+                if (PRODUCTION) {
+                    client.post<HttpResponse>(ERROR_WEBHOOK_URL) {
+                        contentType(ContentType.Application.Json)
+                        body = ErrorWebhookBody(
+                            username = "Pinguino",
+                            avatarUrl = PINGUINO_PFP,
+                            content = "",
+                            embeds = listOf(
+                                ErrorWebhookEmbed(
+                                    description =
+                                    "Command: `" + event.command.name + "`"
+                                            + "\n" + "Error: `" + event.throwable.message + "`"
+                                            + "\n" + "Stacktrace: ```" + event.throwable.stackTrace.joinToString("\n") { "     $it" } + "```",
+                                    color = DISCORD_RED.rgb,
+                                    title = "Command Failed",
+                                    author = ErrorWebhookAuthor(
+                                        name = "Pinguino",
+                                        icon = PINGUINO_PFP
+                                    )
+                                )))
+                    }
                 }
             }
         }
