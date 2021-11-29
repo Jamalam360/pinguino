@@ -7,11 +7,11 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
-import io.github.jamalam360.ERROR_WEBHOOK_URL
-import io.github.jamalam360.PINGUINO_PFP
+import io.github.jamalam360.*
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
@@ -31,7 +31,8 @@ class BotUtilityExtension : Extension() {
     }
     private val scheduler = Scheduler()
 
-    private val delay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
+    private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
+    private val dblDelay = DateTimePeriod(minutes = 10) //Every 10 minutes
 
     override suspend fun setup() {
         // Set initial presence (without the delay there is an error)
@@ -40,10 +41,16 @@ class BotUtilityExtension : Extension() {
                 status = PresenceStatus.Idle
                 playing("booting up!")
             }
+
+            setDBLStats()
         }
 
-        scheduler.schedule(delay.seconds.toLong()) {
+        scheduler.schedule(presenceDelay.seconds.toLong()) {
             setPresenceStatus()
+        }
+
+        scheduler.schedule(dblDelay.seconds.toLong()) {
+            setDBLStats()
         }
 
         event<CommandFailedWithExceptionEvent<*, *>> {
@@ -54,7 +61,8 @@ class BotUtilityExtension : Extension() {
                         username = "Pinguino",
                         avatarUrl = PINGUINO_PFP,
                         content = "",
-                        embeds = listOf(ErrorWebhookEmbed(
+                        embeds = listOf(
+                            ErrorWebhookEmbed(
                             description =
                             "Command: `" + event.command.name + "`"
                                     + "\n" + "Error: `" + event.throwable.message + "`"
@@ -73,11 +81,33 @@ class BotUtilityExtension : Extension() {
 
     private suspend fun setPresenceStatus() {
         BotStatus.random().setPresenceStatus(this.kord)
-        scheduler.schedule(seconds = delay.seconds.toLong()) {
+        scheduler.schedule(seconds = presenceDelay.seconds.toLong()) {
             setPresenceStatus()
         }
     }
+
+    private suspend fun setDBLStats() {
+        if (PRODUCTION) {
+            client.post<HttpResponse>(DBL_URL) {
+                contentType(ContentType.Application.Json)
+                headers {
+                    set("Authorization", DBL_TOKEN)
+                }
+                body = DBLStatisticBody(kord.guilds.count())
+            }
+
+            scheduler.schedule(seconds = dblDelay.seconds.toLong()) {
+                setDBLStats()
+            }
+        }
+    }
 }
+
+@Serializable
+data class DBLStatisticBody(
+    @SerialName("server_count")
+    val count: Int
+)
 
 @Serializable
 data class ErrorWebhookBody(
