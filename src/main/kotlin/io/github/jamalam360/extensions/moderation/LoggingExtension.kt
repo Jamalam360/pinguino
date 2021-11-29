@@ -52,9 +52,14 @@ class LoggingExtension : Extension() {
             action {
                 @Suppress("SENSELESS_COMPARISON")
                 if (event.message.asMessage().content != null && event.message.asMessage().author != null) {
+                    val before: String = if (event.old == null) {
+                        "**Failed to fetch previous message. The bot may have been offline when it was sent.**"
+                    } else {
+                        event.old!!.content
+                    }
                     logAction(
                         "Message Edited",
-                        event.message.asMessage().content,
+                        "Before: *" + before + "*" + "\nAfter: *" + event.message.asMessage().content + "*",
                         event.message.asMessage().author!!,
                         event.getMessage().getGuild()
                     )
