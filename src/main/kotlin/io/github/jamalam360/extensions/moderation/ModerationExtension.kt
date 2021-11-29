@@ -1,8 +1,10 @@
 package io.github.jamalam360.extensions.moderation
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -19,6 +21,7 @@ import dev.kord.core.behavior.channel.editRolePermission
 import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
@@ -279,9 +282,13 @@ class ModerationExtension : Extension() {
                 description = "Lock a channel"
 
                 action {
-                    if (arguments.channel is TextChannelThread) {
-                        val channel = arguments.channel.asChannel() as TextChannelThread
+                    val channel: Channel = if (arguments.channel != null) {
+                        arguments.channel!!
+                    } else {
+                        channel.asChannel()
+                    }
 
+                    if (channel is TextChannelThread) {
                         channel.edit {
                             locked = true
                             reason = arguments.reason
@@ -291,7 +298,7 @@ class ModerationExtension : Extension() {
 
                         (bot.extensions["logging"] as LoggingExtension).logAction(
                             "Thread Locked",
-                            "${arguments.channel.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
+                            "${channel.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
                             user.asUser(),
                             guild!!.asGuild()
                         )
@@ -305,16 +312,16 @@ class ModerationExtension : Extension() {
 
                                 (bot.extensions["logging"] as LoggingExtension).logAction(
                                     "Thread Unlocked",
-                                    "${arguments.channel.mention} unlocked automatically after timeout",
+                                    "${channel.mention} unlocked automatically after timeout",
                                     user.asUser(),
                                     guild!!.asGuild()
                                 )
                             }
                         }
                     } else {
-                        val channel = arguments.channel.asChannel() as TextChannel
+                        val text = channel as TextChannel
 
-                        channel.editRolePermission(guild!!.id) {
+                        text.editRolePermission(guild!!.id) {
                             speakingPermissions.forEach {
                                 denied += it
                             }
@@ -322,18 +329,18 @@ class ModerationExtension : Extension() {
                             reason = arguments.reason
                         }
 
-                        channel.createMessage("Channel locked by a moderator")
+                        text.createMessage("Channel locked by a moderator")
 
                         (bot.extensions["logging"] as LoggingExtension).logAction(
                             "Channel Locked",
-                            "${arguments.channel.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
+                            "${text.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
                             user.asUser(),
                             guild!!.asGuild()
                         )
 
                         if (arguments.duration != null) {
                             scheduler.schedule(arguments.duration!!.seconds.toLong()) {
-                                channel.editRolePermission(guild!!.id) {
+                                text.editRolePermission(guild!!.id) {
                                     speakingPermissions.forEach {
                                         allowed += it
                                     }
@@ -343,7 +350,7 @@ class ModerationExtension : Extension() {
 
                                 (bot.extensions["logging"] as LoggingExtension).logAction(
                                     "Channel Unlocked",
-                                    "${arguments.channel.mention} unlocked automatically after timeout",
+                                    "${text.mention} unlocked automatically after timeout",
                                     user.asUser(),
                                     guild!!.asGuild()
                                 )
@@ -356,32 +363,56 @@ class ModerationExtension : Extension() {
                 }
             }
 
-            ephemeralSubCommand(::SingleChannelArgs) {
+            ephemeralSubCommand(::UnlockArgs) {
                 name = "unlock"
                 description = "Unlock a channel"
 
                 action {
-                    val channel = arguments.channel.asChannel() as TextChannel
-
-                    channel.editRolePermission(guild!!.id) {
-                        speakingPermissions.forEach {
-                            allowed += it
-                        }
-
-                        reason = "Channel being unlocked by ${user.asUser().username}"
+                    val channel: Channel = if (arguments.channel != null) {
+                        arguments.channel!!
+                    } else {
+                        channel.asChannel()
                     }
 
-                    channel.createMessage("Channel unlocked by a moderator")
+                    if (channel is TextChannelThread) {
+                        channel.edit {
+                            locked = true
+                            reason = "Thread being unlocked by ${user.mention}"
+                        }
 
-                    (bot.extensions["logging"] as LoggingExtension).logAction(
-                        "Channel Unlocked",
-                        "${arguments.channel.mention} unlocked by ${user.asUser().username}",
-                        user.asUser(),
-                        guild!!.asGuild()
-                    )
+                        channel.createMessage("Thread unlocked by a moderator")
 
-                    respond {
-                        content = "Successfully unlocked channel"
+                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                            "Thread Unlocked",
+                            "${channel.mention} unlocked by ${user.asUser().username}",
+                            user.asUser(),
+                            guild!!.asGuild()
+                        )
+
+                        respond {
+                            content = "Successfully unlocked channel"
+                        }
+                    } else if (channel is TextChannel) {
+                        channel.editRolePermission(guild!!.id) {
+                            speakingPermissions.forEach {
+                                allowed += it
+                            }
+
+                            reason = "Channel being unlocked by ${user.asUser().username}"
+                        }
+
+                        channel.createMessage("Channel unlocked by a moderator")
+
+                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                            "Channel Unlocked",
+                            "${channel.mention} unlocked by ${user.asUser().username}",
+                            user.asUser(),
+                            guild!!.asGuild()
+                        )
+
+                        respond {
+                            content = "Successfully unlocked channel"
+                        }
                     }
                 }
             }
@@ -463,14 +494,25 @@ class ModerationExtension : Extension() {
         )
     }
 
-    inner class LockArgs : SingleChannelArgs() {
+    inner class LockArgs : Arguments() {
         val reason by string(
             "reason",
             "The reason for the lock"
         )
+        val channel by optionalChannel(
+            "channel",
+            "The channel to lock, optionally"
+        )
         val duration by optionalDuration(
             "duration",
-            "The duration of the lock"
+            "The duration of the lock, optionally"
+        )
+    }
+
+    inner class UnlockArgs : Arguments() {
+        val channel by optionalChannel(
+            "channel",
+            "The channel to unlock, optionally"
         )
     }
     //endregion
