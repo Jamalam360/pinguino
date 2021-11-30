@@ -49,10 +49,6 @@ class BotUtilityExtension : Extension() {
             setPresenceStatus()
         }
 
-        scheduler.schedule(dblDelay.seconds.toLong()) {
-            setDBLStats()
-        }
-
         event<CommandFailedWithExceptionEvent<*, *>> {
             action {
                 if (PRODUCTION) {
