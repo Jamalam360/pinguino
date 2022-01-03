@@ -202,16 +202,7 @@ class ModerationExtension : Extension() {
                                 content = "Cannot find that member!"
                             }
                         } else {
-                            member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
-
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
-                                "Member Kicked",
-                                "Kicked by ${user.asUser().username} with reason '${arguments.reason}'",
-                                member.asUser(),
-                                guild!!.asGuild()
-                            )
-
-                            member.dm {
+                             member.dm {
                                 val embed = EmbedBuilder()
                                 embed.title = "Kicked from ${guild!!.asGuild().name}!"
                                 embed.description =
@@ -221,6 +212,15 @@ class ModerationExtension : Extension() {
 
                                 embeds.add(embed)
                             }
+                            
+                            member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
+
+                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                                "Member Kicked",
+                                "Kicked by ${user.asUser().username} with reason '${arguments.reason}'",
+                                member.asUser(),
+                                guild!!.asGuild()
+                            )
 
                             respond {
                                 content = "Member ${arguments.user.mention} successfully kicked"
