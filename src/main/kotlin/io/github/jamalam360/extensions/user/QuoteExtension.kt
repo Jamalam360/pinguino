@@ -160,6 +160,8 @@ class QuoteExtension : Extension() {
 
                 if (authorIcon != null) {
                     embedAuthor.icon = authorIcon
+                } else {
+                    embedAuthor.icon ="https://media.discordapp.net/attachments/892141557552148600/915253183062880267/download_1.png"
                 }
 
                 (channel as MessageChannel).createEmbed {
