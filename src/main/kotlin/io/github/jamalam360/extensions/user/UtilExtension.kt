@@ -171,8 +171,14 @@ class UtilExtension : Extension() {
             }
 
             action {
+                val channel: MessageChannel = if (arguments.channel == null) {
+                    channel.asChannel()
+                } else {
+                    arguments.channel!!.asChannel() as MessageChannel
+                }
+
                 if (arguments.delay == null) {
-                    (arguments.channel.asChannel() as MessageChannel).createEmbed {
+                    channel.createEmbed {
                         this.title = arguments.title
                         this.description = arguments.description
                         this.image = arguments.image
@@ -189,7 +195,7 @@ class UtilExtension : Extension() {
                     }
                 } else {
                     scheduler.schedule(arguments.delay!!.seconds.toLong()) {
-                        (arguments.channel.asChannel() as MessageChannel).createEmbed {
+                        channel.createEmbed {
                             this.title = arguments.title
                             this.description = arguments.description
                             this.image = arguments.image
@@ -258,7 +264,7 @@ class UtilExtension : Extension() {
                 embed.title = "Report bugs with Pinguino"
                 embed.description = "Click [here]" +
                         "(https://github.com/JamCoreDiscord/Pinguino/issues)" +
-                        " to report bugs with Pinguino. Reports are appareciated " +
+                        " to report bugs with Pinguino. Reports are appreciated " +
                         "and we will get to your report ASAP."
 
                 respond {
@@ -284,13 +290,20 @@ class UtilExtension : Extension() {
 
                 channel.createMessage(arguments.message)
 
+                (bot.extensions["logging"] as LoggingExtension).logAction(
+                    "/echo Command Used",
+                    "Echoed ${arguments.message} to ${channel.mention}",
+                    user.asUser(),
+                    guild!!.asGuild()
+                )
+
                 respond {
                     content = "Message sent!"
                 }
             }
         }
 
-        ephemeralSlashCommand(::VoteArgs) {
+        ephemeralSlashCommand(::AskArgs) {
             name = "ask"
             description = "Ask a yes/no question!"
 
@@ -299,6 +312,12 @@ class UtilExtension : Extension() {
             }
 
             action {
+                val channel: MessageChannel = if (arguments.channel == null) {
+                    channel.asChannel()
+                } else {
+                    arguments.channel!!.asChannel() as MessageChannel
+                }
+
                 val message = channel.createEmbed {
                     this.title = arguments.string
                     this.author = EmbedBuilder.Author()
@@ -308,6 +327,13 @@ class UtilExtension : Extension() {
 
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4D"))
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4E"))
+
+                (bot.extensions["logging"] as LoggingExtension).logAction(
+                    "/ask Command Used",
+                    arguments.string,
+                    user.asUser(),
+                    guild!!.asGuild()
+                )
 
                 respond {
                     content = "Vote created!"
@@ -371,17 +397,21 @@ class UtilExtension : Extension() {
     }
 
     //region Arguments
+    inner class AskArgs : Arguments() {
+        val string by string(
+            "question",
+            "The question to ask"
+        )
+        val channel by optionalChannel(
+            "channel",
+            "The channel to send the message to, or the current one if unspecified"
+        )
+    }
+
     inner class ThreadRenameArgs : Arguments() {
         val name by string(
             "name",
             "The threads new name"
-        )
-    }
-
-    inner class VoteArgs : Arguments() {
-        val string by string(
-            "question",
-            "The question to vote upon"
         )
     }
 
@@ -392,14 +422,14 @@ class UtilExtension : Extension() {
         )
         val channel by optionalChannel(
             "channel",
-            "The channel to send the message to, optionally"
+            "The channel to send the message to, or the current one if unspecified"
         )
     }
 
     inner class EmbedCreateArgs : Arguments() {
-        val channel by channel(
+        val channel by optionalChannel(
             "channel",
-            "The channel to send the embed to"
+            "The channel to send the message to, or the current one if unspecified"
         )
         val delay by optionalDuration(
             "delay",
