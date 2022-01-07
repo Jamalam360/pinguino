@@ -25,6 +25,7 @@ class ModuleExtension : Extension() {
     private val loggingModule: String = "the Logging module"
     private val moderationModule: String = "the Moderation module"
     private val notificationsModule: String = "the Greetings module"
+    private val filePasteModule: String = "the File Paste module"
     //endregion
 
     @Suppress("DuplicatedCode")
@@ -316,6 +317,65 @@ class ModuleExtension : Extension() {
                 }
             }
             //endregion
+
+            //region File Upload Module
+            group("file-paste") {
+                description = "Alter the settings of $filePasteModule"
+
+                ephemeralSubCommand {
+                    name = "enable"
+                    description = "Enable $filePasteModule"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.filePasteConfig.enabled = true
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        logModuleEnabled(Modules.FilePaste.readableName, user, guild!!)
+
+                        respond {
+                            content = "Successfully enabled $filePasteModule"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand {
+                    name = "disable"
+                    description = "Disable $filePasteModule"
+
+                    action {
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.filePasteConfig.enabled = false
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        logModuleDisabled(Modules.FilePaste.readableName, user, guild!!)
+
+                        respond {
+                            content = "Successfully disabled $filePasteModule"
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::HastebinUrlArgs) {
+                    name = "set-url"
+                    description = "Set the URL to use for the Hastebin API"
+
+                    action {
+                        val url = if (arguments.url.endsWith("/")) arguments.url else "${arguments.url}/"
+
+                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        conf.filePasteConfig.hastebinUrl = url
+                        DATABASE.config.updateConfig(guild!!.id, conf)
+
+                        log("Hastebin URL Updated", "Updated to ${arguments.url}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set Hastebin URL to ${arguments.url}"
+                        }
+                    }
+                }
+            }
+            //endregion
         }
         //endregion
     }
@@ -341,6 +401,13 @@ class ModuleExtension : Extension() {
         val string by string(
             "value",
             "The value - use \$user to use the username of the user in your message"
+        )
+    }
+
+    class HastebinUrlArgs : Arguments() {
+        val url by string(
+            "url",
+            "The Hastebin server to use for the file paste module. Defaults to the official Hastebin site"
         )
     }
 }

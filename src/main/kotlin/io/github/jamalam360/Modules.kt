@@ -7,5 +7,6 @@ enum class Modules(val readableName: String) {
     Quotes("quotes"),
     Moderation("moderation"),
     Logging("logging"),
-    Notifications("notifications")
+    Notifications("notifications"),
+    FilePaste("file-paste")
 }

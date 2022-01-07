@@ -88,8 +88,9 @@ class BotUtilityExtension : Extension() {
         if (PRODUCTION) {
             client.post<HttpResponse>(DBL_URL) {
                 contentType(ContentType.Application.Json)
+
                 headers {
-                    set("Authorization", DBL_TOKEN)
+                    append("Authorization", DBL_TOKEN)
                 }
                 body = DBLStatisticBody(kord.guilds.count())
             }
@@ -142,7 +143,7 @@ enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
     CurrentVersion({
         it.editPresence {
             status = PresenceStatus.Online
-            playing("Pinguino ${io.github.jamalam360.VERSION}")
+            playing("Pinguino $VERSION")
         }
     }),
     RandomFun({

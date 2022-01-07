@@ -10,7 +10,8 @@ data class ServerConfig(
     var loggingConfig: ServerLoggingConfig,
     var moderationConfig: ServerModerationConfig,
     var tagsConfig: ServerTagsConfig,
-    var notificationsConfig: ServerNotificationsConfig
+    var notificationsConfig: ServerNotificationsConfig,
+    var filePasteConfig: ServerFilePasteConfig
 )
 
 data class ServerQuotesConfig(
@@ -39,4 +40,9 @@ data class ServerNotificationsConfig(
     var greetingChannel: Long?,
     var greetingMessage: String?,
     var farewellMessage: String?
+)
+
+data class ServerFilePasteConfig(
+    var enabled: Boolean,
+    var hastebinUrl: String
 )

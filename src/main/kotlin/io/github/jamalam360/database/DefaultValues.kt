@@ -17,7 +17,8 @@ fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
         ServerLoggingConfig::class.getDefault(),
         ServerModerationConfig::class.getDefault(),
         ServerTagsConfig::class.getDefault(),
-        ServerNotificationsConfig::class.getDefault()
+        ServerNotificationsConfig::class.getDefault(),
+        ServerFilePasteConfig::class.getDefault()
     )
 }
 
@@ -57,5 +58,12 @@ fun KClass<ServerNotificationsConfig>.getDefault(): ServerNotificationsConfig {
         greetingChannel = null,
         greetingMessage = null,
         farewellMessage = null
+    )
+}
+
+fun KClass<ServerFilePasteConfig>.getDefault(): ServerFilePasteConfig {
+    return ServerFilePasteConfig(
+        enabled = false,
+        hastebinUrl = "https://www.toptal.com/developers/hastebin/"
     )
 }

@@ -48,5 +48,12 @@ fun migrate(db: MongoDatabase) {
                 ServerConfig::notificationsConfig, ServerNotificationsConfig::class.getDefault()
             )
         )
+
+        updateMany(
+            ServerConfig::filePasteConfig exists false,
+            setValue(
+                ServerConfig::filePasteConfig, ServerFilePasteConfig::class.getDefault()
+            )
+        )
     }
 }

@@ -67,7 +67,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
      *  @param id the id of the server
      *  @return whether the DB has the config
      */
-    fun hasConfig(id: Snowflake): Boolean {
+    private fun hasConfig(id: Snowflake): Boolean {
         return try {
             collection.findOne(ServerConfig::id eq id.value) != null
         } catch (e: MissingKotlinParameterException) {
@@ -90,6 +90,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             Modules.Moderation -> config.moderationConfig.enabled
             Modules.Logging -> config.loggingConfig.enabled
             Modules.Notifications -> config.notificationsConfig.enabled
+            Modules.FilePaste -> config.filePasteConfig.enabled
         }
     }
 }

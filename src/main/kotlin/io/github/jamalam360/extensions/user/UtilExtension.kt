@@ -5,9 +5,11 @@ import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
@@ -19,6 +21,7 @@ import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
+import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.PINGUINO_PFP
@@ -39,6 +42,17 @@ class UtilExtension : Extension() {
 
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
+        event<ThreadUpdateEvent> {
+            action {
+                if (event.channel.isArchived && DATABASE.savedThreads.shouldSave(event.channel.id)) {
+                    event.channel.edit {
+                        archived = false
+                        reason = "Preventing thread from being archived"
+                    }
+                }
+            }
+        }
+
         ephemeralSlashCommand {
             name = "invite"
             description = "Get an invite link for Pinguino!"
@@ -57,106 +71,141 @@ class UtilExtension : Extension() {
             }
         }
 
-        ephemeralSlashCommand(::ThreadArchiveArgs) {
-            name = "archive"
-            description = "Archive the thread you are in, if you have permission"
+        ephemeralSlashCommand {
+            name = "thread"
+            description = "Commands to manage threads"
 
-            check {
-                isInThread()
-            }
+            ephemeralSubCommand(::ThreadArchiveArgs) {
+                name = "archive"
+                description = "Archive the thread you are in, if you have permission"
 
-            action {
-                val channel = channel.asChannel() as ThreadChannel
-                val roles = user.asMember(guild!!.id).roles.toList()
-                val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                check {
+                    isInThread()
+                }
 
-                if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
-                ) {
-                    if (!channel.isArchived) {
-                        if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock == true) {
-                            channel.edit {
-                                locked = true
-                                this.archived = true
-                                reason = "Thread archived and locked by ${user.mention}"
-                            }
+                action {
+                    val channel = channel.asChannel() as ThreadChannel
+                    val roles = user.asMember(guild!!.id).roles.toList()
+                    val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
-                            respond {
-                                content = "Successfully archived and locked thread"
-                            }
-                        } else if (arguments.lock == true) {
-                            channel.edit {
-                                this.archived = true
-                                reason = "Archived by ${user.mention}"
-                            }
+                    if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
+                    ) {
+                        if (!channel.isArchived) {
+                            if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock == true) {
+                                channel.edit {
+                                    locked = true
+                                    this.archived = true
+                                    reason = "Thread archived and locked by ${user.mention}"
+                                }
 
-                            respond {
-                                content =
-                                    "Successfully archived thread, but you do not have permission to lock this thread"
+                                respond {
+                                    content = "Successfully archived and locked thread"
+                                }
+                            } else if (arguments.lock == true) {
+                                channel.edit {
+                                    this.archived = true
+                                    reason = "Archived by ${user.mention}"
+                                }
+
+                                respond {
+                                    content =
+                                        "Successfully archived thread, but you do not have permission to lock this thread"
+                                }
+                            } else {
+                                channel.edit {
+                                    this.archived = true
+                                    reason = "Archived by ${user.mention}"
+                                }
+
+                                respond {
+                                    content = "Successfully archived thread"
+                                }
                             }
                         } else {
-                            channel.edit {
-                                this.archived = true
-                                reason = "Archived by ${user.mention}"
-                            }
-
                             respond {
-                                content = "Successfully archived thread"
+                                content = "This thread is already archived"
                             }
                         }
+
+                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                            "Thread archived",
+                            if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock!!) "Locked" else "Not Locked",
+                            user.asUser(),
+                            guild!!.asGuild()
+                        )
                     } else {
                         respond {
-                            content = "This thread is already archived"
+                            content = "You do not have permission to archive or lock this thread"
                         }
-                    }
-
-                    (bot.extensions["logging"] as LoggingExtension).logAction(
-                        "Thread archived",
-                        "Locked: ${roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock ?: false}",
-                        user.asUser(),
-                        guild!!.asGuild()
-                    )
-                } else {
-                    respond {
-                        content = "You do not have permission to archive or lock this thread"
                     }
                 }
             }
-        }
 
-        ephemeralSlashCommand(::ThreadRenameArgs) {
-            name = "rename"
-            description = "Rename the thread you are in, if you have permission"
+            ephemeralSubCommand(::ThreadRenameArgs) {
+                name = "rename"
+                description = "Rename the thread you are in, if you have permission"
 
-            check {
-                isInThread()
+                check {
+                    isInThread()
+                }
+
+                action {
+                    val channel = channel.asChannel() as ThreadChannel
+                    val roles = user.asMember(guild!!.id).roles.toList()
+                    val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+
+                    if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
+                        val before = channel.name
+
+                        channel.edit {
+                            this.name = arguments.name
+                            reason = "Renamed by ${user.mention}"
+                        }
+
+                        respond {
+                            content = "Successfully renamed thread"
+                        }
+
+                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                            "Thread renamed",
+                            "'$before' --> '${arguments.name}",
+                            user.asUser(),
+                            guild!!.asGuild()
+                        )
+                    } else {
+                        respond {
+                            content = "You do not have permission to rename this thread"
+                        }
+                    }
+                }
             }
 
-            action {
-                val channel = channel.asChannel() as ThreadChannel
-                val roles = user.asMember(guild!!.id).roles.toList()
-                val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+            ephemeralSubCommand(::ThreadSaveArgs) {
+                name = "save"
+                description = "Prevent the thread you are in from archiving, if you have permission"
 
-                if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
-                    val before = channel.name
+                check {
+                    hasModeratorRole()
+                    isInThread()
+                }
 
-                    channel.edit {
-                        this.name = arguments.name
-                        reason = "Renamed by ${user.mention}"
-                    }
-
-                    respond {
-                        content = "Successfully renamed thread"
+                action {
+                    if (arguments.save) {
+                        DATABASE.savedThreads.setSave(channel.id)
+                    } else {
+                        DATABASE.savedThreads.setSave(channel.id, false)
                     }
 
                     (bot.extensions["logging"] as LoggingExtension).logAction(
-                        "Thread renamed",
-                        "'$before' --> '${arguments.name}",
+                        if (arguments.save) "Thread Saved" else "Thread Unsaved",
+                        channel.mention,
                         user.asUser(),
                         guild!!.asGuild()
                     )
-                } else {
+
                     respond {
-                        content = "You do not have permission to rename this thread"
+                        content =
+                            "Successfully ${if (arguments.save) "set thread to be saved" else "set thread to not be saved"}"
                     }
                 }
             }
@@ -412,6 +461,13 @@ class UtilExtension : Extension() {
         val name by string(
             "name",
             "The threads new name"
+        )
+    }
+
+    inner class ThreadSaveArgs : Arguments() {
+        val save by boolean(
+            "save",
+            "Whether or not to prevent the thread from archiving"
         )
     }
 

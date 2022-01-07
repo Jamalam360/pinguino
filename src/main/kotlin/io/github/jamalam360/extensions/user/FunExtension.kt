@@ -99,7 +99,8 @@ class FunExtension : Extension() {
             }
         }
     }
+
+    @Serializable
+    data class DogApiResponse(val message: String, val status: String)
 }
 
-@Serializable
-data class DogApiResponse(val message: String, val status: String)

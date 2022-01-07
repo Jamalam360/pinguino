@@ -1,6 +1,7 @@
 package io.github.jamalam360.extensions.moderation
 
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
+import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.Color
@@ -43,12 +44,20 @@ class LoggingExtension : Extension() {
         }
 
         event<MessageDeleteEvent> {
+            check {
+                isNotBot()
+            }
+
             action {
                 logAction("Message Deleted", event.message!!.content, event.message!!.author!!, event.guild!!.asGuild())
             }
         }
 
         event<MessageUpdateEvent> {
+            check {
+                isNotBot()
+            }
+
             action {
                 @Suppress("SENSELESS_COMPARISON")
                 if (event.message.asMessage().content != null && event.message.asMessage().author != null) {

@@ -9,10 +9,7 @@ import io.github.jamalam360.extensions.moderation.LoggingExtension
 import io.github.jamalam360.extensions.moderation.ModerationExtension
 import io.github.jamalam360.extensions.moderation.ModuleExtension
 import io.github.jamalam360.extensions.moderation.NotificationsExtension
-import io.github.jamalam360.extensions.user.FunExtension
-import io.github.jamalam360.extensions.user.QuoteExtension
-import io.github.jamalam360.extensions.user.TagExtension
-import io.github.jamalam360.extensions.user.UtilExtension
+import io.github.jamalam360.extensions.user.*
 
 //region ENV Variables
 val TEST_SERVER_ID = Snowflake(
@@ -33,7 +30,7 @@ const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh
         "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
         "31f51ffc334fac125089f7ea.png"
 
-const val VERSION = "v0.3.5"
+const val VERSION = "v0.4.0"
 const val DBL_URL = "https://top.gg/api/bots/896758540784500797/stats"
 //endregion
 
@@ -57,6 +54,7 @@ suspend fun main() {
             add(::FunExtension)
             add(::TagExtension)
             add(::NotificationsExtension)
+            add(::FilePasteExtension)
         }
     }
 

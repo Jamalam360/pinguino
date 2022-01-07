@@ -17,4 +17,5 @@ class Database {
     }
 
     val config = ConfigCollection(db)
+    val savedThreads = SavedThreadCollection(db)
 }
