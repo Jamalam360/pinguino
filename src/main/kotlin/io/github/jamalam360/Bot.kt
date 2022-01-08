@@ -60,3 +60,7 @@ suspend fun main() {
 
     bot.start()
 }
+
+fun ExtensibleBot.getLoggingExtension(): LoggingExtension {
+    return this.extensions["logging"] as LoggingExtension
+}

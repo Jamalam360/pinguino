@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import io.github.jamalam360.DATABASE
-import io.github.jamalam360.extensions.moderation.LoggingExtension
+import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.hasModeratorRole
 
 /**
@@ -91,7 +91,7 @@ class TagExtension : Extension() {
                                 content = "Successfully created tag `${arguments.name}`"
                             }
 
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                            bot.getLoggingExtension().logAction(
                                 "Tag Created",
                                 arguments.name,
                                 user.asUser(),
@@ -129,7 +129,7 @@ class TagExtension : Extension() {
                                 content = "Successfully deleted tag `${arguments.name}`"
                             }
 
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                            bot.getLoggingExtension().logAction(
                                 "Tag Deleted",
                                 arguments.name,
                                 user.asUser(),

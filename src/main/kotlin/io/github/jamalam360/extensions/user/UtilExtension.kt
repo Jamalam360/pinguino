@@ -25,7 +25,7 @@ import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.PINGUINO_PFP
-import io.github.jamalam360.extensions.moderation.LoggingExtension
+import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.hasModeratorRole
 import kotlinx.coroutines.flow.toList
 
@@ -127,7 +127,7 @@ class UtilExtension : Extension() {
                             }
                         }
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Thread archived",
                             if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock!!) "Locked" else "Not Locked",
                             user.asUser(),
@@ -166,7 +166,7 @@ class UtilExtension : Extension() {
                             content = "Successfully renamed thread"
                         }
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Thread renamed",
                             "'$before' --> '${arguments.name}",
                             user.asUser(),
@@ -196,7 +196,7 @@ class UtilExtension : Extension() {
                         DATABASE.savedThreads.setSave(channel.id, false)
                     }
 
-                    (bot.extensions["logging"] as LoggingExtension).logAction(
+                    bot.getLoggingExtension().logAction(
                         if (arguments.save) "Thread Saved" else "Thread Unsaved",
                         channel.mention,
                         user.asUser(),
@@ -339,7 +339,7 @@ class UtilExtension : Extension() {
 
                 channel.createMessage(arguments.message)
 
-                (bot.extensions["logging"] as LoggingExtension).logAction(
+                bot.getLoggingExtension().logAction(
                     "/echo Command Used",
                     "Echoed ${arguments.message} to ${channel.mention}",
                     user.asUser(),
@@ -377,7 +377,7 @@ class UtilExtension : Extension() {
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4D"))
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4E"))
 
-                (bot.extensions["logging"] as LoggingExtension).logAction(
+                bot.getLoggingExtension().logAction(
                     "/ask Command Used",
                     arguments.string,
                     user.asUser(),
@@ -406,7 +406,7 @@ class UtilExtension : Extension() {
                     content = "Config Deleted"
                 }
 
-                (bot.extensions["logging"] as LoggingExtension).logAction(
+                bot.getLoggingExtension().logAction(
                     "!! Config deleted !!",
                     "Pinguino bot config deleted!",
                     user.asUser(),
@@ -432,7 +432,7 @@ class UtilExtension : Extension() {
                     content = "Goodbye :wave:"
                 }
 
-                (bot.extensions["logging"] as LoggingExtension).logAction(
+                bot.getLoggingExtension().logAction(
                     "Pinguino Leaving",
                     "Goodbye! If you had a specific issue with the bot, please report it on the GitHub repository",
                     user.asUser(),

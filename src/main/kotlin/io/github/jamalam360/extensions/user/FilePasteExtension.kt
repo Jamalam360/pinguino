@@ -17,7 +17,7 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.database.entity.ServerConfig
-import io.github.jamalam360.extensions.moderation.LoggingExtension
+import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.isModuleEnabled
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -88,7 +88,7 @@ class FilePasteExtension : Extension() {
                                                 }
                                             }
 
-                                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                                            bot.getLoggingExtension().logAction(
                                                 "Uploaded File to Hastebin",
                                                 "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse.key}",
                                                 user.asUser(),

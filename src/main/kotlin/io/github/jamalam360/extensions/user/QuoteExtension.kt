@@ -20,7 +20,7 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
-import io.github.jamalam360.extensions.moderation.LoggingExtension
+import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.isModuleEnabled
 
 /**
@@ -169,7 +169,7 @@ class QuoteExtension : Extension() {
                     author = embedAuthor
                 }
 
-                (bot.extensions["logging"] as LoggingExtension).logAction(
+                bot.getLoggingExtension().logAction(
                     "Quote Sent",
                     "$quote - $quoteAuthor",
                     quoter,

@@ -159,7 +159,7 @@ class ModerationExtension : Extension() {
                                     )
                                 }
 
-                                (bot.extensions["logging"] as LoggingExtension).logAction(
+                                bot.getLoggingExtension().logAction(
                                     "Member Unmuted",
                                     "Automatic unmute from mute made ${arguments.duration} ago",
                                     member.asUser(),
@@ -179,7 +179,7 @@ class ModerationExtension : Extension() {
                                 }
                             }
 
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                            bot.getLoggingExtension().logAction(
                                 "Member Muted",
                                 "Muted by ${user.asUser().username} for ${arguments.duration.toString()} with the reason '${arguments.reason}'",
                                 member.asUser(),
@@ -220,7 +220,7 @@ class ModerationExtension : Extension() {
 
                             member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                            bot.getLoggingExtension().logAction(
                                 "Member Kicked",
                                 "Kicked by ${user.asUser().username} with reason '${arguments.reason}'",
                                 member.asUser(),
@@ -269,7 +269,7 @@ class ModerationExtension : Extension() {
                             }
 
 
-                            (bot.extensions["logging"] as LoggingExtension).logAction(
+                            bot.getLoggingExtension().logAction(
                                 "Member Banned",
                                 "Banned by ${user.asUser().username} with reason '${arguments.reason}'",
                                 member.asUser(),
@@ -303,7 +303,7 @@ class ModerationExtension : Extension() {
 
                         channel.createMessage("Thread locked by a moderator")
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Thread Locked",
                             "${channel.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
                             user.asUser(),
@@ -317,7 +317,7 @@ class ModerationExtension : Extension() {
                                     reason = arguments.reason
                                 }
 
-                                (bot.extensions["logging"] as LoggingExtension).logAction(
+                                bot.getLoggingExtension().logAction(
                                     "Thread Unlocked",
                                     "${channel.mention} unlocked automatically after timeout",
                                     user.asUser(),
@@ -338,7 +338,7 @@ class ModerationExtension : Extension() {
 
                         text.createMessage("Channel locked by a moderator")
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Channel Locked",
                             "${text.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
                             user.asUser(),
@@ -355,7 +355,7 @@ class ModerationExtension : Extension() {
                                     reason = arguments.reason
                                 }
 
-                                (bot.extensions["logging"] as LoggingExtension).logAction(
+                                bot.getLoggingExtension().logAction(
                                     "Channel Unlocked",
                                     "${text.mention} unlocked automatically after timeout",
                                     user.asUser(),
@@ -389,7 +389,7 @@ class ModerationExtension : Extension() {
 
                         channel.createMessage("Thread unlocked by a moderator")
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Thread Unlocked",
                             "${channel.mention} unlocked by ${user.asUser().username}",
                             user.asUser(),
@@ -410,7 +410,7 @@ class ModerationExtension : Extension() {
 
                         channel.createMessage("Channel unlocked by a moderator")
 
-                        (bot.extensions["logging"] as LoggingExtension).logAction(
+                        bot.getLoggingExtension().logAction(
                             "Channel Unlocked",
                             "${channel.mention} unlocked by ${user.asUser().username}",
                             user.asUser(),

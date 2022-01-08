@@ -389,7 +389,7 @@ class ModuleExtension : Extension() {
     }
 
     private suspend fun log(action: String, extraContent: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
-        (bot.extensions["logging"] as LoggingExtension).logAction(
+        bot.getLoggingExtension().logAction(
             action,
             extraContent,
             responsibleMod.asUser(),
