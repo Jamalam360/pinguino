@@ -133,15 +133,17 @@ class ModerationExtension : Extension() {
                                 content = "Cannot find that member!"
                             }
                         } else {
-                            member.dm {
-                                val embed = EmbedBuilder()
-                                embed.title = "Muted in ${guild!!.asGuild().name}!"
-                                embed.description =
-                                    "You have been muted in ${guild!!.asGuild().name} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
-                                embed.footer = EmbedBuilder.Footer()
-                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+                            if (!member.isBot) {
+                                member.dm {
+                                    val embed = EmbedBuilder()
+                                    embed.title = "Muted in ${guild!!.asGuild().name}!"
+                                    embed.description =
+                                        "You have been muted in ${guild!!.asGuild().name} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
+                                    embed.footer = EmbedBuilder.Footer()
+                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
 
-                                embeds.add(embed)
+                                    embeds.add(embed)
+                                }
                             }
 
                             member.addRole(
@@ -163,16 +165,17 @@ class ModerationExtension : Extension() {
                                     member.asUser(),
                                     guild!!.asGuild()
                                 )
+                                if (!member.isBot) {
+                                    member.dm {
+                                        val embed = EmbedBuilder()
+                                        embed.title = "Unmuted in ${guild!!.asGuild().name}!"
+                                        embed.description =
+                                            "You have been automatically unmuted from a mute made ${arguments.duration} ago"
+                                        embed.footer = EmbedBuilder.Footer()
+                                        embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
 
-                                member.dm {
-                                    val embed = EmbedBuilder()
-                                    embed.title = "Unmuted in ${guild!!.asGuild().name}!"
-                                    embed.description =
-                                        "You have been automatically unmuted from a mute made ${arguments.duration} ago"
-                                    embed.footer = EmbedBuilder.Footer()
-                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
-
-                                    embeds.add(embed)
+                                        embeds.add(embed)
+                                    }
                                 }
                             }
 
@@ -202,17 +205,19 @@ class ModerationExtension : Extension() {
                                 content = "Cannot find that member!"
                             }
                         } else {
-                             member.dm {
-                                val embed = EmbedBuilder()
-                                embed.title = "Kicked from ${guild!!.asGuild().name}!"
-                                embed.description =
-                                    "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
-                                embed.footer = EmbedBuilder.Footer()
-                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+                            if (!member.isBot) {
+                                member.dm {
+                                    val embed = EmbedBuilder()
+                                    embed.title = "Kicked from ${guild!!.asGuild().name}!"
+                                    embed.description =
+                                        "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
+                                    embed.footer = EmbedBuilder.Footer()
+                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
 
-                                embeds.add(embed)
+                                    embeds.add(embed)
+                                }
                             }
-                            
+
                             member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
                             (bot.extensions["logging"] as LoggingExtension).logAction(
@@ -241,15 +246,17 @@ class ModerationExtension : Extension() {
                                 content = "Cannot find that member!"
                             }
                         } else {
-                            member.dm {
-                                val embed = EmbedBuilder()
-                                embed.title = "Banned from ${guild!!.asGuild().name}!"
-                                embed.description =
-                                    "You have been banned from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
-                                embed.footer = EmbedBuilder.Footer()
-                                embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+                            if (!member.isBot) {
+                                member.dm {
+                                    val embed = EmbedBuilder()
+                                    embed.title = "Banned from ${guild!!.asGuild().name}!"
+                                    embed.description =
+                                        "You have been banned from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
+                                    embed.footer = EmbedBuilder.Footer()
+                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
 
-                                embeds.add(embed)
+                                    embeds.add(embed)
+                                }
                             }
 
                             member.ban {
