@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.jamalam360"
-version = "0.4.0"
+version = "0.4.1"
 
 repositories {
     maven {
