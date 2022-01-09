@@ -33,7 +33,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(KordPreview::class)
 class FilePasteExtension : Extension() {
-    override val name = "quotes"
+    override val name = "file-paste"
 
     private val client = HttpClient {
         install(JsonFeature)
