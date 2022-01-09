@@ -182,6 +182,7 @@ class QuoteExtension : Extension() {
                         title = content
                     }
                     author {
+                        name = author2ElectricBoogaloo.username
                         icon = author2ElectricBoogaloo.avatar.url
                     }
 
