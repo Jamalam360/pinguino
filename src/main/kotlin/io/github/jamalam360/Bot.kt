@@ -55,10 +55,15 @@ suspend fun main() {
             add(::TagExtension)
             add(::NotificationsExtension)
             add(::FilePasteExtension)
+
+            help {
+                enableBundledExtension = false
+            }
         }
     }
 
     bot.start()
+
 }
 
 fun ExtensibleBot.getLoggingExtension(): LoggingExtension = this.extensions["logging"] as LoggingExtension
