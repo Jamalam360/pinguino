@@ -52,6 +52,11 @@ class BotUtilityExtension : Extension() {
         event<CommandFailedWithExceptionEvent<*, *>> {
             action {
                 if (PRODUCTION) {
+                    val errorString =
+                        "Command: `" + event.command.name + "`" + "\n" + "Error: `" + event.throwable.message + "`" + "\n" + "Stacktrace: ```" + event.throwable.stackTrace.joinToString(
+                            "\n"
+                        ) { "     $it" } + "```"
+
                     client.post<HttpResponse>(ERROR_WEBHOOK_URL) {
                         contentType(ContentType.Application.Json)
                         body = ErrorWebhookBody(
@@ -61,19 +66,27 @@ class BotUtilityExtension : Extension() {
                             embeds = listOf(
                                 ErrorWebhookEmbed(
                                     description =
-                                    "Command: `" + event.command.name + "`"
-                                            + "\n" + "Error: `" + event.throwable.message + "`"
-                                            + "\n" + "Stacktrace: ```" + event.throwable.stackTrace.joinToString("\n") { "     $it" } + "```",
+                                    errorString.limit(250),
                                     color = DISCORD_RED.rgb,
                                     title = "Command Failed",
                                     author = ErrorWebhookAuthor(
                                         name = "Pinguino",
                                         icon = PINGUINO_PFP
                                     )
-                                )))
+                                )
+                            )
+                        )
                     }
                 }
             }
+        }
+    }
+
+    private fun String.limit(limit: Int): String {
+        return if (this.length > limit) {
+            this.substring(0, limit - 3) + "..."
+        } else {
+            this
         }
     }
 
