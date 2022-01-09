@@ -14,6 +14,7 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
@@ -105,13 +106,7 @@ class QuoteExtension : Extension() {
                         content = "Cannot quote my own messages!"
                     }
                 } else {
-                    sendQuote(
-                        this.guild!!.asGuild(),
-                        targetMessages.first().content,
-                        targetMessages.first().author!!.username,
-                        targetMessages.first().author!!.avatar.url,
-                        user.asUser()
-                    )
+                    targetMessages.first().quote()
 
                     respond {
                         content = "Quoted successfully"
@@ -133,14 +128,7 @@ class QuoteExtension : Extension() {
             action {
                 if (event.emoji.name == "\u2B50") {
                     val msg = event.channel.getMessage(event.messageId)
-
-                    sendQuote(
-                        event.guild!!.asGuild(),
-                        msg.content,
-                        msg.author!!.username,
-                        msg.author!!.avatar.url,
-                        event.user.asUser()
-                    )
+                    msg.quote()
                 }
             }
         }
@@ -161,7 +149,8 @@ class QuoteExtension : Extension() {
                 if (authorIcon != null) {
                     embedAuthor.icon = authorIcon
                 } else {
-                    embedAuthor.icon ="https://media.discordapp.net/attachments/892141557552148600/915253183062880267/download_1.png"
+                    embedAuthor.icon =
+                        "https://media.discordapp.net/attachments/892141557552148600/915253183062880267/download_1.png"
                 }
 
                 (channel as MessageChannel).createEmbed {
@@ -173,6 +162,38 @@ class QuoteExtension : Extension() {
                     "Quote Sent",
                     "$quote - $quoteAuthor",
                     quoter,
+                    guild
+                )
+            }
+        }
+    }
+
+    private suspend fun Message.quote() {
+        val guild = getGuild()
+        val conf = DATABASE.config.getConfig(guild.id)
+        val author2ElectricBoogaloo = this.author!!
+
+        if (conf.quotesConfig.channel != null) {
+            val channel = guild.getChannel(Snowflake(conf.quotesConfig.channel!!))
+
+            if (channel.type == ChannelType.GuildText) {
+                (channel as MessageChannel).createEmbed {
+                    if (content.isNotEmpty()) {
+                        title = content
+                    }
+                    author {
+                        icon = author2ElectricBoogaloo.avatar.url
+                    }
+
+                    if (attachments.isNotEmpty()) {
+                        image = attachments.first().url
+                    }
+                }
+
+                bot.getLoggingExtension().logAction(
+                    "Quote Sent",
+                    "$content - ${author2ElectricBoogaloo.username}",
+                    author!!,
                     guild
                 )
             }
