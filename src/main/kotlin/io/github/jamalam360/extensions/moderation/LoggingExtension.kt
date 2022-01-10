@@ -17,7 +17,6 @@ import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import kotlinx.datetime.Clock
 
@@ -83,7 +82,8 @@ class LoggingExtension : Extension() {
         extraContent: String?,
         user: User,
         guild: Guild,
-        colour: Color = DISCORD_BLURPLE
+        colour: Color = DISCORD_BLURPLE,
+        imageUrl: String = ""
     ): Message? {
         val conf = DATABASE.config.getConfig(guild.id)
 
@@ -91,16 +91,19 @@ class LoggingExtension : Extension() {
             val channel = guild.getChannel(Snowflake(conf.loggingConfig.channel!!))
 
             if (channel.type == ChannelType.GuildText) {
-                val embedAuthor = EmbedBuilder.Author()
-                embedAuthor.name = user.username
-                embedAuthor.icon = user.avatar.url
-
                 return (channel as MessageChannel).createEmbed {
                     title = action
                     description = extraContent
-                    author = embedAuthor
+                    author {
+                        name = user.username
+                        icon = user.avatar.url
+                    }
                     color = colour //Bri'ish spelling best
                     timestamp = Clock.System.now()
+
+                    if (image != "") {
+                        image = imageUrl
+                    }
                 }
             }
         }

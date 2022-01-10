@@ -18,7 +18,8 @@ fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
         ServerModerationConfig::class.getDefault(),
         ServerTagsConfig::class.getDefault(),
         ServerNotificationsConfig::class.getDefault(),
-        ServerFilePasteConfig::class.getDefault()
+        ServerFilePasteConfig::class.getDefault(),
+        PinguinoAnnouncementsConfig::class.getDefault()
     )
 }
 
@@ -65,5 +66,12 @@ fun KClass<ServerFilePasteConfig>.getDefault(): ServerFilePasteConfig {
     return ServerFilePasteConfig(
         enabled = false,
         hastebinUrl = "https://www.toptal.com/developers/hastebin/"
+    )
+}
+
+fun KClass<PinguinoAnnouncementsConfig>.getDefault(): PinguinoAnnouncementsConfig {
+    return PinguinoAnnouncementsConfig(
+        enabled = false,
+        channel = 0
     )
 }

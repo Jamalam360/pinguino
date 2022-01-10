@@ -55,5 +55,12 @@ fun migrate(db: MongoDatabase) {
                 ServerConfig::filePasteConfig, ServerFilePasteConfig::class.getDefault()
             )
         )
+
+        updateMany(
+            ServerConfig::pinguinoAnnouncementsConfig exists false,
+            serValue(
+                ServerConfig::pinguinoAnnouncementsConfig, PinguinoAnnouncementsConfig::class.getDefault()
+            )
+        )
     }
 }

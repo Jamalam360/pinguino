@@ -11,7 +11,8 @@ data class ServerConfig(
     var moderationConfig: ServerModerationConfig,
     var tagsConfig: ServerTagsConfig,
     var notificationsConfig: ServerNotificationsConfig,
-    var filePasteConfig: ServerFilePasteConfig
+    var filePasteConfig: ServerFilePasteConfig,
+    var pinguinoAnnouncementsConfig: PinguinoAnnouncementsConfig
 )
 
 data class ServerQuotesConfig(
@@ -45,4 +46,9 @@ data class ServerNotificationsConfig(
 data class ServerFilePasteConfig(
     var enabled: Boolean,
     var hastebinUrl: String
+)
+
+data class PinguinoAnnouncementsConfig(
+    var enabled: Boolean,
+    var channel: Long
 )

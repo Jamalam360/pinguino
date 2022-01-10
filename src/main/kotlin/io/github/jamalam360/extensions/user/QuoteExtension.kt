@@ -106,7 +106,7 @@ class QuoteExtension : Extension() {
                         content = "Cannot quote my own messages!"
                     }
                 } else {
-                    targetMessages.first().quote()
+                    targetMessages.first().quote(user.asUser())
 
                     respond {
                         content = "Quoted successfully"
@@ -128,7 +128,7 @@ class QuoteExtension : Extension() {
             action {
                 if (event.emoji.name == "\u2B50") {
                     val msg = event.channel.getMessage(event.messageId)
-                    msg.quote()
+                    msg.quote(event.user.asUser())
                 }
             }
         }
@@ -168,7 +168,7 @@ class QuoteExtension : Extension() {
         }
     }
 
-    private suspend fun Message.quote() {
+    private suspend fun Message.quote(quoter: User) {
         val guild = getGuild()
         val conf = DATABASE.config.getConfig(guild.id)
         val author2ElectricBoogaloo = this.author!!
@@ -194,8 +194,9 @@ class QuoteExtension : Extension() {
                 bot.getLoggingExtension().logAction(
                     "Quote Sent",
                     "$content - ${author2ElectricBoogaloo.username}",
-                    author!!,
-                    guild
+                    quoter,
+                    guild,
+                    imageUrl = if (attachments.isNotEmpty()) attachments.first().url else ""
                 )
             }
         }
