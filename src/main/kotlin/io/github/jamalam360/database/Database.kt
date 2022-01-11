@@ -18,4 +18,5 @@ class Database {
 
     val config = ConfigCollection(db)
     val savedThreads = SavedThreadCollection(db)
+    val botMeta = BotMetaCollection(db)
 }
