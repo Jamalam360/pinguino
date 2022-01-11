@@ -58,8 +58,9 @@ class LoggingExtension : Extension() {
             }
 
             action {
+                val msg = event.message.asMessage()
                 @Suppress("SENSELESS_COMPARISON")
-                if (event.message.asMessage().content != null && event.message.asMessage().author != null) {
+                if (msg.content != null && msg.author != null && msg.content != event.old!!.content) {
                     val before: String = if (event.old == null) {
                         "**Failed to fetch previous message. The bot may have been offline when it was sent.**"
                     } else {
@@ -67,9 +68,9 @@ class LoggingExtension : Extension() {
                     }
                     logAction(
                         "Message Edited",
-                        "Before: *" + before + "*" + "\nAfter: *" + event.message.asMessage().content + "*",
-                        event.message.asMessage().author!!,
-                        event.getMessage().getGuild()
+                        "Before: *" + before + "*" + "\nAfter: *" + msg.content + "*",
+                        msg.author!!,
+                        msg.getGuild()
                     )
                 }
             }

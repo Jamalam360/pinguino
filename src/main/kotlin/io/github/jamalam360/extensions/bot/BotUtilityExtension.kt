@@ -6,29 +6,19 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.PresenceStatus
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.entity.channel.TextChannel
 import io.github.jamalam360.*
 import io.ktor.client.*
-import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
-import io.ktor.client.request.get
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.forEach
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
-
-typealias GitHubRelease = JsonArray<GitHubReleaseElement>
 
 /**
  * @author  Jamalam360
@@ -58,24 +48,6 @@ class BotUtilityExtension : Extension() {
 
         scheduler.schedule(presenceDelay.seconds.toLong()) {
             setPresenceStatus()
-        }
-
-        scheduler.schedule(30) {
-            if (DATABASE.botMeta.get().lastVersionUpdateLogPosted != VERSION) {
-                kord.guilds.collect {
-                    val conf = DATABASE.config.getConfig(it.id)
-                    if (conf.pinguinoAnnouncementsConfig.enabled) {
-                        val channel = it.getChannelOrNull(Snowflake(conf.pinguinoAnnouncementsConfig.channel))
-                        if (channel is TextChannel) {
-                            val release = client.get<GitHubRelease>("https://api.github.com/repos/JamCoreDiscord/Pinguino/releases")
-
-                            channel.createEmbed {
-
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         event<CommandFailedWithExceptionEvent<*, *>> {
@@ -173,137 +145,6 @@ data class ErrorWebhookAuthor(
     @SerialName("icon_url")
     val icon: String = PINGUINO_PFP
 )
-
-@Serializable
-data class GitHubReleaseElement (
-    val url: String,
-
-    @SerialName("html_url")
-    val htmlURL: String,
-
-    @SerialName("assets_url")
-    val assetsURL: String,
-
-    @SerialName("upload_url")
-    val uploadURL: String,
-
-    @SerialName("tarball_url")
-    val tarballURL: String,
-
-    @SerialName("zipball_url")
-    val zipballURL: String,
-
-    val id: Long,
-
-    @SerialName("node_id")
-    val nodeID: String,
-
-    @SerialName("tag_name")
-    val tagName: String,
-
-    @SerialName("target_commitish")
-    val targetCommitish: String,
-
-    val name: String,
-    val body: String,
-    val draft: Boolean,
-    val prerelease: Boolean,
-
-    @SerialName("created_at")
-    val createdAt: String,
-
-    @SerialName("published_at")
-    val publishedAt: String,
-
-    val author: Author,
-    val assets: List<Asset>
-)
-
-@Serializable
-data class Asset (
-    val url: String,
-
-    @SerialName("browser_download_url")
-    val browserDownloadURL: String,
-
-    val id: Long,
-
-    @SerialName("node_id")
-    val nodeID: String,
-
-    val name: String,
-    val label: String,
-    val state: String,
-
-    @SerialName("content_type")
-    val contentType: String,
-
-    val size: Long,
-
-    @SerialName("download_count")
-    val downloadCount: Long,
-
-    @SerialName("created_at")
-    val createdAt: String,
-
-    @SerialName("updated_at")
-    val updatedAt: String,
-
-    val uploader: Author
-)
-
-@Serializable
-data class Author (
-    val login: String,
-    val id: Long,
-
-    @SerialName("node_id")
-    val nodeID: String,
-
-    @SerialName("avatar_url")
-    val avatarURL: String,
-
-    @SerialName("gravatar_id")
-    val gravatarID: String,
-
-    val url: String,
-
-    @SerialName("html_url")
-    val htmlURL: String,
-
-    @SerialName("followers_url")
-    val followersURL: String,
-
-    @SerialName("following_url")
-    val followingURL: String,
-
-    @SerialName("gists_url")
-    val gistsURL: String,
-
-    @SerialName("starred_url")
-    val starredURL: String,
-
-    @SerialName("subscriptions_url")
-    val subscriptionsURL: String,
-
-    @SerialName("organizations_url")
-    val organizationsURL: String,
-
-    @SerialName("repos_url")
-    val reposURL: String,
-
-    @SerialName("events_url")
-    val eventsURL: String,
-
-    @SerialName("received_events_url")
-    val receivedEventsURL: String,
-
-    val type: String,
-
-    @SerialName("site_admin")
-    val siteAdmin: Boolean
-)
-
 
 @Suppress("unused")
 enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
