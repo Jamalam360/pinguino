@@ -1,5 +1,6 @@
 package io.github.jamalam360.extensions.user
 
+import com.kotlindiscord.kord.extensions.DISCORD_GREEN
 import com.kotlindiscord.kord.extensions.DISCORD_RED
 import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
 import com.kotlindiscord.kord.extensions.checks.hasPermission
@@ -23,11 +24,19 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.PINGUINO_PFP
 import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.hasModeratorRole
+import io.ktor.client.*
+import io.ktor.client.features.json.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.toList
+import kotlinx.serialization.Serializable
 
 /**
  * Random commands that don't fit elsewhere.
@@ -39,6 +48,10 @@ import kotlinx.coroutines.flow.toList
 class UtilExtension : Extension() {
     override val name: String = "util"
     private val scheduler = Scheduler()
+
+    private val client = HttpClient {
+        install(JsonFeature)
+    }
 
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
@@ -443,7 +456,84 @@ class UtilExtension : Extension() {
                 guild!!.leave()
             }
         }
+
+        ephemeralSlashCommand(::SingleLinkArgs) {
+            name = "shorten-link"
+            description = "Shorten a link"
+
+            action {
+                client.put<LinkAPIResponse> {
+                    url("https://link.jamalam.tech/api/link")
+                    contentType(ContentType.Application.Json)
+                    body = "{\"link\": \"${arguments.link}\"}"
+                }.let {
+                    respond {
+                        embed {
+                            title = "Shortened Link"
+                            url = it.link
+                            color = DISCORD_GREEN
+                        }
+                    }
+                }
+            }
+        }
+
+        ephemeralSlashCommand {
+            name = "paste"
+            description = "Upload a file to hastebin"
+
+            //TODO: Better descriptions
+
+            ephemeralSubCommand(::SingleLinkArgs) {
+                name = "url"
+                description = "Use a cdn.discordapp.com link to paste your file"
+
+                action {
+                    client.post<HastebinApiResponse>("https://www.toptal.com/developers/hastebin/documents") {
+                        body = String(
+                            client.get<HttpResponse>(arguments.link).content.toInputStream()
+                                .readAllBytes()
+                        )
+                    }.let { hastebinApiResponse ->
+                        respond {
+                            embed {
+                                title = "File Uploaded to Hastebin"
+                                url =
+                                    "https://www.toptal.com/developers/hastebin/${hastebinApiResponse.key}"
+                                color = DISCORD_GREEN
+                            }
+                        }
+                    }
+                }
+            }
+
+            ephemeralSubCommand(::SingleStringArgs) {
+                name = "typed"
+                description = "Type out your file into the slash command arguments"
+
+                action {
+                    client.post<HastebinApiResponse>("https://www.toptal.com/developers/hastebin/documents") {
+                        body = arguments.string
+                    }.let { hastebinApiResponse ->
+                        respond {
+                            embed {
+                                title = "File Uploaded to Hastebin"
+                                url =
+                                    "https://www.toptal.com/developers/hastebin/${hastebinApiResponse.key}"
+                                color = DISCORD_GREEN
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    @Serializable
+    data class HastebinApiResponse(val key: String)
+
+    @Serializable
+    data class LinkAPIResponse(val link: String)
 
     //region Arguments
     inner class AskArgs : Arguments() {
@@ -530,5 +620,20 @@ class UtilExtension : Extension() {
             "Whether to lock the thread as well, if you are a moderator"
         )
     }
+
+    inner class SingleLinkArgs : Arguments() {
+        val link by string(
+            "link",
+            "The link"
+        )
+    }
+
+    inner class SingleStringArgs : Arguments() {
+        val string by string(
+            "string",
+            "The string"
+        )
+    }
     //endregion
 }
+
