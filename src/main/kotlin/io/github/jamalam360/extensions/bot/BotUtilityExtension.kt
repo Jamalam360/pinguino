@@ -124,9 +124,11 @@ enum class RandomStatus(val type: StatusType, val message: String) {
     ListeningForYourCommands(StatusType.Listening, "your commands"),
     WatchingForYourCommands(StatusType.Watching, "for your commands"),
     WatchingTheFootball(StatusType.Watching, "the football"),
+    WatchingYou(StatusType.Watching, "you"),
     PlayingMinecraft(StatusType.Playing, "Minecraft :D"),
     PlayingABoardGame(StatusType.Playing, "a board game"),
-    CompetingInTheOlympics(StatusType.Competing, "the olympics");
+    CompetingInTheOlympics(StatusType.Competing, "the olympics"),
+    CompetingWithOtherPenguins(StatusType.Competing, "the international penguin tournament");
 
     companion object {
         private val values = values()
