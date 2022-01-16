@@ -33,17 +33,13 @@ suspend fun main() {
                 enableBundledExtension = false
             }
 
-            sentry {
-                enable = true
-                dsn = SENTRY_URL
-
-                environment = if (PRODUCTION) {
-                    "production"
-                } else {
-                    "testing"
+            if (PRODUCTION) {
+                sentry {
+                    enable = true
+                    dsn = SENTRY_URL
+                    environment = "Production"
+                    distribution = VERSION
                 }
-
-                distribution = VERSION
             }
         }
     }
