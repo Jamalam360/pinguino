@@ -21,8 +21,8 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
-import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.isModuleEnabled
+import io.github.jamalam360.util.getLoggingExtension
 
 /**
  * @author  Jamalam360

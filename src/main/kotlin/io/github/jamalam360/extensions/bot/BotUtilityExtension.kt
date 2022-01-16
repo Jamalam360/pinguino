@@ -4,10 +4,10 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
-import io.github.jamalam360.DBL_TOKEN
-import io.github.jamalam360.DBL_URL
-import io.github.jamalam360.PRODUCTION
-import io.github.jamalam360.VERSION
+import io.github.jamalam360.util.DBL_TOKEN
+import io.github.jamalam360.util.DBL_URL
+import io.github.jamalam360.util.PRODUCTION
+import io.github.jamalam360.util.VERSION
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*

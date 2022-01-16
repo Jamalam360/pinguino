@@ -17,8 +17,8 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.database.entity.ServerConfig
-import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.isModuleEnabled
+import io.github.jamalam360.util.getLoggingExtension
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*

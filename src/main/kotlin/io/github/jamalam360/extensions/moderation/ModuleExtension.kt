@@ -11,6 +11,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.*
+import io.github.jamalam360.util.getLoggingExtension
 
 /**
  * @author  Jamalam360
@@ -20,14 +21,11 @@ import io.github.jamalam360.*
 class ModuleExtension : Extension() {
     override val name: String = "modules"
 
-    //region Module Names
     private val quotesModule: String = "the Quotes module"
     private val loggingModule: String = "the Logging module"
     private val moderationModule: String = "the Moderation module"
     private val notificationsModule: String = "the Greetings module"
     private val filePasteModule: String = "the File Paste module"
-    private val pinguinoAnnouncementsModule: String = "the Pinguino Announcements module"
-    //endregion
 
     @Suppress("DuplicatedCode")
     override suspend fun setup() {

@@ -9,8 +9,8 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import io.github.jamalam360.DATABASE
-import io.github.jamalam360.getLoggingExtension
 import io.github.jamalam360.hasModeratorRole
+import io.github.jamalam360.util.getLoggingExtension
 
 /**
  * @author  Jamalam360
