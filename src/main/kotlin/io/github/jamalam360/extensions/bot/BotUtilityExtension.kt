@@ -1,13 +1,13 @@
 package io.github.jamalam360.extensions.bot
 
-import com.kotlindiscord.kord.extensions.DISCORD_RED
-import com.kotlindiscord.kord.extensions.commands.events.CommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
-import io.github.jamalam360.*
+import io.github.jamalam360.DBL_TOKEN
+import io.github.jamalam360.DBL_URL
+import io.github.jamalam360.PRODUCTION
+import io.github.jamalam360.VERSION
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
@@ -49,46 +49,6 @@ class BotUtilityExtension : Extension() {
         scheduler.schedule(presenceDelay.seconds.toLong()) {
             setPresenceStatus()
         }
-
-        event<CommandFailedWithExceptionEvent<*, *>> {
-            action {
-                if (PRODUCTION) {
-                    val errorString =
-                        "Command: `" + event.command.name + "`" + "\n" + "Error: `" + event.throwable.message + "`" + "\n" + "Stacktrace: ```" + event.throwable.stackTrace.joinToString(
-                            "\n"
-                        ) { "     $it" } + "```"
-
-                    client.post<HttpResponse>(ERROR_WEBHOOK_URL) {
-                        contentType(ContentType.Application.Json)
-                        body = ErrorWebhookBody(
-                            username = "Pinguino",
-                            avatarUrl = PINGUINO_PFP,
-                            content = "",
-                            embeds = listOf(
-                                ErrorWebhookEmbed(
-                                    description =
-                                    errorString.limit(250),
-                                    color = DISCORD_RED.rgb,
-                                    title = "Command Failed",
-                                    author = ErrorWebhookAuthor(
-                                        name = "Pinguino",
-                                        icon = PINGUINO_PFP
-                                    )
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    private fun String.limit(limit: Int): String {
-        return if (this.length > limit) {
-            this.substring(0, limit - 3) + "..."
-        } else {
-            this
-        }
     }
 
     private suspend fun setPresenceStatus() {
@@ -120,30 +80,6 @@ class BotUtilityExtension : Extension() {
 data class DBLStatisticBody(
     @SerialName("server_count")
     val count: Int
-)
-
-@Serializable
-data class ErrorWebhookBody(
-    val username: String,
-    @SerialName("avatar_url")
-    val avatarUrl: String,
-    val content: String,
-    val embeds: List<ErrorWebhookEmbed>
-)
-
-@Serializable
-data class ErrorWebhookEmbed(
-    val author: ErrorWebhookAuthor = ErrorWebhookAuthor(),
-    val title: String = "An Error Occurred!",
-    val color: Int = DISCORD_RED.rgb,
-    val description: String
-)
-
-@Serializable
-data class ErrorWebhookAuthor(
-    val name: String = "Pinguino",
-    @SerialName("icon_url")
-    val icon: String = PINGUINO_PFP
 )
 
 @Suppress("unused")

@@ -12,16 +12,19 @@ import io.github.jamalam360.extensions.moderation.NotificationsExtension
 import io.github.jamalam360.extensions.user.*
 
 //region ENV Variables
-val TEST_SERVER_ID = Snowflake(
-    env("TEST_SERVER_ID").toLong()
-)
 val PRODUCTION = env("PRODUCTION").toBoolean()
+val TEST_SERVER_ID = if (PRODUCTION) {
+    Snowflake(0)
+} else {
+    Snowflake(
+        env("TEST_SERVER_ID").toLong()
+    )
+}
 private val TOKEN = if (PRODUCTION) {
     env("TOKEN")
 } else {
     env("TEST_BOT_TOKEN")
 }
-val ERROR_WEBHOOK_URL = env("ERROR_WEBHOOK_URL")
 val DBL_TOKEN = env("DBL_TOKEN")
 val SENTRY_URL = env("SENTRY_URL")
 //endregion
