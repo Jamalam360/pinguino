@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.Color
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.MessageType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
@@ -60,7 +61,7 @@ class LoggingExtension : Extension() {
             action {
                 val msg = event.message.asMessage()
                 @Suppress("SENSELESS_COMPARISON")
-                if (msg.content != null && msg.author != null && msg.content != event.old!!.content) {
+                if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content) {
                     val before: String = if (event.old == null) {
                         "**Failed to fetch previous message. The bot may have been offline when it was sent.**"
                     } else {

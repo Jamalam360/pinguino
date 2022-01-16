@@ -13,9 +13,9 @@ import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.Modules
 import io.github.jamalam360.SingleChannelArgs
 import io.github.jamalam360.SingleRoleArgs
-import io.github.jamalam360.hasModeratorRole
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
+import io.github.jamalam360.util.hasModeratorRole
 
 /**
  * @author  Jamalam360

@@ -1,4 +1,4 @@
-package io.github.jamalam360
+package io.github.jamalam360.util
 
 import com.kotlindiscord.kord.extensions.checks.*
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
@@ -6,7 +6,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.Event
 import dev.kord.core.exception.EntityNotFoundException
-import io.github.jamalam360.util.database
+import io.github.jamalam360.Modules
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 
@@ -19,7 +19,7 @@ suspend fun <T : Event> CheckContext<T>.isModuleEnabled(module: Modules) {
         return
     }
 
-    val logger = KotlinLogging.logger("io.github.jamalam360.Checks.moduleEnabled")
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.moduleEnabled")
     val guild = guildFor(event)
 
     if (guild == null) {
@@ -41,7 +41,7 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
         return
     }
 
-    val logger = KotlinLogging.logger("io.github.jamalam360.Checks.hasModeratorRole")
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
     val guild = guildFor(event)
     val member = memberFor(event)
 
@@ -70,6 +70,36 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
                 logger.failed("Guild ${guild.id} does not have a role with the requested ID")
                 fail("The moderator role is required to execute this command, but the role could not be found - did you remember to set it?")
             }
+        }
+    }
+}
+
+suspend fun <T : Event> CheckContext<T>.ownsThread() {
+    if (!passed) {
+        return
+    }
+
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
+    val guild = guildFor(event)
+    val member = memberFor(event)
+    val thread = threadFor(event)
+
+    if (guild == null) {
+        logger.nullGuild(event)
+        fail()
+    } else if (member == null) {
+        logger.nullMember(event)
+        fail()
+    } else if (thread == null) {
+        logger.nullChannel(event)
+        fail()
+    } else {
+        if (thread.asChannel().ownerId != member.id) {
+            logger.failed("Member ${member.id} does not own the thread ${thread.id}")
+            fail("You must own the thread to execute this command")
+        } else {
+            logger.passed()
+            pass()
         }
     }
 }

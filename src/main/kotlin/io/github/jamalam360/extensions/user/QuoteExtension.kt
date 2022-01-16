@@ -20,9 +20,9 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.Modules
-import io.github.jamalam360.isModuleEnabled
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
+import io.github.jamalam360.util.isModuleEnabled
 
 /**
  * @author  Jamalam360

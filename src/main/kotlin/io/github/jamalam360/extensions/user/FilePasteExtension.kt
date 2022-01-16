@@ -16,10 +16,10 @@ import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
 import io.github.jamalam360.database.entity.ServerConfig
-import io.github.jamalam360.isModuleEnabled
 import io.github.jamalam360.util.client
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
+import io.github.jamalam360.util.isModuleEnabled
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.utils.io.jvm.javaio.*

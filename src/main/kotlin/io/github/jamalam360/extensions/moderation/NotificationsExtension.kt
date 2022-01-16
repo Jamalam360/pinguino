@@ -12,8 +12,8 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import io.github.jamalam360.Modules
-import io.github.jamalam360.isModuleEnabled
 import io.github.jamalam360.util.database
+import io.github.jamalam360.util.isModuleEnabled
 
 /**
  * @author  Jamalam360

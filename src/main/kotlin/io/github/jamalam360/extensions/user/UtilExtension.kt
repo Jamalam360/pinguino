@@ -3,15 +3,11 @@ package io.github.jamalam360.extensions.user
 import com.kotlindiscord.kord.extensions.DISCORD_GREEN
 import com.kotlindiscord.kord.extensions.DISCORD_RED
 import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
-import com.kotlindiscord.kord.extensions.checks.hasPermission
-import com.kotlindiscord.kord.extensions.checks.isInThread
+import com.kotlindiscord.kord.extensions.checks.*
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.extensions.event
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.annotation.KordPreview
@@ -23,13 +19,10 @@ import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
+import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
-import io.github.jamalam360.hasModeratorRole
-import io.github.jamalam360.util.PINGUINO_PFP
-import io.github.jamalam360.util.client
-import io.github.jamalam360.util.database
-import io.github.jamalam360.util.getLoggingExtension
+import io.github.jamalam360.util.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -519,6 +512,49 @@ class UtilExtension : Extension() {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        ephemeralMessageCommand {
+            name = "Pin In Thread"
+
+            check {
+                isInThread()
+                failIf("You don't have permission to pin messages in this channel") {
+                    val guild = guildFor(event)
+                    val member = memberFor(event)
+                    val thread = threadFor(event)
+
+                    if (member == null || guild == null || thread == null) {
+                        return@failIf false
+                    }
+
+                    try {
+                        if (member.asMember().roles.toList()
+                                .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                        ) {
+                            return@failIf true
+                        }
+                    } catch (e: EntityNotFoundException) {
+                        if (member.asMember().getPermissions().contains(Permission.Administrator)) {
+                            return@failIf true
+                        }
+                    }
+
+                    if (thread.asChannel().ownerId == member.id) {
+                        return@failIf true
+                    }
+
+                    return@failIf false
+                }
+            }
+
+            action {
+                targetMessages.first().pin("Pinned by ${user.asUser()}")
+
+                respond {
+                    content = "Message pinned!"
                 }
             }
         }
