@@ -1,7 +1,8 @@
 package io.github.jamalam360.database
 
 import com.mongodb.client.MongoDatabase
-import io.github.jamalam360.PRODUCTION
+import io.github.jamalam360.util.MONGO_SRV_URL
+import io.github.jamalam360.util.PRODUCTION
 import org.litote.kmongo.KMongo
 
 /**
@@ -9,11 +10,16 @@ import org.litote.kmongo.KMongo
  */
 
 class Database {
-    private val client = KMongo.createClient()
-    val db: MongoDatabase = if (PRODUCTION) {
-        client.getDatabase("PinguinoProductionDatabase")
+    private val client = if (!PRODUCTION) {
+        KMongo.createClient(MONGO_SRV_URL)
     } else {
-        client.getDatabase("PinguinoTestingDatabase")
+        KMongo.createClient()
+    }
+
+    val db: MongoDatabase = if (!PRODUCTION) {
+        client.getDatabase("pinguino_production_db")
+    } else {
+        client.getDatabase("pinguino_testing_db")
     }
 
     val config = ConfigCollection(db)
