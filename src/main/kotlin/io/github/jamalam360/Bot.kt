@@ -23,6 +23,7 @@ private val TOKEN = if (PRODUCTION) {
 }
 val ERROR_WEBHOOK_URL = env("ERROR_WEBHOOK_URL")
 val DBL_TOKEN = env("DBL_TOKEN")
+val SENTRY_URL = env("SENTRY_URL")
 //endregion
 
 //region Constant Values
@@ -58,6 +59,19 @@ suspend fun main() {
 
             help {
                 enableBundledExtension = false
+            }
+
+            sentry {
+                enable = true
+                dsn = SENTRY_URL
+
+                environment = if (PRODUCTION) {
+                    "production"
+                } else {
+                    "testing"
+                }
+
+                distribution = VERSION
             }
         }
     }
