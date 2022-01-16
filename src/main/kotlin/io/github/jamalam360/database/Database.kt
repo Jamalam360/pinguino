@@ -12,7 +12,7 @@ import org.litote.kmongo.KMongo
 class Database {
     private val client = KMongo.createClient(MONGO_SRV_URL)
 
-    val db: MongoDatabase = if (!PRODUCTION) {
+    val db: MongoDatabase = if (PRODUCTION) {
         client.getDatabase("pinguino_production_db")
     } else {
         client.getDatabase("pinguino_testing_db")
