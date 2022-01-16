@@ -377,63 +377,6 @@ class ModuleExtension : Extension() {
                 }
             }
             //endregion
-
-            //region Pinguino Announcements Module
-            group("pinguino-announcements") {
-                description = "Alter the settings of $pinguinoAnnouncementsModule"
-
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $pinguinoAnnouncementsModule"
-
-                    action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
-                        conf.pinguinoAnnouncementsConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.Logging.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $pinguinoAnnouncementsModule"
-                        }
-                    }
-                }
-
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $pinguinoAnnouncementsModule"
-
-                    action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
-                        conf.pinguinoAnnouncementsConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.Logging.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $pinguinoAnnouncementsModule"
-                        }
-                    }
-                }
-
-                ephemeralSubCommand(::SingleChannelArgs) {
-                    name = "set-channel"
-                    description = "Set the channel bot updates will be sent to"
-
-                    action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
-                        conf.pinguinoAnnouncementsConfig.channel = arguments.channel.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
-
-                        log("Update Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
-
-                        respond {
-                            content = "Successfully set update channel to ${arguments.channel.mention}"
-                        }
-                    }
-                }
-            }
-            //endregion
         }
         //endregion
     }
