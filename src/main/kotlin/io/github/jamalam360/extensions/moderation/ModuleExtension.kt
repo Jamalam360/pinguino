@@ -10,7 +10,11 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
-import io.github.jamalam360.*
+import io.github.jamalam360.Modules
+import io.github.jamalam360.SingleChannelArgs
+import io.github.jamalam360.SingleRoleArgs
+import io.github.jamalam360.hasModeratorRole
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 
 /**
@@ -47,9 +51,9 @@ class ModuleExtension : Extension() {
                     description = "Enable $quotesModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.quotesConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleEnabled(Modules.Quotes.readableName, user, guild!!)
 
@@ -64,9 +68,9 @@ class ModuleExtension : Extension() {
                     description = "Disable $quotesModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.quotesConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleDisabled(Modules.Quotes.readableName, user, guild!!)
 
@@ -81,9 +85,9 @@ class ModuleExtension : Extension() {
                     description = "Set the channel quote embeds will be sent to"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.quotesConfig.channel = arguments.channel.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Quotes Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
 
@@ -104,9 +108,9 @@ class ModuleExtension : Extension() {
                     description = "Enable $loggingModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.loggingConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleEnabled(Modules.Logging.readableName, user, guild!!)
 
@@ -121,9 +125,9 @@ class ModuleExtension : Extension() {
                     description = "Disable $loggingModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.loggingConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleDisabled(Modules.Logging.readableName, user, guild!!)
 
@@ -138,9 +142,9 @@ class ModuleExtension : Extension() {
                     description = "Set the channel logging embeds will be sent to"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.loggingConfig.channel = arguments.channel.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Logging Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
 
@@ -161,9 +165,9 @@ class ModuleExtension : Extension() {
                     description = "Enable $moderationModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.moderationConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleEnabled(Modules.Moderation.readableName, user, guild!!)
 
@@ -178,9 +182,9 @@ class ModuleExtension : Extension() {
                     description = "Disable $moderationModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.moderationConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleDisabled(Modules.Moderation.readableName, user, guild!!)
 
@@ -195,9 +199,9 @@ class ModuleExtension : Extension() {
                     description = "Set role required to run moderator level commands"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.moderationConfig.moderatorRole = arguments.role.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Moderator Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
 
@@ -212,9 +216,9 @@ class ModuleExtension : Extension() {
                     description = "Set role to apply to muted users"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.moderationConfig.mutedRole = arguments.role.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Muted Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
 
@@ -235,9 +239,9 @@ class ModuleExtension : Extension() {
                     description = "Enable $notificationsModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.notificationsConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleEnabled(Modules.Notifications.readableName, user, guild!!)
 
@@ -252,9 +256,9 @@ class ModuleExtension : Extension() {
                     description = "Disable $notificationsModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.notificationsConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleDisabled(Modules.Notifications.readableName, user, guild!!)
 
@@ -269,9 +273,9 @@ class ModuleExtension : Extension() {
                     description = "Set the channel to send greetings and farewells to"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.notificationsConfig.greetingChannel = arguments.channel.id.value
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Greetings Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
 
@@ -286,9 +290,9 @@ class ModuleExtension : Extension() {
                     description = "Set the message to send to the greeting channel when a member joins"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.notificationsConfig.greetingMessage = arguments.string
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Greeting Message Updated", "Updated to ${arguments.string}", user, guild!!)
 
@@ -303,9 +307,9 @@ class ModuleExtension : Extension() {
                     description = "Set the message to send to the greeting channel when a member leaves"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.notificationsConfig.farewellMessage = arguments.string
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Farewell Message Updated", "Updated to ${arguments.string}", user, guild!!)
 
@@ -326,9 +330,9 @@ class ModuleExtension : Extension() {
                     description = "Enable $filePasteModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.filePasteConfig.enabled = true
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleEnabled(Modules.FilePaste.readableName, user, guild!!)
 
@@ -343,9 +347,9 @@ class ModuleExtension : Extension() {
                     description = "Disable $filePasteModule"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.filePasteConfig.enabled = false
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         logModuleDisabled(Modules.FilePaste.readableName, user, guild!!)
 
@@ -362,9 +366,9 @@ class ModuleExtension : Extension() {
                     action {
                         val url = if (arguments.url.endsWith("/")) arguments.url else "${arguments.url}/"
 
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
                         conf.filePasteConfig.hastebinUrl = url
-                        DATABASE.config.updateConfig(guild!!.id, conf)
+                        database.config.updateConfig(guild!!.id, conf)
 
                         log("Hastebin URL Updated", "Updated to ${arguments.url}", user, guild!!)
 

@@ -12,7 +12,6 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
-import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
@@ -27,7 +26,9 @@ import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.*
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
+import io.github.jamalam360.util.scheduler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
@@ -40,7 +41,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(KordPreview::class)
 class ModerationExtension : Extension() {
     override val name: String = "moderation"
-    private val scheduler = Scheduler()
 
     private val speakingPermissions: Array<Permission> = arrayOf(
         Permission.SendMessages,
@@ -70,7 +70,7 @@ class ModerationExtension : Extension() {
                     description = "Add a role to the thread auto-join list"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
 
                         if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
                             respond {
@@ -78,7 +78,7 @@ class ModerationExtension : Extension() {
                             }
                         } else {
                             conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value)
-                            DATABASE.config.updateConfig(guild!!.id, conf)
+                            database.config.updateConfig(guild!!.id, conf)
 
                             respond {
                                 content = "Successfully added ${arguments.role.mention} to the auto-join list"
@@ -92,11 +92,11 @@ class ModerationExtension : Extension() {
                     description = "Remove a role from the thread auto-join list"
 
                     action {
-                        val conf = DATABASE.config.getConfig(guild!!.id)
+                        val conf = database.config.getConfig(guild!!.id)
 
                         if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
                             conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value)
-                            DATABASE.config.updateConfig(guild!!.id, conf)
+                            database.config.updateConfig(guild!!.id, conf)
 
                             respond {
                                 content = "Successfully removed ${arguments.role.mention} from the auto-join list"
@@ -119,7 +119,7 @@ class ModerationExtension : Extension() {
 
                     action {
                         val member = guild!!.getMemberOrNull(arguments.user.id)
-                        val role = DATABASE.config.getConfig(guild!!.id).moderationConfig.mutedRole
+                        val role = database.config.getConfig(guild!!.id).moderationConfig.mutedRole
 
                         if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
                             respond {
@@ -438,7 +438,7 @@ class ModerationExtension : Extension() {
                     event.channel.owner
                 }
 
-                if (DATABASE.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
+                if (database.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
                     val msg =
                         event.channel.createMessage("Nice thread ${author.mention}! Hold on while I get some people in here!")
 
@@ -447,7 +447,7 @@ class ModerationExtension : Extension() {
                     }
 
                     var mentions = ""
-                    val roles = DATABASE.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
+                    val roles = database.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
 
                     for (id in roles) {
                         mentions += "${event.channel.guild.getRole(Snowflake(id)).mention}, "

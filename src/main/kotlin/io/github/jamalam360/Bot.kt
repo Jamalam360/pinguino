@@ -1,7 +1,6 @@
 package io.github.jamalam360
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import io.github.jamalam360.database.Database
 import io.github.jamalam360.extensions.bot.BotUtilityExtension
 import io.github.jamalam360.extensions.moderation.LoggingExtension
 import io.github.jamalam360.extensions.moderation.ModerationExtension
@@ -9,8 +8,6 @@ import io.github.jamalam360.extensions.moderation.ModuleExtension
 import io.github.jamalam360.extensions.moderation.NotificationsExtension
 import io.github.jamalam360.extensions.user.*
 import io.github.jamalam360.util.*
-
-val DATABASE = Database()
 
 suspend fun main() {
     val bot = ExtensibleBot(TOKEN) {

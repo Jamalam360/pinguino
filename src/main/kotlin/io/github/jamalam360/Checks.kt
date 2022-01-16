@@ -6,6 +6,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.Event
 import dev.kord.core.exception.EntityNotFoundException
+import io.github.jamalam360.util.database
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 
@@ -25,7 +26,7 @@ suspend fun <T : Event> CheckContext<T>.isModuleEnabled(module: Modules) {
         logger.nullGuild(event)
         fail()
     } else {
-        if (DATABASE.config.isModuleEnabled(guild.id, module)) {
+        if (database.config.isModuleEnabled(guild.id, module)) {
             logger.passed()
             pass()
         } else {
@@ -53,7 +54,7 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(DATABASE.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
             ) {
                 logger.passed()
                 pass()

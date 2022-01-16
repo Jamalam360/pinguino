@@ -19,9 +19,9 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.isModuleEnabled
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 
 /**
@@ -137,7 +137,7 @@ class QuoteExtension : Extension() {
 
     //region Util Methods
     private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?, quoter: User) {
-        val conf = DATABASE.config.getConfig(guild.id)
+        val conf = database.config.getConfig(guild.id)
 
         if (conf.quotesConfig.channel != null) {
             val channel = guild.getChannel(Snowflake(conf.quotesConfig.channel!!))
@@ -170,7 +170,7 @@ class QuoteExtension : Extension() {
 
     private suspend fun Message.quote(quoter: User) {
         val guild = getGuild()
-        val conf = DATABASE.config.getConfig(guild.id)
+        val conf = database.config.getConfig(guild.id)
         val author2ElectricBoogaloo = this.author!!
 
         if (conf.quotesConfig.channel != null) {

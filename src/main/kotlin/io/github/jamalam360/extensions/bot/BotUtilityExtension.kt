@@ -1,15 +1,9 @@
 package io.github.jamalam360.extensions.bot
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
-import io.github.jamalam360.util.DBL_TOKEN
-import io.github.jamalam360.util.DBL_URL
-import io.github.jamalam360.util.PRODUCTION
-import io.github.jamalam360.util.VERSION
-import io.ktor.client.*
-import io.ktor.client.features.json.*
+import io.github.jamalam360.util.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -27,10 +21,6 @@ import kotlin.time.ExperimentalTime
 class BotUtilityExtension : Extension() {
 
     override val name = "utility"
-    private val client = HttpClient {
-        install(JsonFeature)
-    }
-    private val scheduler = Scheduler()
 
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
     private val dblDelay = DateTimePeriod(minutes = 10) //Every 10 minutes

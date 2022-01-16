@@ -11,9 +11,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.rest.builder.message.create.embed
-import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
+import io.github.jamalam360.util.lenientClient
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.delay
@@ -33,14 +31,6 @@ import kotlin.time.ExperimentalTime
 class FunExtension : Extension() {
     override val name: String = "fun"
     private val random = Random.Default
-    private val client = HttpClient {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(json = kotlinx.serialization.json.Json {
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
-    }
 
     override suspend fun setup() {
         publicSlashCommand {
@@ -94,7 +84,8 @@ class FunExtension : Extension() {
                 description = "Get a random photo of a dog!"
 
                 action {
-                    val response = client.get<DogApiResponse>("https://dog.jamalam.tech/api/v0/breeds/image/random")
+                    val response =
+                        lenientClient.get<DogApiResponse>("https://dog.jamalam.tech/api/v0/breeds/image/random")
 
                     if (response.status == "success") {
                         respond {
@@ -116,7 +107,7 @@ class FunExtension : Extension() {
                 description = "Ask the magic 8-ball a question!"
 
                 action {
-                    val response = client.get<EightBallApiResponse>(
+                    val response = lenientClient.get<EightBallApiResponse>(
                         "https://8ball.delegator.com/magic/JSON/" + URLEncoder.encode(
                             arguments.question,
                             Charset.defaultCharset()
@@ -142,7 +133,7 @@ class FunExtension : Extension() {
                 description = "Get an xkcd comic!"
 
                 action {
-                    val response = client.get<XkcdApiResponse>(
+                    val response = lenientClient.get<XkcdApiResponse>(
                         if (arguments.comic != null) {
                             "https://xkcd.com/${arguments.comic}/info.0.json"
                         } else {
@@ -170,7 +161,7 @@ class FunExtension : Extension() {
                 description = "Kanye as a service (send help)"
 
                 action {
-                    val response = client.get<KanyeApiResponse>("https://api.kanye.rest/")
+                    val response = lenientClient.get<KanyeApiResponse>("https://api.kanye.rest/")
 
                     respond {
                         content = "'${response.quote}' - Kanye West"
@@ -183,7 +174,7 @@ class FunExtension : Extension() {
                 description = "Predict the age of a person!"
 
                 action {
-                    val response = client.get<AgeApiResponse>(
+                    val response = lenientClient.get<AgeApiResponse>(
                         "https://api.agify.io/?name=${
                             URLEncoder.encode(
                                 arguments.name,
@@ -203,7 +194,7 @@ class FunExtension : Extension() {
                 description = "Get a random activity, for when you're bored!"
 
                 action {
-                    val response = client.get<BoredApiResponse>("https://www.boredapi.com/api/activity/")
+                    val response = lenientClient.get<BoredApiResponse>("https://www.boredapi.com/api/activity/")
 
                     respond {
                         content = response.activity
@@ -216,7 +207,7 @@ class FunExtension : Extension() {
                 description = "Get a random Chuck Norris joke!"
 
                 action {
-                    val response = client.get<ChuckNorrisApiResponse>("https://api.chucknorris.io/jokes/random")
+                    val response = lenientClient.get<ChuckNorrisApiResponse>("https://api.chucknorris.io/jokes/random")
 
                     respond {
                         content = response.value
@@ -229,7 +220,7 @@ class FunExtension : Extension() {
                 description = "Get a random Donald Trump quote!"
 
                 action {
-                    val response = client.get<DonaldApiResponse>("https://www.tronalddump.io/random/quote")
+                    val response = lenientClient.get<DonaldApiResponse>("https://www.tronalddump.io/random/quote")
 
                     respond {
                         content = "'${response.value}' - Donald Trump"
@@ -242,7 +233,7 @@ class FunExtension : Extension() {
                 description = "Get a random cat picture!"
 
                 action {
-                    val response = client.get<CatApiResponse>("https://aws.random.cat/meow")
+                    val response = lenientClient.get<CatApiResponse>("https://aws.random.cat/meow")
 
                     respond {
                         embed {
@@ -258,7 +249,7 @@ class FunExtension : Extension() {
                 description = "Get a random dad joke!"
 
                 action {
-                    val response = client.get<DadJokeApiResponse>("https://icanhazdadjoke.com/") {
+                    val response = lenientClient.get<DadJokeApiResponse>("https://icanhazdadjoke.com/") {
                         contentType(ContentType.Application.Json)
                     }
 

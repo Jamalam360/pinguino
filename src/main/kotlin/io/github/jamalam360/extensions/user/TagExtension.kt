@@ -8,8 +8,8 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.hasModeratorRole
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 
 /**
@@ -30,7 +30,7 @@ class TagExtension : Extension() {
                 description = "Use a tag"
 
                 action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    val conf = database.config.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
                         respond {
@@ -49,7 +49,7 @@ class TagExtension : Extension() {
                 description = "List all available tags"
 
                 action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    val conf = database.config.getConfig(guild!!.id)
                     var response = ""
 
                     if (conf.tagsConfig.tags.isEmpty()) {
@@ -76,7 +76,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    val conf = database.config.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags.size < 50) {
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
@@ -85,7 +85,7 @@ class TagExtension : Extension() {
                             }
                         } else {
                             conf.tagsConfig.tags[arguments.name.lowercase()] = arguments.content
-                            DATABASE.config.updateConfig(guild!!.id, conf)
+                            database.config.updateConfig(guild!!.id, conf)
 
                             respond {
                                 content = "Successfully created tag `${arguments.name}`"
@@ -115,7 +115,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = DATABASE.config.getConfig(guild!!.id)
+                    val conf = database.config.getConfig(guild!!.id)
 
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
                             respond {
@@ -123,7 +123,7 @@ class TagExtension : Extension() {
                             }
                         } else {
                             conf.tagsConfig.tags.remove(arguments.name.lowercase())
-                            DATABASE.config.updateConfig(guild!!.id, conf)
+                            database.config.updateConfig(guild!!.id, conf)
 
                             respond {
                                 content = "Successfully deleted tag `${arguments.name}`"

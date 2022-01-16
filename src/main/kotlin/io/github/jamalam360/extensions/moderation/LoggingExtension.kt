@@ -17,7 +17,7 @@ import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
-import io.github.jamalam360.DATABASE
+import io.github.jamalam360.util.database
 import kotlinx.datetime.Clock
 
 /**
@@ -86,7 +86,7 @@ class LoggingExtension : Extension() {
         colour: Color = DISCORD_BLURPLE,
         imageUrl: String = ""
     ): Message? {
-        val conf = DATABASE.config.getConfig(guild.id)
+        val conf = database.config.getConfig(guild.id)
 
         if (conf.loggingConfig.channel != null) {
             val channel = guild.getChannel(Snowflake(conf.loggingConfig.channel!!))

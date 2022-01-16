@@ -3,10 +3,10 @@ package io.github.jamalam360.database
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.database.migration.migrate
+import io.github.jamalam360.util.database
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
@@ -71,7 +71,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         return try {
             collection.findOne(ServerConfig::id eq id.value) != null
         } catch (e: MissingKotlinParameterException) {
-            migrate(DATABASE.db)
+            migrate(database.db)
             hasConfig(id)
         }
     }

@@ -11,9 +11,9 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.isModuleEnabled
+import io.github.jamalam360.util.database
 
 /**
  * @author  Jamalam360
@@ -49,7 +49,7 @@ class NotificationsExtension : Extension() {
 
     //region Util Methods
     private suspend fun sendGreeting(guild: Guild, user: User) {
-        val conf = DATABASE.config.getConfig(guild.id)
+        val conf = database.config.getConfig(guild.id)
 
         if (conf.notificationsConfig.greetingChannel != null) {
             val channel = guild.getChannel(Snowflake(conf.notificationsConfig.greetingChannel!!))
@@ -68,7 +68,7 @@ class NotificationsExtension : Extension() {
     }
 
     private suspend fun sendFarewell(guild: Guild, user: User) {
-        val conf = DATABASE.config.getConfig(guild.id)
+        val conf = database.config.getConfig(guild.id)
 
         if (conf.notificationsConfig.greetingChannel != null) {
             val channel = guild.getChannel(Snowflake(conf.notificationsConfig.greetingChannel!!))

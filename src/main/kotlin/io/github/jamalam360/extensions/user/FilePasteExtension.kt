@@ -14,13 +14,12 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.builder.message.create.embed
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.Modules
 import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.isModuleEnabled
+import io.github.jamalam360.util.client
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
-import io.ktor.client.*
-import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.utils.io.jvm.javaio.*
@@ -35,10 +34,6 @@ import kotlin.time.ExperimentalTime
 class FilePasteExtension : Extension() {
     override val name = "file-paste"
 
-    private val client = HttpClient {
-        install(JsonFeature)
-    }
-
     override suspend fun setup() {
         event<MessageCreateEvent> {
             check {
@@ -50,7 +45,7 @@ class FilePasteExtension : Extension() {
                     return@action
                 }
 
-                val conf: ServerConfig = DATABASE.config.getConfig(event.member!!.guildId)
+                val conf: ServerConfig = database.config.getConfig(event.member!!.guildId)
 
                 event.message.attachments.forEach {
                     if (!it.isImage && (it.url.endsWith(".txt") || it.url.endsWith(".log"))) {

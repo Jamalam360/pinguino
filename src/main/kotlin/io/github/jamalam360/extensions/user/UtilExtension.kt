@@ -25,12 +25,11 @@ import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
-import io.github.jamalam360.DATABASE
 import io.github.jamalam360.hasModeratorRole
 import io.github.jamalam360.util.PINGUINO_PFP
+import io.github.jamalam360.util.client
+import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
-import io.ktor.client.*
-import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -49,15 +48,11 @@ class UtilExtension : Extension() {
     override val name: String = "util"
     private val scheduler = Scheduler()
 
-    private val client = HttpClient {
-        install(JsonFeature)
-    }
-
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
         event<ThreadUpdateEvent> {
             action {
-                if (event.channel.isArchived && DATABASE.savedThreads.shouldSave(event.channel.id)) {
+                if (event.channel.isArchived && database.savedThreads.shouldSave(event.channel.id)) {
                     event.channel.edit {
                         archived = false
                         reason = "Preventing thread from being archived"
@@ -99,7 +94,7 @@ class UtilExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
                     ) {
@@ -165,7 +160,7 @@ class UtilExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(DATABASE.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
                         val before = channel.name
@@ -204,9 +199,9 @@ class UtilExtension : Extension() {
 
                 action {
                     if (arguments.save) {
-                        DATABASE.savedThreads.setSave(channel.id)
+                        database.savedThreads.setSave(channel.id)
                     } else {
-                        DATABASE.savedThreads.setSave(channel.id, false)
+                        database.savedThreads.setSave(channel.id, false)
                     }
 
                     bot.getLoggingExtension().logAction(
@@ -413,7 +408,7 @@ class UtilExtension : Extension() {
             }
 
             action {
-                DATABASE.config.deleteConfig(guild!!.id)
+                database.config.deleteConfig(guild!!.id)
 
                 respond {
                     content = "Config Deleted"
@@ -439,7 +434,7 @@ class UtilExtension : Extension() {
             }
 
             action {
-                DATABASE.config.deleteConfig(guild!!.id)
+                database.config.deleteConfig(guild!!.id)
 
                 respond {
                     content = "Goodbye :wave:"
