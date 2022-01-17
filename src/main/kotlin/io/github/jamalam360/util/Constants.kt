@@ -8,5 +8,5 @@ const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh
         "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
         "31f51ffc334fac125089f7ea.png"
 
-const val VERSION = "v0.5.0"
+const val VERSION = "v0.5.1"
 const val DBL_URL = "https://top.gg/api/bots/896758540784500797/stats"
