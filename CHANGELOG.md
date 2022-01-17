@@ -2,6 +2,8 @@
 
 ## Version 0.5.1
 
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.0...v0.5.1)**
+
 - Moved `UtilExtension` into two separate extensions, `ModeratorUtilityExtension` and
   `UserUtilityExtension`.
 - Moved `Arguments.kt` into the `io.github.jamalam360.util` package.
