@@ -18,8 +18,7 @@ import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
-import io.github.jamalam360.util.database
-import kotlinx.datetime.Clock
+import io.github.jamalam360.util.*
 
 /**
  * @author  Jamalam360
@@ -49,7 +48,27 @@ class LoggingExtension : Extension() {
             }
 
             action {
-                logAction("Message Deleted", event.message!!.content, event.message!!.author!!, event.guild!!.asGuild())
+                event.guild!!.getLogChannel()?.createEmbed {
+                    title = "Message Deleted"
+
+                    setAuthor(event.message!!.author!!)
+                    info()
+                    now()
+
+                    if (event.message!!.content.isNotBlank()) {
+                        field {
+                            name = "Content"
+                            value = event.message!!.content
+                        }
+                    }
+
+                    if (event.message!!.attachments.isNotEmpty()) {
+                        field {
+                            name = "Attachments"
+                            value = event.message!!.attachments.joinToString("\n") { it.url }
+                        }
+                    }
+                }
             }
         }
 
@@ -61,18 +80,30 @@ class LoggingExtension : Extension() {
             action {
                 val msg = event.message.asMessage()
                 @Suppress("SENSELESS_COMPARISON")
-                if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content) {
+                if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content && msg.embeds.size == event.old!!.embeds.size) {
                     val before: String = if (event.old == null) {
                         "**Failed to fetch previous message. The bot may have been offline when it was sent.**"
                     } else {
                         event.old!!.content
                     }
-                    logAction(
-                        "Message Edited",
-                        "Before: *" + before + "*" + "\nAfter: *" + msg.content + "*",
-                        msg.author!!,
-                        msg.getGuild()
-                    )
+
+                    msg.getGuild().getLogChannel()?.createEmbed {
+                        title = "Message Edited"
+
+                        setAuthor(msg.author!!)
+                        info()
+                        now()
+
+                        field {
+                            name = "Before"
+                            value = before
+                        }
+
+                        field {
+                            name = "After"
+                            value = msg.content
+                        }
+                    }
                 }
             }
         }
@@ -89,19 +120,16 @@ class LoggingExtension : Extension() {
     ): Message? {
         val conf = database.config.getConfig(guild.id)
 
-        if (conf.loggingConfig.channel != null) {
+        if (conf.loggingConfig.enabled && conf.loggingConfig.channel != null) {
             val channel = guild.getChannel(Snowflake(conf.loggingConfig.channel!!))
 
             if (channel.type == ChannelType.GuildText) {
                 return (channel as MessageChannel).createEmbed {
                     title = action
                     description = extraContent
-                    author {
-                        name = user.username
-                        icon = user.avatar.url
-                    }
+                    setAuthor(user)
                     color = colour //Bri'ish spelling best
-                    timestamp = Clock.System.now()
+                    now()
 
                     if (image != "") {
                         image = imageUrl
