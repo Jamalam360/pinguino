@@ -11,11 +11,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.Modules
-import io.github.jamalam360.util.SingleChannelArgs
-import io.github.jamalam360.util.SingleRoleArgs
-import io.github.jamalam360.util.database
-import io.github.jamalam360.util.getLoggingExtension
-import io.github.jamalam360.util.hasModeratorRole
+import io.github.jamalam360.util.*
 
 /**
  * @author  Jamalam360
@@ -86,7 +82,7 @@ class ModuleExtension : Extension() {
 
                     action {
                         val conf = database.config.getConfig(guild!!.id)
-                        conf.quotesConfig.channel = arguments.channel.id.value
+                        conf.quotesConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
                         log("Quotes Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
@@ -143,7 +139,7 @@ class ModuleExtension : Extension() {
 
                     action {
                         val conf = database.config.getConfig(guild!!.id)
-                        conf.loggingConfig.channel = arguments.channel.id.value
+                        conf.loggingConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
                         log("Logging Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
@@ -200,7 +196,7 @@ class ModuleExtension : Extension() {
 
                     action {
                         val conf = database.config.getConfig(guild!!.id)
-                        conf.moderationConfig.moderatorRole = arguments.role.id.value
+                        conf.moderationConfig.moderatorRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
                         log("Moderator Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
@@ -217,7 +213,7 @@ class ModuleExtension : Extension() {
 
                     action {
                         val conf = database.config.getConfig(guild!!.id)
-                        conf.moderationConfig.mutedRole = arguments.role.id.value
+                        conf.moderationConfig.mutedRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
                         log("Muted Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
@@ -274,7 +270,7 @@ class ModuleExtension : Extension() {
 
                     action {
                         val conf = database.config.getConfig(guild!!.id)
-                        conf.notificationsConfig.greetingChannel = arguments.channel.id.value
+                        conf.notificationsConfig.greetingChannel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
                         log("Greetings Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)

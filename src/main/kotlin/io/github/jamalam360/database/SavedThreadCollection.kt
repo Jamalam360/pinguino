@@ -13,14 +13,14 @@ import org.litote.kmongo.getCollection
 @Suppress("RemoveExplicitTypeArguments")
 class SavedThreadCollection(db: MongoDatabase) : DatabaseCollection<SavedThread>(db.getCollection<SavedThread>()) {
     fun setSave(thread: Snowflake, save: Boolean = true) {
-        val has = collection.findOne(SavedThread::id eq thread.value) != null
+        val has = collection.findOne(SavedThread::id eq thread.value.toLong()) != null
 
         if (has && !save) {
-            collection.deleteOne(SavedThread::id eq thread.value)
+            collection.deleteOne(SavedThread::id eq thread.value.toLong())
         } else if (!has && save) {
-            collection.insertOne(SavedThread(thread.value))
+            collection.insertOne(SavedThread(thread.value.toLong()))
         }
     }
 
-    fun shouldSave(thread: Snowflake): Boolean = collection.findOne(SavedThread::id eq thread.value) != null
+    fun shouldSave(thread: Snowflake): Boolean = collection.findOne(SavedThread::id eq thread.value.toLong()) != null
 }

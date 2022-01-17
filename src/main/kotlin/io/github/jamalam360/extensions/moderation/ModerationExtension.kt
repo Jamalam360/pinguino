@@ -26,8 +26,6 @@ import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.Modules
-import io.github.jamalam360.util.SingleRoleArgs
-import io.github.jamalam360.util.SingleUserArgs
 import io.github.jamalam360.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -72,12 +70,12 @@ class ModerationExtension : Extension() {
                     action {
                         val conf = database.config.getConfig(guild!!.id)
 
-                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
+                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value.toLong())) {
                             respond {
                                 content = "${arguments.role.mention} is already on the auto-join list!"
                             }
                         } else {
-                            conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value)
+                            conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value.toLong())
                             database.config.updateConfig(guild!!.id, conf)
 
                             respond {
@@ -94,8 +92,8 @@ class ModerationExtension : Extension() {
                     action {
                         val conf = database.config.getConfig(guild!!.id)
 
-                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value)) {
-                            conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value)
+                        if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value.toLong())) {
+                            conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value.toLong())
                             database.config.updateConfig(guild!!.id, conf)
 
                             respond {

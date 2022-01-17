@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 
 fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
     return ServerConfig(
-        id.value,
+        id.value.toLong(),
         ServerQuotesConfig::class.getDefault(),
         ServerLoggingConfig::class.getDefault(),
         ServerModerationConfig::class.getDefault(),

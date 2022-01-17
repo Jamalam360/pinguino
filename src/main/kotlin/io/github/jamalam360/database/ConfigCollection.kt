@@ -33,13 +33,13 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         if (!hasConfig(id)) {
             conf = ServerConfig::class.getDefault(id)
             collection.insertOne(conf)
-            configCache[id.value] = conf
+            configCache[id.value.toLong()] = conf
         } else {
-            if (!configCache.containsKey(id.value)) {
-                conf = collection.findOne(ServerConfig::id eq id.value)!!
-                configCache[id.value] = conf
+            if (!configCache.containsKey(id.value.toLong())) {
+                conf = collection.findOne(ServerConfig::id eq id.value.toLong())!!
+                configCache[id.value.toLong()] = conf
             } else {
-                conf = configCache[id.value]!!
+                conf = configCache[id.value.toLong()]!!
             }
         }
 
@@ -53,12 +53,12 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
      *  @param updated the updated config object
      */
     fun updateConfig(id: Snowflake, updated: ServerConfig) {
-        collection.updateOne(ServerConfig::id eq id.value, updated)
-        configCache[id.value] = updated
+        collection.updateOne(ServerConfig::id eq id.value.toLong(), updated)
+        configCache[id.value.toLong()] = updated
     }
 
     fun deleteConfig(id: Snowflake) {
-        collection.deleteOne(ServerConfig::id eq id.value)
+        collection.deleteOne(ServerConfig::id eq id.value.toLong())
     }
 
     /**
@@ -69,7 +69,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
      */
     private fun hasConfig(id: Snowflake): Boolean {
         return try {
-            collection.findOne(ServerConfig::id eq id.value) != null
+            collection.findOne(ServerConfig::id eq id.value.toLong()) != null
         } catch (e: MissingKotlinParameterException) {
             migrate(database.db)
             hasConfig(id)

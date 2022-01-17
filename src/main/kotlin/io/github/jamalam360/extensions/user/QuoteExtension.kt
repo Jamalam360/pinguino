@@ -60,7 +60,7 @@ class QuoteExtension : Extension() {
                             this.guild!!.asGuild(),
                             arguments.quote,
                             arguments.author.username,
-                            arguments.author.avatar.url,
+                            arguments.author.avatar!!.url,
                             user.asUser()
                         )
 
@@ -183,7 +183,7 @@ class QuoteExtension : Extension() {
                     }
                     author {
                         name = author2ElectricBoogaloo.username
-                        icon = author2ElectricBoogaloo.avatar.url
+                        icon = author2ElectricBoogaloo.avatar!!.url
                     }
 
                     if (attachments.isNotEmpty()) {

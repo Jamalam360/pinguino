@@ -61,7 +61,7 @@ class NotificationsExtension : Extension() {
                     } else {
                         conf.notificationsConfig.greetingMessage!!.replace("\$user", user.username)
                     }
-                    image = user.avatar.url
+                    image = user.avatar!!.url
                 }
             }
         }
@@ -80,7 +80,7 @@ class NotificationsExtension : Extension() {
                     } else {
                         conf.notificationsConfig.farewellMessage!!.replace("\$user", user.username)
                     }
-                    image = user.avatar.url
+                    image = user.avatar!!.url
                 }
             }
         }

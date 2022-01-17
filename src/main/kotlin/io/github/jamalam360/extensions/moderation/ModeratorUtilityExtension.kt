@@ -94,7 +94,7 @@ class ModeratorUtilityExtension : Extension() {
                     this.title = arguments.string
                     this.author = EmbedBuilder.Author()
                     this.author!!.name = user.asUser().username
-                    this.author!!.icon = user.asUser().avatar.url
+                    this.author!!.icon = user.asUser().avatar!!.url
                 }
 
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4D"))
@@ -191,7 +191,7 @@ class ModeratorUtilityExtension : Extension() {
 
                         if (arguments.author != null) {
                             this.author!!.name = arguments.author!!.username
-                            this.author!!.icon = arguments.author!!.avatar.url
+                            this.author!!.icon = arguments.author!!.avatar!!.url
                         }
                     }
 
@@ -208,7 +208,7 @@ class ModeratorUtilityExtension : Extension() {
 
                             if (arguments.author != null) {
                                 this.author!!.name = arguments.author!!.username
-                                this.author!!.icon = arguments.author!!.avatar.url
+                                this.author!!.icon = arguments.author!!.avatar!!.url
                             }
                         }
                     }

@@ -36,7 +36,7 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
 fun EmbedBuilder.setAuthor(user: User) {
     author {
         name = user.username
-        icon = user.avatar.url
+        icon = user.avatar!!.url
     }
 }
 
