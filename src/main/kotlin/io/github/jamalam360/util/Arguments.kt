@@ -1,11 +1,7 @@
-package io.github.jamalam360
+package io.github.jamalam360.util
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
-import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.role
-import com.kotlindiscord.kord.extensions.commands.converters.impl.user
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 
 /**
  * @author  Jamalam360
@@ -35,5 +31,12 @@ open class SingleUserArgs : Arguments() {
     val user by user(
         "user",
         "The user"
+    )
+}
+
+class SingleStringArgs : Arguments() {
+    val string by string(
+        "string",
+        "The string"
     )
 }

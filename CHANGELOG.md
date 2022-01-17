@@ -4,4 +4,5 @@
 
 - Moved `UtilExtension` into two separate extensions, `ModeratorUtilityExtension` and
   `UserUtilityExtension`.
-- Moved `Arguments.kt` into the `io.github.jamalam360.util` package
+- Moved `Arguments.kt` into the `io.github.jamalam360.util` package.
+- Made this changelog file.

@@ -11,8 +11,8 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import io.github.jamalam360.Modules
-import io.github.jamalam360.SingleChannelArgs
-import io.github.jamalam360.SingleRoleArgs
+import io.github.jamalam360.util.SingleChannelArgs
+import io.github.jamalam360.util.SingleRoleArgs
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 import io.github.jamalam360.util.hasModeratorRole

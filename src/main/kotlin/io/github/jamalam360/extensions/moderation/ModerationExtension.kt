@@ -26,8 +26,8 @@ import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.Modules
-import io.github.jamalam360.SingleRoleArgs
-import io.github.jamalam360.SingleUserArgs
+import io.github.jamalam360.util.SingleRoleArgs
+import io.github.jamalam360.util.SingleUserArgs
 import io.github.jamalam360.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
