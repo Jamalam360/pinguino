@@ -52,10 +52,7 @@ class BotUtilityExtension : Extension() {
         if (PRODUCTION) {
             client.post<HttpResponse>(DBL_URL) {
                 contentType(ContentType.Application.Json)
-
-                headers {
-                    append("Authorization", DBL_TOKEN)
-                }
+                header("Authorization", DBL_TOKEN)
                 body = DBLStatisticBody(kord.guilds.count())
             }
 
