@@ -3,14 +3,12 @@ package io.github.jamalam360.extensions.bot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
-import io.github.jamalam360.util.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.github.jamalam360.api.TopGg
+import io.github.jamalam360.util.PRODUCTION
+import io.github.jamalam360.util.VERSION
+import io.github.jamalam360.util.scheduler
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
@@ -19,11 +17,11 @@ import kotlin.time.ExperimentalTime
  */
 @OptIn(ExperimentalTime::class)
 class BotUtilityExtension : Extension() {
-
     override val name = "utility"
 
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
-    private val dblDelay = DateTimePeriod(minutes = 10) //Every 10 minutes
+    private val dblDelay = DateTimePeriod(minutes = 30) //Every 10 minutes
+    private val topGg = TopGg()
 
     override suspend fun setup() {
         // Set initial presence (without the delay there is an error)
@@ -50,11 +48,7 @@ class BotUtilityExtension : Extension() {
 
     private suspend fun setDBLStats() {
         if (PRODUCTION) {
-            client.post<HttpResponse>(DBL_URL) {
-                contentType(ContentType.Application.Json)
-                header("Authorization", DBL_TOKEN)
-                body = DBLStatisticBody(kord.guilds.count())
-            }
+            topGg.sendServerCount(kord.guilds.count())
 
             scheduler.schedule(seconds = dblDelay.seconds.toLong()) {
                 setDBLStats()
@@ -62,12 +56,6 @@ class BotUtilityExtension : Extension() {
         }
     }
 }
-
-@Serializable
-data class DBLStatisticBody(
-    @SerialName("server_count")
-    val count: Int
-)
 
 @Suppress("unused")
 enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {

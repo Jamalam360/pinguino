@@ -15,15 +15,11 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
+import io.github.jamalam360.api.HastebinApi
 import io.github.jamalam360.database.entity.ServerConfig
-import io.github.jamalam360.util.client
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 import io.github.jamalam360.util.isModuleEnabled
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.utils.io.jvm.javaio.*
-import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 
 /**
@@ -33,6 +29,8 @@ import kotlin.time.ExperimentalTime
 @OptIn(KordPreview::class)
 class FilePasteExtension : Extension() {
     override val name = "file-paste"
+
+    private val hasteBin = HastebinApi()
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
@@ -68,28 +66,24 @@ class FilePasteExtension : Extension() {
                                     label = "Yes"
 
                                     action {
-                                        client.post<HastebinApiResponse>(conf.filePasteConfig.hastebinUrl + "documents") {
-                                            body = String(
-                                                client.get<HttpResponse>(it.url).content.toInputStream()
-                                                    .readAllBytes()
-                                            )
-                                        }.let { hastebinApiResponse ->
-                                            respond {
-                                                embed {
-                                                    title = "File Uploaded to Hastebin"
-                                                    url =
-                                                        "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse.key}"
-                                                    color = DISCORD_GREEN
+                                        hasteBin.pasteFromCdn(conf.filePasteConfig.hastebinUrl, it.url)
+                                            .let { hastebinApiResponse ->
+                                                respond {
+                                                    embed {
+                                                        title = "File Uploaded to Hastebin"
+                                                        url =
+                                                            "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse}"
+                                                        color = DISCORD_GREEN
+                                                    }
                                                 }
-                                            }
 
-                                            bot.getLoggingExtension().logAction(
-                                                "Uploaded File to Hastebin",
-                                                "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse.key}",
-                                                user.asUser(),
-                                                guild!!.asGuild()
-                                            )
-                                        }
+                                                bot.getLoggingExtension().logAction(
+                                                    "Uploaded File to Hastebin",
+                                                    "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse}",
+                                                    user.asUser(),
+                                                    guild!!.asGuild()
+                                                )
+                                            }
                                     }
                                 }
                             }
@@ -100,6 +94,4 @@ class FilePasteExtension : Extension() {
         }
     }
 
-    @Serializable
-    data class HastebinApiResponse(val key: String)
 }

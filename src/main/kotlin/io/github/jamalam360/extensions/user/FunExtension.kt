@@ -11,14 +11,8 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.rest.builder.message.create.embed
-import io.github.jamalam360.util.lenientClient
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.github.jamalam360.api.*
 import kotlinx.coroutines.delay
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import java.net.URLEncoder
-import java.nio.charset.Charset
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -30,7 +24,18 @@ import kotlin.time.ExperimentalTime
 @OptIn(KordPreview::class, ExperimentalTime::class)
 class FunExtension : Extension() {
     override val name: String = "fun"
+
     private val random = Random.Default
+    private val dog = DogApi()
+    private val eightBall = EightBallApi()
+    private val xkcd = XkcdApi()
+    private val kanye = KanyeApi()
+    private val age = AgeApi()
+    private val bored = BoredApi()
+    private val chuck = ChuckNorrisApi()
+    private val donald = DonaldApi()
+    private val cat = CatApi()
+    private val dad = DadJokeApi()
 
     override suspend fun setup() {
         publicSlashCommand {
@@ -84,19 +89,10 @@ class FunExtension : Extension() {
                 description = "Get a random photo of a dog!"
 
                 action {
-                    val response =
-                        lenientClient.get<DogApiResponse>("https://dog.jamalam.tech/api/v0/breeds/image/random")
-
-                    if (response.status == "success") {
-                        respond {
-                            embed {
-                                title = "Look at this cute dog!"
-                                image = response.message
-                            }
-                        }
-                    } else {
-                        respond {
-                            content = "An unexpected error occurred"
+                    respond {
+                        embed {
+                            title = "Look at this cute dog!"
+                            image = dog.getRandomDog()
                         }
                     }
                 }
@@ -107,13 +103,6 @@ class FunExtension : Extension() {
                 description = "Ask the magic 8-ball a question!"
 
                 action {
-                    val response = lenientClient.get<EightBallApiResponse>(
-                        "https://8ball.delegator.com/magic/JSON/" + URLEncoder.encode(
-                            arguments.question,
-                            Charset.defaultCharset()
-                        )
-                    )
-
                     respond {
                         content = "Asking the magic eight ball ${arguments.question}"
                     }
@@ -123,7 +112,7 @@ class FunExtension : Extension() {
                     }
 
                     interactionResponse.edit {
-                        content = "The magic eight ball answered: ${response.magic.answer}"
+                        content = "The magic eight ball answered: ${eightBall.ask(arguments.question)}"
                     }
                 }
             }
@@ -133,14 +122,8 @@ class FunExtension : Extension() {
                 description = "Get an xkcd comic!"
 
                 action {
-                    val response = lenientClient.get<XkcdApiResponse>(
-                        if (arguments.comic != null) {
-                            "https://xkcd.com/${arguments.comic}/info.0.json"
-                        } else {
-                            "https://xkcd.com/info.0.json"
-                        }
-                    )
-
+                    val response =
+                        if (arguments.comic != null) xkcd.getComic(arguments.comic!!) else xkcd.getLatestComic()
                     respond {
                         embed {
                             title = if (arguments.comic != null) {
@@ -161,10 +144,8 @@ class FunExtension : Extension() {
                 description = "Kanye as a service (send help)"
 
                 action {
-                    val response = lenientClient.get<KanyeApiResponse>("https://api.kanye.rest/")
-
                     respond {
-                        content = "'${response.quote}' - Kanye West"
+                        content = "'${kanye.getQuote()}' - Kanye West"
                     }
                 }
             }
@@ -174,17 +155,9 @@ class FunExtension : Extension() {
                 description = "Predict the age of a person!"
 
                 action {
-                    val response = lenientClient.get<AgeApiResponse>(
-                        "https://api.agify.io/?name=${
-                            URLEncoder.encode(
-                                arguments.name,
-                                Charset.defaultCharset()
-                            )
-                        }"
-                    )
-
                     respond {
-                        content = "With a name like ${arguments.name}, they must be ${response.age} years old!"
+                        content =
+                            "With a name like ${arguments.name}, they must be ${age.predictAge(arguments.name)} years old!"
                     }
                 }
             }
@@ -194,10 +167,8 @@ class FunExtension : Extension() {
                 description = "Get a random activity, for when you're bored!"
 
                 action {
-                    val response = lenientClient.get<BoredApiResponse>("https://www.boredapi.com/api/activity/")
-
                     respond {
-                        content = response.activity
+                        content = bored.getActivity()
                     }
                 }
             }
@@ -207,10 +178,8 @@ class FunExtension : Extension() {
                 description = "Get a random Chuck Norris joke!"
 
                 action {
-                    val response = lenientClient.get<ChuckNorrisApiResponse>("https://api.chucknorris.io/jokes/random")
-
                     respond {
-                        content = response.value
+                        content = chuck.getExcellentChuckNorrisBasedJoke()
                     }
                 }
             }
@@ -220,10 +189,8 @@ class FunExtension : Extension() {
                 description = "Get a random Donald Trump quote!"
 
                 action {
-                    val response = lenientClient.get<DonaldApiResponse>("https://www.tronalddump.io/random/quote")
-
                     respond {
-                        content = "'${response.value}' - Donald Trump"
+                        content = "'${donald.getBasedOpinionsYesThisNameIsSarcastic()}' - Donald Trump"
                     }
                 }
             }
@@ -233,12 +200,10 @@ class FunExtension : Extension() {
                 description = "Get a random cat picture!"
 
                 action {
-                    val response = lenientClient.get<CatApiResponse>("https://aws.random.cat/meow")
-
                     respond {
                         embed {
                             title = "Look at this cute cat!"
-                            image = response.file
+                            image = cat.getRandomCat()
                         }
                     }
                 }
@@ -249,12 +214,8 @@ class FunExtension : Extension() {
                 description = "Get a random dad joke!"
 
                 action {
-                    val response = lenientClient.get<DadJokeApiResponse>("https://icanhazdadjoke.com/") {
-                        contentType(ContentType.Application.Json)
-                    }
-
                     respond {
-                        content = response.joke
+                        content = dad.getTheFunnyHaHa()
                     }
                 }
             }
@@ -281,65 +242,5 @@ class FunExtension : Extension() {
             "The name of the person you want to predict the age of",
         )
     }
-
-    @Serializable
-    data class DogApiResponse(val message: String, val status: String)
-
-    @Serializable
-    data class EightBallApiResponse(val magic: EightBall)
-
-    @Serializable
-    data class EightBall(val question: String, val answer: String, val type: String)
-
-    @Serializable
-    data class XkcdApiResponse(
-        val month: String,
-        val num: Int,
-        val link: String,
-        val year: String,
-        val news: String,
-        @SerialName("safe_title")
-        val safeTitle: String,
-        val transcript: String,
-        val alt: String,
-        val img: String,
-        val title: String,
-        val day: String
-    )
-
-    @Serializable
-    data class KanyeApiResponse(val quote: String)
-
-    @Serializable
-    data class AgeApiResponse(val name: String, val age: Int, val count: Int)
-
-    @Serializable
-    data class BoredApiResponse(
-        val activity: String,
-        val type: String,
-        val participants: Int,
-        val price: Float,
-        val link: String,
-        val key: String,
-        val accessibility: Float
-    )
-
-    @Serializable
-    data class ChuckNorrisApiResponse(
-        @SerialName("icon_url")
-        val iconUrl: String,
-        val id: String,
-        val url: String,
-        val value: String
-    )
-
-    @Serializable
-    data class DonaldApiResponse(val value: String)
-
-    @Serializable
-    data class CatApiResponse(val file: String)
-
-    @Serializable
-    data class DadJokeApiResponse(val id: String, val joke: String, val status: Int)
 }
 
