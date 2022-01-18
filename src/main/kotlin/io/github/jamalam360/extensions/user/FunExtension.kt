@@ -12,6 +12,7 @@ import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.util.lenientClient
+import io.github.jamalam360.api.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.delay
@@ -30,7 +31,10 @@ import kotlin.time.ExperimentalTime
 @OptIn(KordPreview::class, ExperimentalTime::class)
 class FunExtension : Extension() {
     override val name: String = "fun"
+
     private val random = Random.Default
+    private val dog = DogApi()
+    private val eightBall = EightBallApi()
 
     override suspend fun setup() {
         publicSlashCommand {
@@ -84,21 +88,12 @@ class FunExtension : Extension() {
                 description = "Get a random photo of a dog!"
 
                 action {
-                    val response =
-                        lenientClient.get<DogApiResponse>("https://dog.jamalam.tech/api/v0/breeds/image/random")
-
-                    if (response.status == "success") {
                         respond {
                             embed {
                                 title = "Look at this cute dog!"
-                                image = response.message
+                                image = dog.getRandomDog()
                             }
                         }
-                    } else {
-                        respond {
-                            content = "An unexpected error occurred"
-                        }
-                    }
                 }
             }
 
@@ -107,13 +102,6 @@ class FunExtension : Extension() {
                 description = "Ask the magic 8-ball a question!"
 
                 action {
-                    val response = lenientClient.get<EightBallApiResponse>(
-                        "https://8ball.delegator.com/magic/JSON/" + URLEncoder.encode(
-                            arguments.question,
-                            Charset.defaultCharset()
-                        )
-                    )
-
                     respond {
                         content = "Asking the magic eight ball ${arguments.question}"
                     }
@@ -123,7 +111,7 @@ class FunExtension : Extension() {
                     }
 
                     interactionResponse.edit {
-                        content = "The magic eight ball answered: ${response.magic.answer}"
+                        content = "The magic eight ball answered: ${eightBall.ask(arguments.question)}"
                     }
                 }
             }
@@ -281,65 +269,5 @@ class FunExtension : Extension() {
             "The name of the person you want to predict the age of",
         )
     }
-
-    @Serializable
-    data class DogApiResponse(val message: String, val status: String)
-
-    @Serializable
-    data class EightBallApiResponse(val magic: EightBall)
-
-    @Serializable
-    data class EightBall(val question: String, val answer: String, val type: String)
-
-    @Serializable
-    data class XkcdApiResponse(
-        val month: String,
-        val num: Int,
-        val link: String,
-        val year: String,
-        val news: String,
-        @SerialName("safe_title")
-        val safeTitle: String,
-        val transcript: String,
-        val alt: String,
-        val img: String,
-        val title: String,
-        val day: String
-    )
-
-    @Serializable
-    data class KanyeApiResponse(val quote: String)
-
-    @Serializable
-    data class AgeApiResponse(val name: String, val age: Int, val count: Int)
-
-    @Serializable
-    data class BoredApiResponse(
-        val activity: String,
-        val type: String,
-        val participants: Int,
-        val price: Float,
-        val link: String,
-        val key: String,
-        val accessibility: Float
-    )
-
-    @Serializable
-    data class ChuckNorrisApiResponse(
-        @SerialName("icon_url")
-        val iconUrl: String,
-        val id: String,
-        val url: String,
-        val value: String
-    )
-
-    @Serializable
-    data class DonaldApiResponse(val value: String)
-
-    @Serializable
-    data class CatApiResponse(val file: String)
-
-    @Serializable
-    data class DadJokeApiResponse(val id: String, val joke: String, val status: Int)
 }
 

@@ -23,19 +23,19 @@ import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam360.api.HastebinApi
+import io.github.jamalam360.api.LinkApi
 import io.github.jamalam360.util.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.toList
-import kotlinx.serialization.Serializable
 
 /**
  * @author  Jamalam360
  */
 class UserUtilityExtension : Extension() {
     override val name: String = "user-utility"
+
+    private val hasteBin = HastebinApi()
+    private val link = LinkApi()
 
     override suspend fun setup() {
         event<ThreadUpdateEvent> {
@@ -251,15 +251,11 @@ class UserUtilityExtension : Extension() {
             description = "Shorten a link"
 
             action {
-                client.put<LinkAPIResponse> {
-                    url("https://link.jamalam.tech/api/link")
-                    contentType(ContentType.Application.Json)
-                    body = "{\"link\": \"${arguments.link}\"}"
-                }.let {
+                link.shorten(arguments.link).let {
                     respond {
                         embed {
                             title = "Shortened Link"
-                            url = it.link
+                            url = it
                             color = DISCORD_GREEN
                         }
                     }
@@ -278,17 +274,12 @@ class UserUtilityExtension : Extension() {
                 description = "Use a cdn.discordapp.com link to paste your file"
 
                 action {
-                    client.post<HastebinApiResponse>("https://www.toptal.com/developers/hastebin/documents") {
-                        body = String(
-                            client.get<HttpResponse>(arguments.link).content.toInputStream()
-                                .readAllBytes()
-                        )
-                    }.let { hastebinApiResponse ->
+                    hasteBin.pasteFromCdn("https://www.toptal.com/developers/hastebin/documents", arguments.link).let {
                         respond {
                             embed {
                                 title = "File Uploaded to Hastebin"
                                 url =
-                                    "https://www.toptal.com/developers/hastebin/${hastebinApiResponse.key}"
+                                    "https://www.toptal.com/developers/hastebin/${it}"
                                 color = DISCORD_GREEN
                             }
                         }
@@ -301,14 +292,12 @@ class UserUtilityExtension : Extension() {
                 description = "Type out your file into the slash command arguments"
 
                 action {
-                    client.post<HastebinApiResponse>("https://www.toptal.com/developers/hastebin/documents") {
-                        body = arguments.string
-                    }.let { hastebinApiResponse ->
+                    hasteBin.paste("https://www.toptal.com/developers/hastebin/documents", arguments.string).let {
                         respond {
                             embed {
                                 title = "File Uploaded to Hastebin"
                                 url =
-                                    "https://www.toptal.com/developers/hastebin/${hastebinApiResponse.key}"
+                                    "https://www.toptal.com/developers/hastebin/${it}"
                                 color = DISCORD_GREEN
                             }
                         }
@@ -360,12 +349,6 @@ class UserUtilityExtension : Extension() {
             }
         }
     }
-
-    @Serializable
-    data class HastebinApiResponse(val key: String)
-
-    @Serializable
-    data class LinkAPIResponse(val link: String)
 
     inner class ThreadRenameArgs : Arguments() {
         val name by string(
