@@ -11,6 +11,7 @@
   created threads
 - The argument of `/thread save` now defaults to `true`
 - Add documentation! Finally!
+- Add `/moderation discipline unmute` to unmute members
 
 ## Version 0.5.1
 

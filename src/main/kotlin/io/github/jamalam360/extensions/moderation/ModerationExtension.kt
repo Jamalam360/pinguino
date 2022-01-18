@@ -192,6 +192,60 @@ class ModerationExtension : Extension() {
                     }
                 }
 
+
+                ephemeralSubCommand(::SingleUserArgs) {
+                    name = "unmute"
+                    description = "Unmute a member"
+
+                    action {
+                        val member = guild!!.getMemberOrNull(arguments.user.id)
+                        val role = database.config.getConfig(guild!!.id).moderationConfig.mutedRole
+
+                        if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
+                            respond {
+                                content = "The muted role is not yet configured for this server"
+                            }
+
+                            return@action
+                        }
+
+                        if (member == null) {
+                            respond {
+                                content = "Cannot find that member!"
+                            }
+                        } else {
+                            if (!member.isBot) {
+                                member.dm {
+                                    val embed = EmbedBuilder()
+                                    embed.title = "Unmuted in ${guild!!.asGuild().name}!"
+                                    embed.description =
+                                        "You have been unmuted in ${guild!!.asGuild().name}"
+                                    embed.footer = EmbedBuilder.Footer()
+                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+
+                                    embeds.add(embed)
+                                }
+                            }
+
+                            member.removeRole(
+                                Snowflake(role),
+                                "Unmuted by ${user.asUser().username}'"
+                            )
+
+                            bot.getLoggingExtension().logAction(
+                                "Member Unmuted",
+                                "Unmuted by ${user.asUser().username}",
+                                member.asUser(),
+                                guild!!.asGuild()
+                            )
+
+                            respond {
+                                content = "Member ${arguments.user.mention} successfully unmuted"
+                            }
+                        }
+                    }
+                }
+
                 ephemeralSubCommand(::KickArgs) {
                     name = "kick"
                     description = "Kick a member"

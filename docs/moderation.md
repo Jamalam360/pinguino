@@ -17,6 +17,8 @@ The moderation module provides traditional moderation commands (ban, mute, kick 
     - `discipline`
         - `mute`
             - Mutes a member
+        - `unmute`
+            - Unmutes a member
         - `kick`
             - Kicks a member
         - `ban`
