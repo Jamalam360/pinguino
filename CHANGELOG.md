@@ -10,6 +10,7 @@
 - There is now a config option (`/module moderation auto-save-threads`) that makes Pinguino automatically save all
   created threads
 - The argument of `/thread save` now defaults to `true`
+- Add documentation! Finally!
 
 ## Version 0.5.1
 
