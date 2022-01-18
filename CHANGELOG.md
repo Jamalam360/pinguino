@@ -1,5 +1,16 @@
 # Pinguino Changelog
 
+## Version 0.5.2
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.1...v0.5.2)**
+
+- Created a dedicated `io.github.jamalam360.api` package for all the web APIs used by Pinguino.
+- Cleaned up `ModuleExtension` by making registering enable/disable commands simple extensions functions.
+- Randomise the profile pictures of `/quote non-user` quotes.
+- There is now a config option (`/module moderation auto-save-threads`) that makes Pinguino automatically save all
+  created threads
+- The argument of `/thread save` now defaults to `true`
+
 ## Version 0.5.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.0...v0.5.1)**

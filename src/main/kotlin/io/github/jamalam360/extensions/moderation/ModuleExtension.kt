@@ -77,7 +77,6 @@ class ModuleExtension : Extension() {
                 hasModeratorRole()
             }
 
-            //region Quotes Module
             group("quotes") {
                 description = "Alter the settings of $quotesModule"
 
@@ -106,9 +105,7 @@ class ModuleExtension : Extension() {
                     }
                 }
             }
-            //endregion
 
-            //region Logging Module
             group("logging") {
                 description = "Alter the settings of $loggingModule"
 
@@ -137,9 +134,7 @@ class ModuleExtension : Extension() {
                     }
                 }
             }
-            //endregion
 
-            //region Moderation Module
             group("moderation") {
                 description = "Alter the settings of $moderationModule"
 
@@ -184,10 +179,25 @@ class ModuleExtension : Extension() {
                         }
                     }
                 }
-            }
-            //endregion
 
-            //region Notifications Module
+                ephemeralSubCommand(::SingleBooleanArgs) {
+                    name = "auto-save-threads"
+                    description = "Set whether threads are prevented from archiving by default"
+
+                    action {
+                        val conf = database.config.getConfig(guild!!.id)
+                        conf.moderationConfig.autoSaveThreads = arguments.boolean
+                        database.config.updateConfig(guild!!.id, conf)
+
+                        log("Auto-save threads updated", "Auto-save threads set to ${arguments.boolean}", user, guild!!)
+
+                        respond {
+                            content = "Successfully set auto-save threads to ${arguments.boolean}"
+                        }
+                    }
+                }
+            }
+
             group("greetings") {
                 description = "Alter the settings of $notificationsModule"
 
@@ -255,9 +265,7 @@ class ModuleExtension : Extension() {
                     }
                 }
             }
-            //endregion
 
-            //region File Upload Module
             group("file-paste") {
                 description = "Alter the settings of $filePasteModule"
 
@@ -288,7 +296,6 @@ class ModuleExtension : Extension() {
                     }
                 }
             }
-            //endregion
         }
         //endregion
     }

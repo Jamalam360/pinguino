@@ -7,7 +7,7 @@ import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.checks.threadFor
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -17,8 +17,10 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.entity.channel.thread.ThreadChannel
+import dev.kord.core.event.channel.thread.ThreadChannelCreateEvent
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -38,6 +40,25 @@ class UserUtilityExtension : Extension() {
     private val link = LinkApi()
 
     override suspend fun setup() {
+        event<ThreadChannelCreateEvent> {
+            action {
+                if (event.channel.guild.getConfig().moderationConfig.autoSaveThreads) {
+                    event.channel.save(true)
+
+                    event.channel.guild.getLogChannel()?.createEmbed {
+                        title = "Thread Created"
+                        description = "${event.channel.mention} saved automatically"
+                        now()
+                        info()
+                        author {
+                            name = "Pinguino"
+                            icon = PINGUINO_PFP
+                        }
+                    }
+                }
+            }
+        }
+
         event<ThreadUpdateEvent> {
             action {
                 if (event.channel.isArchived && database.savedThreads.shouldSave(event.channel.id)) {
@@ -186,11 +207,7 @@ class UserUtilityExtension : Extension() {
                 }
 
                 action {
-                    if (arguments.save) {
-                        database.savedThreads.setSave(channel.id)
-                    } else {
-                        database.savedThreads.setSave(channel.id, false)
-                    }
+                    (channel as ThreadChannel).save(arguments.save)
 
                     bot.getLoggingExtension().logAction(
                         if (arguments.save) "Thread Saved" else "Thread Unsaved",
@@ -358,9 +375,10 @@ class UserUtilityExtension : Extension() {
     }
 
     inner class ThreadSaveArgs : Arguments() {
-        val save by boolean(
+        val save by defaultingBoolean(
             "save",
-            "Whether or not to prevent the thread from archiving"
+            "Whether or not to prevent the thread from archiving",
+            true
         )
     }
 

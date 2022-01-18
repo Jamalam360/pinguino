@@ -7,9 +7,11 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.extensions.moderation.LoggingExtension
 import kotlinx.datetime.Clock
 
@@ -31,6 +33,18 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
     }
 
     return null
+}
+
+fun GuildBehavior.getConfig(): ServerConfig {
+    return database.config.getConfig(this.id)
+}
+
+fun ThreadChannelBehavior.save(save: Boolean = true) {
+    if (save) {
+        database.savedThreads.setSave(this.id, false)
+    } else {
+        database.savedThreads.setSave(this.id, false)
+    }
 }
 
 fun EmbedBuilder.setAuthor(user: User) {
