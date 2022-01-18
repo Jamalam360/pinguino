@@ -1,6 +1,7 @@
 package io.github.jamalam360.extensions.moderation
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashGroup
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
@@ -10,7 +11,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
-import io.github.jamalam360.Modules
+import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.util.*
 
 /**
@@ -27,6 +28,44 @@ class ModuleExtension : Extension() {
     private val notificationsModule: String = "the Greetings module"
     private val filePasteModule: String = "the File Paste module"
 
+    private suspend fun SlashGroup.moduleEnable(moduleName: String, lambda: (ServerConfig) -> Unit) {
+        ephemeralSubCommand {
+            name = "enable"
+            description = "Enables the $moduleName module"
+
+            action {
+                val config = database.config.getConfig(guild!!.id)
+                lambda(config)
+                database.config.updateConfig(guild!!.id, config)
+
+                logModuleEnabled(moduleName, user, guild!!)
+
+                respond {
+                    content = "Successfully enabled the $moduleName module"
+                }
+            }
+        }
+    }
+
+    private suspend fun SlashGroup.moduleDisable(moduleName: String, lambda: (ServerConfig) -> Unit) {
+        ephemeralSubCommand {
+            name = "disable"
+            description = "Disables the $moduleName module"
+
+            action {
+                val config = database.config.getConfig(guild!!.id)
+                lambda(config)
+                database.config.updateConfig(guild!!.id, config)
+
+                logModuleDisabled(moduleName, user, guild!!)
+
+                respond {
+                    content = "Successfully disabled the $moduleName module"
+                }
+            }
+        }
+    }
+
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
         //region Slash Commands
@@ -42,38 +81,12 @@ class ModuleExtension : Extension() {
             group("quotes") {
                 description = "Alter the settings of $quotesModule"
 
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $quotesModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.quotesConfig.enabled = true
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.Quotes.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $quotesModule"
-                        }
-                    }
+                moduleEnable("Quotes") { conf ->
+                    conf.quotesConfig.enabled = true
                 }
 
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $quotesModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.quotesConfig.enabled = false
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.Quotes.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $quotesModule"
-                        }
-                    }
+                moduleDisable("Quotes") { conf ->
+                    conf.quotesConfig.enabled = false
                 }
 
                 ephemeralSubCommand(::SingleChannelArgs) {
@@ -99,38 +112,12 @@ class ModuleExtension : Extension() {
             group("logging") {
                 description = "Alter the settings of $loggingModule"
 
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $loggingModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.loggingConfig.enabled = true
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.Logging.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $loggingModule"
-                        }
-                    }
+                moduleEnable("Logging") { conf ->
+                    conf.loggingConfig.enabled = true
                 }
 
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $loggingModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.loggingConfig.enabled = false
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.Logging.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $loggingModule"
-                        }
-                    }
+                moduleDisable("Logging") { conf ->
+                    conf.loggingConfig.enabled = false
                 }
 
                 ephemeralSubCommand(::SingleChannelArgs) {
@@ -156,38 +143,12 @@ class ModuleExtension : Extension() {
             group("moderation") {
                 description = "Alter the settings of $moderationModule"
 
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $moderationModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.moderationConfig.enabled = true
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.Moderation.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $moderationModule"
-                        }
-                    }
+                moduleEnable("Moderation") { conf ->
+                    conf.moderationConfig.enabled = true
                 }
 
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $moderationModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.moderationConfig.enabled = false
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.Moderation.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $moderationModule"
-                        }
-                    }
+                moduleDisable("Moderation") { conf ->
+                    conf.moderationConfig.enabled = false
                 }
 
                 ephemeralSubCommand(::SingleRoleArgs) {
@@ -230,38 +191,12 @@ class ModuleExtension : Extension() {
             group("greetings") {
                 description = "Alter the settings of $notificationsModule"
 
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $notificationsModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.notificationsConfig.enabled = true
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.Notifications.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $notificationsModule"
-                        }
-                    }
+                moduleEnable("Notifications") { conf ->
+                    conf.notificationsConfig.enabled = true
                 }
 
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $notificationsModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.notificationsConfig.enabled = false
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.Notifications.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $notificationsModule"
-                        }
-                    }
+                moduleDisable("Notifications") { conf ->
+                    conf.notificationsConfig.enabled = false
                 }
 
                 ephemeralSubCommand(::SingleChannelArgs) {
@@ -273,7 +208,12 @@ class ModuleExtension : Extension() {
                         conf.notificationsConfig.greetingChannel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Greetings Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
+                        log(
+                            "Greetings Channel Updated",
+                            "Channel updated to ${arguments.channel.mention}",
+                            user,
+                            guild!!
+                        )
 
                         respond {
                             content = "Successfully set channel to ${arguments.channel.mention}"
@@ -321,38 +261,12 @@ class ModuleExtension : Extension() {
             group("file-paste") {
                 description = "Alter the settings of $filePasteModule"
 
-                ephemeralSubCommand {
-                    name = "enable"
-                    description = "Enable $filePasteModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.filePasteConfig.enabled = true
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleEnabled(Modules.FilePaste.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully enabled $filePasteModule"
-                        }
-                    }
+                moduleEnable("File Paste") { conf ->
+                    conf.filePasteConfig.enabled = true
                 }
 
-                ephemeralSubCommand {
-                    name = "disable"
-                    description = "Disable $filePasteModule"
-
-                    action {
-                        val conf = database.config.getConfig(guild!!.id)
-                        conf.filePasteConfig.enabled = false
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        logModuleDisabled(Modules.FilePaste.readableName, user, guild!!)
-
-                        respond {
-                            content = "Successfully disabled $filePasteModule"
-                        }
-                    }
+                moduleDisable("File Paste") { conf ->
+                    conf.filePasteConfig.enabled = false
                 }
 
                 ephemeralSubCommand(::HastebinUrlArgs) {
