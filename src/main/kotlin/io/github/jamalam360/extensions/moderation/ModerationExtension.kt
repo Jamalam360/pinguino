@@ -7,9 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import dev.kord.common.annotation.KordPreview
@@ -50,7 +48,6 @@ class ModerationExtension : Extension() {
 
     @OptIn(ExperimentalTime::class)
     override suspend fun setup() {
-        //region Slash Commands
         ephemeralSlashCommand {
             name = "moderation"
             description = "Commands for moderators"
@@ -191,7 +188,6 @@ class ModerationExtension : Extension() {
                         }
                     }
                 }
-
 
                 ephemeralSubCommand(::SingleUserArgs) {
                     name = "unmute"
@@ -477,9 +473,7 @@ class ModerationExtension : Extension() {
                 }
             }
         }
-        //endregion
 
-        //region Events
         event<TextChannelThreadCreateEvent> {
             check { failIf(event.channel.member != null) }
 
@@ -521,7 +515,6 @@ class ModerationExtension : Extension() {
                 }
             }
         }
-        //endregion
     }
 
     //region Arguments
