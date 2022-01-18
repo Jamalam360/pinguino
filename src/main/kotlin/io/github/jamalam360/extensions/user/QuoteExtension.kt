@@ -20,6 +20,7 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.Modules
+import io.github.jamalam360.api.DogApi
 import io.github.jamalam360.util.database
 import io.github.jamalam360.util.getLoggingExtension
 import io.github.jamalam360.util.isModuleEnabled
@@ -33,6 +34,7 @@ class QuoteExtension : Extension() {
     override val name = "quotes"
 
     private val quoteText: String = "quote"
+    private val dog = DogApi()
 
     override suspend fun setup() {
         // region Slash commands
@@ -149,8 +151,7 @@ class QuoteExtension : Extension() {
                 if (authorIcon != null) {
                     embedAuthor.icon = authorIcon
                 } else {
-                    embedAuthor.icon =
-                        "https://media.discordapp.net/attachments/892141557552148600/915253183062880267/download_1.png"
+                    embedAuthor.icon = dog.getRandomDog()
                 }
 
                 (channel as MessageChannel).createEmbed {
