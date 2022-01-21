@@ -24,13 +24,16 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.*
+import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.ban
+import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.editRolePermission
 import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.behavior.channel.withTyping
@@ -39,7 +42,7 @@ import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
-import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
 import io.github.jamalam360.util.*
 import kotlinx.coroutines.delay
@@ -51,7 +54,7 @@ import kotlin.time.ExperimentalTime
  * @author Jamalam360
  */
 
-@OptIn(KordPreview::class)
+@OptIn(KordPreview::class, ExperimentalTime::class)
 class ModerationExtension : Extension() {
     override val name: String = "moderation"
 
@@ -63,7 +66,6 @@ class ModerationExtension : Extension() {
         Permission.SendMessagesInThreads,
     )
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun setup() {
         ephemeralSlashCommand {
             name = "moderation"
@@ -86,14 +88,31 @@ class ModerationExtension : Extension() {
 
                         if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value.toLong())) {
                             respond {
-                                content = "${arguments.role.mention} is already on the auto-join list!"
+                                embed {
+                                    info("That role is already on the auto-join list")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value.toLong())
                             database.config.updateConfig(guild!!.id, conf)
 
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Role added to thread auto-join list")
+                                userAuthor(member!!.asUser())
+                                now()
+                                log()
+                            }
+
                             respond {
-                                content = "Successfully added ${arguments.role.mention} to the auto-join list"
+                                embed {
+                                    info("Added role to the auto-join list")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -110,12 +129,29 @@ class ModerationExtension : Extension() {
                             conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value.toLong())
                             database.config.updateConfig(guild!!.id, conf)
 
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Role removed from the thread auto-join list")
+                                userAuthor(member!!.asUser())
+                                now()
+                                log()
+                            }
+
                             respond {
-                                content = "Successfully removed ${arguments.role.mention} from the auto-join list"
+                                embed {
+                                    info("Remove role from the auto-join list")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         } else {
                             respond {
-                                content = "${arguments.role.mention} is not on the auto-join list"
+                                embed {
+                                    info("That role is not on the auto-join list")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -135,7 +171,12 @@ class ModerationExtension : Extension() {
 
                         if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
                             respond {
-                                content = "The muted role is not yet configured for this server"
+                                embed {
+                                    info("The muted role is not yet configured for this server")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
 
                             return@action
@@ -143,19 +184,24 @@ class ModerationExtension : Extension() {
 
                         if (member == null) {
                             respond {
-                                content = "Cannot find that member!"
+                                embed {
+                                    info("Cannot find that member")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             if (!member.isBot) {
                                 member.dm {
-                                    val embed = EmbedBuilder()
-                                    embed.title = "Muted in ${guild!!.asGuild().name}!"
-                                    embed.description =
-                                        "You have been muted in ${guild!!.asGuild().name} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
-                                    embed.footer = EmbedBuilder.Footer()
-                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
-
-                                    embeds.add(embed)
+                                    embed {
+                                        info("Muted in ${guild!!.asGuild().name}!")
+                                        userAuthor(user.asUser())
+                                        now()
+                                        error()
+                                        stringField("Duration", arguments.duration.toString())
+                                        stringField("Reason", arguments.reason)
+                                    }
                                 }
                             }
 
@@ -170,37 +216,45 @@ class ModerationExtension : Extension() {
                                         Snowflake(role),
                                         "Automatic unmute from mute made ${arguments.duration} ago"
                                     )
-                                }
 
-                                bot.getLoggingExtension().logAction(
-                                    "Member Unmuted",
-                                    "Automatic unmute from mute made ${arguments.duration} ago",
-                                    member.asUser(),
-                                    guild!!.asGuild()
-                                )
-                                if (!member.isBot) {
-                                    member.dm {
-                                        val embed = EmbedBuilder()
-                                        embed.title = "Unmuted in ${guild!!.asGuild().name}!"
-                                        embed.description =
-                                            "You have been automatically unmuted from a mute made ${arguments.duration} ago"
-                                        embed.footer = EmbedBuilder.Footer()
-                                        embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
+                                    guild?.getLogChannel()?.createEmbed {
+                                        info("Member Unmuted")
+                                        userAuthor(user.asUser())
+                                        log()
+                                        success()
+                                        userField("Member", member.asUser())
+                                    }
 
-                                        embeds.add(embed)
+                                    if (!member.isBot) {
+                                        member.dm {
+                                            embed {
+                                                info("Unmuted in ${guild!!.asGuild().name}!")
+                                                pinguino()
+                                                now()
+                                                success()
+                                            }
+                                        }
                                     }
                                 }
                             }
 
-                            bot.getLoggingExtension().logAction(
-                                "Member Muted",
-                                "Muted by ${user.asUser().username} for ${arguments.duration.toString()} with the reason '${arguments.reason}'",
-                                member.asUser(),
-                                guild!!.asGuild()
-                            )
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Member Muted")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Duration", arguments.duration.toString())
+                                stringField("Reason", arguments.reason)
+                            }
 
                             respond {
-                                content = "Member ${arguments.user.mention} successfully muted"
+                                embed {
+                                    info("Member Muted")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -216,7 +270,12 @@ class ModerationExtension : Extension() {
 
                         if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
                             respond {
-                                content = "The muted role is not yet configured for this server"
+                                embed {
+                                    info("The muted role is not yet configured for this server")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
 
                             return@action
@@ -224,19 +283,22 @@ class ModerationExtension : Extension() {
 
                         if (member == null) {
                             respond {
-                                content = "Cannot find that member!"
+                                embed {
+                                    info("Cannot find that member")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             if (!member.isBot) {
                                 member.dm {
-                                    val embed = EmbedBuilder()
-                                    embed.title = "Unmuted in ${guild!!.asGuild().name}!"
-                                    embed.description =
-                                        "You have been unmuted in ${guild!!.asGuild().name}"
-                                    embed.footer = EmbedBuilder.Footer()
-                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
-
-                                    embeds.add(embed)
+                                    embed {
+                                        info("Unmuted in ${guild!!.asGuild().name}!")
+                                        userAuthor(user.asUser())
+                                        now()
+                                        success()
+                                    }
                                 }
                             }
 
@@ -245,15 +307,21 @@ class ModerationExtension : Extension() {
                                 "Unmuted by ${user.asUser().username}'"
                             )
 
-                            bot.getLoggingExtension().logAction(
-                                "Member Unmuted",
-                                "Unmuted by ${user.asUser().username}",
-                                member.asUser(),
-                                guild!!.asGuild()
-                            )
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Member Unmuted")
+                                userAuthor(user.asUser())
+                                log()
+                                success()
+                                userField("Member", member.asUser())
+                            }
 
                             respond {
-                                content = "Member ${arguments.user.mention} successfully unmuted"
+                                embed {
+                                    info("Member Unmuted")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -268,33 +336,44 @@ class ModerationExtension : Extension() {
 
                         if (member == null) {
                             respond {
-                                content = "Cannot find that member!"
+                                embed {
+                                    info("Cannot find that member")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             if (!member.isBot) {
                                 member.dm {
-                                    val embed = EmbedBuilder()
-                                    embed.title = "Kicked from ${guild!!.asGuild().name}!"
-                                    embed.description =
-                                        "You have been kicked from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
-                                    embed.footer = EmbedBuilder.Footer()
-                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
-
-                                    embeds.add(embed)
+                                    embed {
+                                        info("Kicked from ${guild!!.asGuild().name}!")
+                                        userAuthor(user.asUser())
+                                        now()
+                                        error()
+                                        stringField("Reason", arguments.reason)
+                                    }
                                 }
                             }
 
                             member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
-                            bot.getLoggingExtension().logAction(
-                                "Member Kicked",
-                                "Kicked by ${user.asUser().username} with reason '${arguments.reason}'",
-                                member.asUser(),
-                                guild!!.asGuild()
-                            )
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Member Kicked")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
 
                             respond {
-                                content = "Member ${arguments.user.mention} successfully kicked"
+                                embed {
+                                    info("Member Kicked")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -309,19 +388,23 @@ class ModerationExtension : Extension() {
 
                         if (member == null) {
                             respond {
-                                content = "Cannot find that member!"
+                                embed {
+                                    info("Cannot find that member")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             if (!member.isBot) {
                                 member.dm {
-                                    val embed = EmbedBuilder()
-                                    embed.title = "Banned from ${guild!!.asGuild().name}!"
-                                    embed.description =
-                                        "You have been banned from ${guild!!.asGuild().name} with the reason '${arguments.reason}'"
-                                    embed.footer = EmbedBuilder.Footer()
-                                    embed.footer!!.text = "Responsible moderator: ${user.asUser().username}"
-
-                                    embeds.add(embed)
+                                    embed {
+                                        info("Banned from ${guild!!.asGuild().name}!")
+                                        userAuthor(user.asUser())
+                                        now()
+                                        error()
+                                        stringField("Reason", arguments.reason)
+                                    }
                                 }
                             }
 
@@ -334,16 +417,22 @@ class ModerationExtension : Extension() {
                                 reason = "Banned by ${user.asUser().username} with reason '${arguments.reason}'"
                             }
 
-
-                            bot.getLoggingExtension().logAction(
-                                "Member Banned",
-                                "Banned by ${user.asUser().username} with reason '${arguments.reason}'",
-                                member.asUser(),
-                                guild!!.asGuild()
-                            )
+                            guild?.getLogChannel()?.createEmbed {
+                                info("Member Banned")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
 
                             respond {
-                                content = "Member ${arguments.user.mention} successfully banned"
+                                embed {
+                                    info("Member Banned")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
                             }
                         }
                     }
@@ -369,12 +458,14 @@ class ModerationExtension : Extension() {
 
                         channel.createMessage("Thread locked by a moderator")
 
-                        bot.getLoggingExtension().logAction(
-                            "Thread Locked",
-                            "${channel.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
+                        guild?.getLogChannel()?.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
 
                         if (arguments.duration != null) {
                             scheduler.schedule(arguments.duration!!.seconds.toLong()) {
@@ -383,12 +474,13 @@ class ModerationExtension : Extension() {
                                     reason = arguments.reason
                                 }
 
-                                bot.getLoggingExtension().logAction(
-                                    "Thread Unlocked",
-                                    "${channel.mention} unlocked automatically after timeout",
-                                    user.asUser(),
-                                    guild!!.asGuild()
-                                )
+                                guild?.getLogChannel()?.createEmbed {
+                                    info("Thread unlocked automatically after timeout")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    log()
+                                    channelField("Channel", channel.asChannel())
+                                }
                             }
                         }
                     } else {
@@ -404,12 +496,14 @@ class ModerationExtension : Extension() {
 
                         text.createMessage("Channel locked by a moderator")
 
-                        bot.getLoggingExtension().logAction(
-                            "Channel Locked",
-                            "${text.mention} locked by ${user.asUser().username} with reason '${arguments.reason}'",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
+                        guild?.getLogChannel()?.createEmbed {
+                            info("Channel locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
 
                         if (arguments.duration != null) {
                             scheduler.schedule(arguments.duration!!.seconds.toLong()) {
@@ -421,17 +515,24 @@ class ModerationExtension : Extension() {
                                     reason = arguments.reason
                                 }
 
-                                bot.getLoggingExtension().logAction(
-                                    "Channel Unlocked",
-                                    "${text.mention} unlocked automatically after timeout",
-                                    user.asUser(),
-                                    guild!!.asGuild()
-                                )
+                                guild?.getLogChannel()?.createEmbed {
+                                    info("Channel unlocked automatically after timeout")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    log()
+                                    channelField("Channel", channel.asChannel())
+                                }
                             }
                         }
                     }
+
                     respond {
-                        content = "Successfully locked channel"
+                        embed {
+                            info("Channel locked")
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 }
             }
@@ -447,44 +548,52 @@ class ModerationExtension : Extension() {
                         channel.asChannel()
                     }
 
-                    if (channel is TextChannelThread) {
-                        channel.edit {
-                            locked = true
-                            reason = "Thread being unlocked by ${user.mention}"
+                    when (channel) {
+                        is TextChannelThread -> {
+                            channel.edit {
+                                locked = true
+                                reason = "Thread being unlocked by ${user.mention}"
+                            }
                         }
+                        is TextChannel -> {
+                            channel.editRolePermission(guild!!.id) {
+                                speakingPermissions.forEach {
+                                    allowed += it
+                                }
 
-                        channel.createMessage("Thread unlocked by a moderator")
-
-                        bot.getLoggingExtension().logAction(
-                            "Thread Unlocked",
-                            "${channel.mention} unlocked by ${user.asUser().username}",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
-
-                        respond {
-                            content = "Successfully unlocked channel"
+                                reason = "Channel being unlocked by ${user.asUser().username}"
+                            }
                         }
-                    } else if (channel is TextChannel) {
-                        channel.editRolePermission(guild!!.id) {
-                            speakingPermissions.forEach {
-                                allowed += it
+                        else -> {
+                            respond {
+                                embed {
+                                    info("Unsupported channel type")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
 
-                            reason = "Channel being unlocked by ${user.asUser().username}"
+                            return@action
                         }
+                    }
 
-                        channel.createMessage("Channel unlocked by a moderator")
+                    (channel as TextChannel).createMessage("Thread unlocked by a moderator")
 
-                        bot.getLoggingExtension().logAction(
-                            "Channel Unlocked",
-                            "${channel.mention} unlocked by ${user.asUser().username}",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
+                    guild?.getLogChannel()?.createEmbed {
+                        info("Channel unlocked")
+                        userAuthor(user.asUser())
+                        now()
+                        log()
+                        channelField("Channel", channel.asChannel())
+                    }
 
-                        respond {
-                            content = "Successfully unlocked channel"
+                    respond {
+                        embed {
+                            info("Channel unlocked")
+                            pinguino()
+                            now()
+                            success()
                         }
                     }
                 }

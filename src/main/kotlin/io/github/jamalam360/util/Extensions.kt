@@ -17,10 +17,7 @@
 
 package io.github.jamalam360.util
 
-import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
-import com.kotlindiscord.kord.extensions.DISCORD_RED
-import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
-import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.*
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
@@ -52,9 +49,7 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
     return null
 }
 
-fun GuildBehavior.getConfig(): ServerConfig {
-    return database.config.getConfig(this.id)
-}
+fun GuildBehavior.getConfig(): ServerConfig = database.config.getConfig(this.id)
 
 fun ThreadChannelBehavior.save(save: Boolean = true) {
     if (save) {
@@ -64,10 +59,46 @@ fun ThreadChannelBehavior.save(save: Boolean = true) {
     }
 }
 
-fun EmbedBuilder.setAuthor(user: User) {
+fun EmbedBuilder.userAuthor(user: User) {
     author {
         name = user.username
         icon = user.avatar!!.url
+    }
+}
+
+fun EmbedBuilder.pinguino() {
+    author {
+        name = "Pinguino"
+        icon = PINGUINO_PFP
+    }
+}
+
+fun EmbedBuilder.info(message: String) {
+    title = message
+}
+
+fun EmbedBuilder.image(url: String?) {
+    image = url
+}
+
+fun EmbedBuilder.userField(name: String, user: User) {
+    field {
+        this.name = name
+        this.value = user.username
+    }
+}
+
+fun EmbedBuilder.channelField(name: String, channel: MessageChannel) {
+    field {
+        this.name = name
+        this.value = channel.mention
+    }
+}
+
+fun EmbedBuilder.stringField(name: String, value: String) {
+    field {
+        this.name = name
+        this.value = value
     }
 }
 
@@ -75,14 +106,14 @@ fun EmbedBuilder.now() {
     timestamp = Clock.System.now()
 }
 
-fun EmbedBuilder.info() {
+fun EmbedBuilder.log() {
     color = DISCORD_BLURPLE
 }
 
-fun EmbedBuilder.warn() {
-    color = DISCORD_YELLOW
+fun EmbedBuilder.success() {
+    color = DISCORD_GREEN
 }
 
-fun EmbedBuilder.warnStrong() {
+fun EmbedBuilder.error() {
     color = DISCORD_RED
 }

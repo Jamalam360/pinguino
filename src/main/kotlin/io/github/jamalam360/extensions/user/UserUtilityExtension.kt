@@ -66,7 +66,7 @@ class UserUtilityExtension : Extension() {
                         title = "Thread Created"
                         description = "${event.channel.mention} saved automatically"
                         now()
-                        info()
+                        log()
                         author {
                             name = "Pinguino"
                             icon = PINGUINO_PFP
