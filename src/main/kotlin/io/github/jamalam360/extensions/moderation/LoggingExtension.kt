@@ -49,13 +49,25 @@ class LoggingExtension : Extension() {
         //region Events
         event<MemberJoinEvent> {
             action {
-                logAction("Member Joined", "", event.member, event.guild.asGuild())
+                event.guild.getLogChannel()?.createEmbed {
+                    info("Member Joined")
+                    userAuthor(event.member)
+                    log()
+                    now()
+                    image(event.member.avatar?.url)
+                }
             }
         }
 
         event<MemberLeaveEvent> {
             action {
-                logAction("Member Left", "", event.user, event.guild.asGuild())
+                event.guild.getLogChannel()?.createEmbed {
+                    info("Member Left")
+                    userAuthor(event.user)
+                    log()
+                    now()
+                    image(event.user.avatar?.url)
+                }
             }
         }
 
@@ -66,24 +78,17 @@ class LoggingExtension : Extension() {
 
             action {
                 event.guild!!.getLogChannel()?.createEmbed {
-                    title = "Message Deleted"
-
-                    setAuthor(event.message!!.author!!)
-                    info()
+                    info("Message Deleted")
+                    userAuthor(event.message!!.author!!)
+                    log()
                     now()
 
                     if (event.message!!.content.isNotBlank()) {
-                        field {
-                            name = "Content"
-                            value = event.message!!.content
-                        }
+                        stringField("Content", event.message!!.content)
                     }
 
                     if (event.message!!.attachments.isNotEmpty()) {
-                        field {
-                            name = "Attachments"
-                            value = event.message!!.attachments.joinToString("\n") { it.url }
-                        }
+                        stringField("Attachments", event.message!!.attachments.joinToString("\n") { it.url })
                     }
                 }
             }
@@ -99,27 +104,18 @@ class LoggingExtension : Extension() {
                 @Suppress("SENSELESS_COMPARISON")
                 if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content && msg.embeds.size == event.old!!.embeds.size) {
                     val before: String = if (event.old == null) {
-                        "**Failed to fetch previous message. The bot may have been offline when it was sent.**"
+                        "**Failed to fetch previous message. Pinguino may have been offline when it was sent.**"
                     } else {
                         event.old!!.content
                     }
 
                     msg.getGuild().getLogChannel()?.createEmbed {
-                        title = "Message Edited"
-
-                        setAuthor(msg.author!!)
-                        info()
+                        info("Message Edited")
+                        userAuthor(msg.author!!)
+                        log()
                         now()
-
-                        field {
-                            name = "Before"
-                            value = before
-                        }
-
-                        field {
-                            name = "After"
-                            value = msg.content
-                        }
+                        stringField("Before", before)
+                        stringField("After", msg.content)
                     }
                 }
             }
@@ -127,6 +123,7 @@ class LoggingExtension : Extension() {
         //endregion
     }
 
+    @Deprecated("Use getLogChannel() instead.")
     suspend fun logAction(
         action: String,
         extraContent: String?,
@@ -144,8 +141,8 @@ class LoggingExtension : Extension() {
                 return (channel as MessageChannel).createEmbed {
                     title = action
                     description = extraContent
-                    setAuthor(user)
-                    color = colour //Bri'ish spelling best
+                    userAuthor(user)
+                    color = colour
                     now()
 
                     if (image != "") {

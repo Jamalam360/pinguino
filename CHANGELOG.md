@@ -8,6 +8,8 @@
 - Added license headers to all files, and updated GitHub actions to account for that.
 - Update Git structure; development for new versions now occurs on the `develop` branch, while
   stable releases are on the `release` branch.
+- Removed an arbitrary limitation saying that you couldn't quote Pinguino.
+- All responses now use a standardised embed format. This also applies to logging messages.
 
 ## Version 0.5.2
 

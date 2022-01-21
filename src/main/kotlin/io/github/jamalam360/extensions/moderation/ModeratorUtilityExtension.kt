@@ -17,8 +17,6 @@
 
 package io.github.jamalam360.extensions.moderation
 
-import com.kotlindiscord.kord.extensions.DISCORD_RED
-import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
@@ -31,10 +29,8 @@ import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.jamalam360.util.database
-import io.github.jamalam360.util.getLoggingExtension
-import io.github.jamalam360.util.hasModeratorRole
-import io.github.jamalam360.util.scheduler
+import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam360.util.*
 
 /**
  * @author  Jamalam360
@@ -57,7 +53,12 @@ class ModeratorUtilityExtension : Extension() {
                 }
 
                 respond {
-                    content = "Message scheduled!"
+                    embed {
+                        info("Message scheduled")
+                        pinguino()
+                        now()
+                        success()
+                    }
                 }
             }
         }
@@ -79,15 +80,22 @@ class ModeratorUtilityExtension : Extension() {
 
                 channel.createMessage(arguments.message)
 
-                bot.getLoggingExtension().logAction(
-                    "/echo Command Used",
-                    "Echoed ${arguments.message} to ${channel.mention}",
-                    user.asUser(),
-                    guild!!.asGuild()
-                )
+                guild!!.getLogChannel()?.createEmbed {
+                    info("Echo command used")
+                    userAuthor(user.asUser())
+                    now()
+                    log()
+                    stringField("Content", arguments.message)
+                    channelField("Channel", channel)
+                }
 
                 respond {
-                    content = "Message sent!"
+                    embed {
+                        info("Message sent")
+                        pinguino()
+                        now()
+                        success()
+                    }
                 }
             }
         }
@@ -117,15 +125,21 @@ class ModeratorUtilityExtension : Extension() {
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4D"))
                 message.addReaction(ReactionEmoji.Unicode("\uD83D\uDC4E"))
 
-                bot.getLoggingExtension().logAction(
-                    "/ask Command Used",
-                    arguments.string,
-                    user.asUser(),
-                    guild!!.asGuild()
-                )
+                guild!!.getLogChannel()?.createEmbed {
+                    info("Ask command used")
+                    userAuthor(user.asUser())
+                    now()
+                    log()
+                    stringField("Content", arguments.string)
+                }
 
                 respond {
-                    content = "Vote created!"
+                    embed {
+                        info("Vote created")
+                        pinguino()
+                        now()
+                        success()
+                    }
                 }
             }
         }
@@ -142,17 +156,21 @@ class ModeratorUtilityExtension : Extension() {
             action {
                 database.config.deleteConfig(guild!!.id)
 
-                respond {
-                    content = "Config Deleted"
+                guild!!.getLogChannel()?.createEmbed {
+                    info("Config deleted")
+                    userAuthor(user.asUser())
+                    now()
+                    error()
                 }
 
-                bot.getLoggingExtension().logAction(
-                    "!! Config deleted !!",
-                    "Pinguino bot config deleted!",
-                    user.asUser(),
-                    guild!!.asGuild(),
-                    DISCORD_RED
-                )
+                respond {
+                    embed {
+                        info("Config deleted")
+                        pinguino()
+                        now()
+                        success()
+                    }
+                }
             }
         }
 
@@ -168,17 +186,22 @@ class ModeratorUtilityExtension : Extension() {
             action {
                 database.config.deleteConfig(guild!!.id)
 
-                respond {
-                    content = "Goodbye :wave:"
+                guild!!.getLogChannel()?.createEmbed {
+                    info("Goodbye.")
+                    userAuthor(user.asUser())
+                    now()
+                    error()
                 }
 
-                bot.getLoggingExtension().logAction(
-                    "Pinguino Leaving",
-                    "Goodbye! If you had a specific issue with the bot, please report it on the GitHub repository",
-                    user.asUser(),
-                    guild!!.asGuild(),
-                    DISCORD_YELLOW
-                )
+                respond {
+                    embed {
+                        info("Pinguino is leaving, goodbye :wave:")
+                        pinguino()
+                        now()
+                        success()
+                    }
+                }
+
 
                 guild!!.leave()
             }
@@ -213,7 +236,12 @@ class ModeratorUtilityExtension : Extension() {
                     }
 
                     respond {
-                        content = "Embed sent!"
+                        embed {
+                            info("Embed posted")
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 } else {
                     scheduler.schedule(arguments.delay!!.seconds.toLong()) {
@@ -231,7 +259,12 @@ class ModeratorUtilityExtension : Extension() {
                     }
 
                     respond {
-                        content = "Embed scheduled!"
+                        embed {
+                            info("Embed scheduled")
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 }
             }

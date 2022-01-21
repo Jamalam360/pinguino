@@ -28,6 +28,9 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.util.*
 
@@ -58,7 +61,12 @@ class ModuleExtension : Extension() {
                 logModuleEnabled(moduleName, user, guild!!)
 
                 respond {
-                    content = "Successfully enabled the $moduleName module"
+                    embed {
+                        info("Enabled $moduleName module")
+                        userAuthor(user.asUser())
+                        now()
+                        success()
+                    }
                 }
             }
         }
@@ -77,7 +85,12 @@ class ModuleExtension : Extension() {
                 logModuleDisabled(moduleName, user, guild!!)
 
                 respond {
-                    content = "Successfully disabled the $moduleName module"
+                    embed {
+                        info("Disabled $moduleName module")
+                        userAuthor(user.asUser())
+                        now()
+                        success()
+                    }
                 }
             }
         }
@@ -114,10 +127,21 @@ class ModuleExtension : Extension() {
                         conf.quotesConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Quotes Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Quotes channel updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", arguments.channel as MessageChannel)
+                        }
 
                         respond {
-                            content = "Successfully set Quotes channel to ${arguments.channel.mention}"
+                            embed {
+                                info("Quotes channel updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -143,10 +167,21 @@ class ModuleExtension : Extension() {
                         conf.loggingConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Logging Channel Updated", "Channel updated to ${arguments.channel.mention}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Logging channel updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", arguments.channel as MessageChannel)
+                        }
 
                         respond {
-                            content = "Successfully set Logging channel to ${arguments.channel.mention}"
+                            embed {
+                                info("Logging channel updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -172,10 +207,21 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.moderatorRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Moderator Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Moderator role updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Role", arguments.role.mention)
+                        }
 
                         respond {
-                            content = "Successfully set moderator role to ${arguments.role.mention}"
+                            embed {
+                                info("Moderator role updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -189,10 +235,21 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.mutedRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Muted Role Updated", "Role updated to ${arguments.role.mention}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Muted role updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Role", arguments.role.mention)
+                        }
 
                         respond {
-                            content = "Successfully set muted role to ${arguments.role.mention}"
+                            embed {
+                                info("Muted role updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -206,10 +263,21 @@ class ModuleExtension : Extension() {
                         conf.moderationConfig.autoSaveThreads = arguments.boolean
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Auto-save threads updated", "Auto-save threads set to ${arguments.boolean}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Auto-save-threads updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Value", arguments.boolean.toString())
+                        }
 
                         respond {
-                            content = "Successfully set auto-save threads to ${arguments.boolean}"
+                            embed {
+                                info("Auto-save-threads updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -235,15 +303,21 @@ class ModuleExtension : Extension() {
                         conf.notificationsConfig.greetingChannel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log(
-                            "Greetings Channel Updated",
-                            "Channel updated to ${arguments.channel.mention}",
-                            user,
-                            guild!!
-                        )
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Greetings channel updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", arguments.channel as MessageChannel)
+                        }
 
                         respond {
-                            content = "Successfully set channel to ${arguments.channel.mention}"
+                            embed {
+                                info("Greetings channel updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -257,10 +331,21 @@ class ModuleExtension : Extension() {
                         conf.notificationsConfig.greetingMessage = arguments.string
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Greeting Message Updated", "Updated to ${arguments.string}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Greeting message updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Message", arguments.string)
+                        }
 
                         respond {
-                            content = "Successfully set message to ${arguments.string}"
+                            embed {
+                                info("Greetings message updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -274,10 +359,21 @@ class ModuleExtension : Extension() {
                         conf.notificationsConfig.farewellMessage = arguments.string
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Farewell Message Updated", "Updated to ${arguments.string}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Farewell message updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Message", arguments.string)
+                        }
 
                         respond {
-                            content = "Successfully set message to ${arguments.string}"
+                            embed {
+                                info("Farewell message updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -305,10 +401,21 @@ class ModuleExtension : Extension() {
                         conf.filePasteConfig.hastebinUrl = url
                         database.config.updateConfig(guild!!.id, conf)
 
-                        log("Hastebin URL Updated", "Updated to ${arguments.url}", user, guild!!)
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Hastebin URL updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Message", arguments.url)
+                        }
 
                         respond {
-                            content = "Successfully set Hastebin URL to ${arguments.url}"
+                            embed {
+                                info("Hastebin URL updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     }
                 }
@@ -318,20 +425,23 @@ class ModuleExtension : Extension() {
     }
 
     private suspend fun logModuleEnabled(module: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
-        log("Module Enabled", "Module '_${module}_' enabled", responsibleMod.asUser(), guild.asGuild())
+        guild.getLogChannel()?.createEmbed {
+            info("Module Enabled")
+            userAuthor(responsibleMod.asUser())
+            now()
+            log()
+            stringField("Module", module)
+        }
     }
 
     private suspend fun logModuleDisabled(module: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
-        log("Module Disabled", "Module '_${module}_' disabled", responsibleMod.asUser(), guild.asGuild())
-    }
-
-    private suspend fun log(action: String, extraContent: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
-        bot.getLoggingExtension().logAction(
-            action,
-            extraContent,
-            responsibleMod.asUser(),
-            guild.asGuild()
-        )
+        guild.getLogChannel()?.createEmbed {
+            info("Module Disabled")
+            userAuthor(responsibleMod.asUser())
+            now()
+            log()
+            stringField("Module", module)
+        }
     }
 
     class GreetingArgs : Arguments() {

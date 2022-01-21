@@ -25,9 +25,9 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
-import io.github.jamalam360.util.database
-import io.github.jamalam360.util.getLoggingExtension
-import io.github.jamalam360.util.hasModeratorRole
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam360.util.*
 
 /**
  * @author  Jamalam360
@@ -51,11 +51,21 @@ class TagExtension : Extension() {
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
                         respond {
-                            content = conf.tagsConfig.tags[arguments.name.lowercase()]
+                            embed {
+                                info(conf.tagsConfig.tags[arguments.name.lowercase()]!!)
+                                pinguino()
+                                now()
+                                success()
+                            }
                         }
                     } else {
                         respond {
-                            content = "Cannot find that tag"
+                            embed {
+                                info("Cannot find that tag")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -79,7 +89,12 @@ class TagExtension : Extension() {
                     }
 
                     respond {
-                        content = response
+                        embed {
+                            info(response)
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 }
             }
@@ -98,26 +113,43 @@ class TagExtension : Extension() {
                     if (conf.tagsConfig.tags.size < 50) {
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
                             respond {
-                                content = "There is already a tag with the name `${arguments.name}`"
+                                embed {
+                                    info("There is already a tag with that name")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             conf.tagsConfig.tags[arguments.name.lowercase()] = arguments.content
                             database.config.updateConfig(guild!!.id, conf)
 
-                            respond {
-                                content = "Successfully created tag `${arguments.name}`"
+                            guild!!.getLogChannel()?.createEmbed {
+                                info("Tag deleted")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                stringField("Tag Name", arguments.name)
+                                stringField("Tag Content", arguments.content)
                             }
 
-                            bot.getLoggingExtension().logAction(
-                                "Tag Created",
-                                arguments.name,
-                                user.asUser(),
-                                guild!!.asGuild()
-                            )
+                            respond {
+                                embed {
+                                    info("Tag created")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
+                            }
                         }
                     } else {
                         respond {
-                            content = "Cannot create more than 50 tags!"
+                            embed {
+                                info("Cannot create more than 50 tags")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -136,22 +168,33 @@ class TagExtension : Extension() {
 
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
                             respond {
-                                content = "There is not a tag with the name `${arguments.name}`"
+                                embed {
+                                    info("There is not a tag with that name")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
                         } else {
                             conf.tagsConfig.tags.remove(arguments.name.lowercase())
                             database.config.updateConfig(guild!!.id, conf)
 
-                            respond {
-                                content = "Successfully deleted tag `${arguments.name}`"
+                            guild!!.getLogChannel()?.createEmbed {
+                                info("Tag deleted")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                stringField("Tag Name", arguments.name)
                             }
 
-                            bot.getLoggingExtension().logAction(
-                                "Tag Deleted",
-                                arguments.name,
-                                user.asUser(),
-                                guild!!.asGuild()
-                            )
+                            respond {
+                                embed {
+                                    info("Tag deleted")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
+                            }
                         }
                     }
             }

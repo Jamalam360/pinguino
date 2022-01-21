@@ -28,7 +28,12 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.modify.embed
 import io.github.jamalam360.api.*
+import io.github.jamalam360.util.info
+import io.github.jamalam360.util.now
+import io.github.jamalam360.util.pinguino
+import io.github.jamalam360.util.success
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -65,7 +70,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = "${user.mention} is rolling a dice!"
+                        embed {
+                            info("${user.mention} is rolling a dice...")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
 
                     channel.withTyping {
@@ -73,7 +83,12 @@ class FunExtension : Extension() {
                     }
 
                     interactionResponse.edit {
-                        content = "${user.mention} rolled a ${random.nextInt(1, 7)}!"
+                        embed {
+                            info("${user.mention} rolled a ${random.nextInt(1, 7)}!")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -84,7 +99,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = "${user.mention} is flipping a coin!"
+                        embed {
+                            info("${user.mention} is flipping a coin...")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
 
                     channel.withTyping {
@@ -97,6 +117,13 @@ class FunExtension : Extension() {
                         } else {
                             "It's tails!"
                         }
+
+                        embed {
+                            info("${user.mention}'s coin landed on ${if (random.nextBoolean()) "It's heads!" else "It's tails!"}!")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -108,7 +135,10 @@ class FunExtension : Extension() {
                 action {
                     respond {
                         embed {
-                            title = "Look at this cute dog!"
+                            info("Look at this cute dog!")
+                            pinguino()
+                            success()
+                            now()
                             image = dog.getRandomDog()
                         }
                     }
@@ -121,7 +151,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = "Asking the magic eight ball ${arguments.question}"
+                        embed {
+                            info("${user.mention} is asking the magic eight ball ${arguments.question}")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
 
                     channel.withTyping {
@@ -129,7 +164,12 @@ class FunExtension : Extension() {
                     }
 
                     interactionResponse.edit {
-                        content = "The magic eight ball answered: ${eightBall.ask(arguments.question)}"
+                        embed {
+                            info("The magic eight ball says: ${eightBall.ask(arguments.question)}")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -143,12 +183,14 @@ class FunExtension : Extension() {
                         if (arguments.comic != null) xkcd.getComic(arguments.comic!!) else xkcd.getLatestComic()
                     respond {
                         embed {
-                            title = if (arguments.comic != null) {
+                            info(if (arguments.comic != null) {
                                 "xkcd #${arguments.comic} - ${response.title}"
                             } else {
                                 "Today's xkcd - ${response.title}"
-                            }
-
+                            })
+                            pinguino()
+                            success()
+                            now()
                             description = response.alt
                             image = response.img
                         }
@@ -162,7 +204,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = "'${kanye.getQuote()}' - Kanye West"
+                        embed {
+                            info("Kanye says: '${kanye.getQuote()}'")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -173,8 +220,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content =
-                            "With a name like ${arguments.name}, they must be ${age.predictAge(arguments.name)} years old!"
+                        embed {
+                            info("With a name like ${arguments.name}, they must be ${age.predictAge(arguments.name)} years old!")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -185,7 +236,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = bored.getActivity()
+                        embed {
+                            info(bored.getActivity())
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -196,7 +252,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = chuck.getExcellentChuckNorrisBasedJoke()
+                        embed {
+                            info(chuck.getExcellentChuckNorrisBasedJoke())
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -207,7 +268,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = "'${donald.getBasedOpinionsYesThisNameIsSarcastic()}' - Donald Trump"
+                        embed {
+                            info("${donald.getBasedOpinionsYesThisNameIsSarcastic()} - Donald Trump")
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }
@@ -219,7 +285,10 @@ class FunExtension : Extension() {
                 action {
                     respond {
                         embed {
-                            title = "Look at this cute cat!"
+                            info("Look at this cute cat!")
+                            pinguino()
+                            success()
+                            now()
                             image = cat.getRandomCat()
                         }
                     }
@@ -232,7 +301,12 @@ class FunExtension : Extension() {
 
                 action {
                     respond {
-                        content = dad.getTheFunnyHaHa()
+                        embed {
+                            info(dad.getTheFunnyHaHa())
+                            pinguino()
+                            success()
+                            now()
+                        }
                     }
                 }
             }

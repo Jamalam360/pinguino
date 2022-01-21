@@ -36,11 +36,10 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
 import io.github.jamalam360.api.DogApi
-import io.github.jamalam360.util.database
-import io.github.jamalam360.util.getLoggingExtension
-import io.github.jamalam360.util.isModuleEnabled
+import io.github.jamalam360.util.*
 
 /**
  * @author  Jamalam360
@@ -68,23 +67,20 @@ class QuoteExtension : Extension() {
                 }
 
                 action {
-                    val kord = this@QuoteExtension.kord
+                    sendQuote(
+                        this.guild!!.asGuild(),
+                        arguments.quote,
+                        arguments.author.username,
+                        arguments.author.avatar!!.url,
+                        user.asUser()
+                    )
 
-                    if (arguments.author.id == kord.selfId) {
-                        respond {
-                            content = "Cannot quote my own messages!"
-                        }
-                    } else {
-                        sendQuote(
-                            this.guild!!.asGuild(),
-                            arguments.quote,
-                            arguments.author.username,
-                            arguments.author.avatar!!.url,
-                            user.asUser()
-                        )
-
-                        respond {
-                            content = "Quoted successfully"
+                    respond {
+                        embed {
+                            info("Quote recorded")
+                            pinguino()
+                            now()
+                            success()
                         }
                     }
                 }
@@ -102,7 +98,12 @@ class QuoteExtension : Extension() {
                     sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
 
                     respond {
-                        content = "Quoted successfully"
+                        embed {
+                            info("Quote recorded")
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 }
             }
@@ -118,17 +119,14 @@ class QuoteExtension : Extension() {
             }
 
             action {
-                val kord = this@QuoteExtension.kord
+                targetMessages.first().quote(user.asUser())
 
-                if (targetMessages.first().author == null || targetMessages.first().author!!.id == kord.selfId) {
-                    respond {
-                        content = "Cannot quote my own messages!"
-                    }
-                } else {
-                    targetMessages.first().quote(user.asUser())
-
-                    respond {
-                        content = "Quoted successfully"
+                respond {
+                    embed {
+                        info("Quote recorded")
+                        pinguino()
+                        now()
+                        success()
                     }
                 }
             }
@@ -176,12 +174,14 @@ class QuoteExtension : Extension() {
                     author = embedAuthor
                 }
 
-                bot.getLoggingExtension().logAction(
-                    "Quote Sent",
-                    "$quote - $quoteAuthor",
-                    quoter,
-                    guild
-                )
+                guild.getLogChannel()?.createEmbed {
+                    info("Quote sent")
+                    userAuthor(quoter.asUser())
+                    now()
+                    log()
+                    stringField("Author", quoteAuthor)
+                    stringField("Quote", quote)
+                }
             }
         }
     }
@@ -199,23 +199,25 @@ class QuoteExtension : Extension() {
                     if (content.isNotEmpty()) {
                         title = content
                     }
-                    author {
-                        name = author2ElectricBoogaloo.username
-                        icon = author2ElectricBoogaloo.avatar!!.url
-                    }
 
                     if (attachments.isNotEmpty()) {
                         image = attachments.first().url
                     }
+
+                    author {
+                        name = author2ElectricBoogaloo.username
+                        icon = author2ElectricBoogaloo.avatar!!.url
+                    }
                 }
 
-                bot.getLoggingExtension().logAction(
-                    "Quote Sent",
-                    "$content - ${author2ElectricBoogaloo.username}",
-                    quoter,
-                    guild,
-                    imageUrl = if (attachments.isNotEmpty()) attachments.first().url else ""
-                )
+                guild.getLogChannel()?.createEmbed {
+                    info("Quote sent")
+                    userAuthor(quoter.asUser())
+                    now()
+                    log()
+                    userField("Author", author2ElectricBoogaloo)
+                    stringField("Quote", content)
+                }
             }
         }
     }
