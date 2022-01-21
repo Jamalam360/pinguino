@@ -22,10 +22,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Get Branch Name
-        id: branch-name
-        uses: tj-actions/branch-names@v5
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
@@ -43,7 +39,6 @@ jobs:
           ./gradlew updateLicenses
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions"
-          git pull origin ${{ steps.branch-name.outputs.current_branch }}
           git commit -m "Update License [bot]" -a
       - name: Push License Changes
         uses: ad-m/github-push-action@master
@@ -66,10 +61,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Get Branch Name
-        id: branch-name
-        uses: tj-actions/branch-names@v5
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
@@ -80,9 +71,6 @@ jobs:
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
-
-      - name: Pull License Changes
-        run: git pull origin ${{ steps.branch-name.outputs.current_branch }}
 
       - name: Build
         run: ./gradlew build
