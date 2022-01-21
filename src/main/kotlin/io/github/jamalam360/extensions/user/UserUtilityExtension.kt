@@ -219,7 +219,7 @@ class UserUtilityExtension : Extension() {
                             this.name = arguments.name
                             reason = "Renamed by ${user.mention}"
                         }
-                        
+
                         guild!!.getLogChannel()?.createEmbed {
                             info("Thread renamed")
                             userAuthor(user.asUser())
