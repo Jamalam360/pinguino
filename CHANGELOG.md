@@ -1,5 +1,12 @@
 # Pinguino Changelog
 
+## Version 0.6.0
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.2...v0.6.0)**
+
+- Re-licensed to GPLv3.
+- Added license headers to all files, and updated GitHub actions to account for that.
+
 ## Version 0.5.2
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.1...v0.5.2)**

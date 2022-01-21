@@ -9,6 +9,7 @@ plugins {
     id("com.github.jakemarsden.git-hooks")
     id("com.github.johnrengelman.shadow")
     id("io.gitlab.arturbosch.detekt")
+    id("org.cadixdev.licenser")
 }
 
 group = "io.github.jamalam360"
@@ -86,4 +87,8 @@ detekt {
     buildUponDefaultConfig = true
     config = rootProject.files("detekt.yml")
     autoCorrect = true
+}
+
+license {
+    header.set(project.resources.text.fromFile(project.file("HEADER")))
 }
