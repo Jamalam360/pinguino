@@ -6,6 +6,8 @@
 
 - Re-licensed to GPLv3.
 - Added license headers to all files, and updated GitHub actions to account for that.
+- Removed an arbitrary limitation saying that you couldn't quote Pinguino.
+- All responses now use a standardised embed format. This also applies to logging messages.
 
 ## Version 0.5.2
 
