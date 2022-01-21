@@ -17,7 +17,6 @@
 
 package io.github.jamalam360.extensions.user
 
-import com.kotlindiscord.kord.extensions.DISCORD_GREEN
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.isInThread
 import com.kotlindiscord.kord.extensions.checks.memberFor
@@ -40,7 +39,6 @@ import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.channel.thread.ThreadChannelCreateEvent
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
 import dev.kord.core.exception.EntityNotFoundException
-import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.api.HastebinApi
 import io.github.jamalam360.api.LinkApi
@@ -63,14 +61,10 @@ class UserUtilityExtension : Extension() {
                     event.channel.save(true)
 
                     event.channel.guild.getLogChannel()?.createEmbed {
-                        title = "Thread Created"
-                        description = "${event.channel.mention} saved automatically"
-                        now()
+                        info("Thread saved")
+                        pinguino()
                         log()
-                        author {
-                            name = "Pinguino"
-                            icon = PINGUINO_PFP
-                        }
+                        now()
                     }
                 }
             }
@@ -92,15 +86,15 @@ class UserUtilityExtension : Extension() {
             description = "Get an invite link for Pinguino!"
 
             action {
-                val embed = EmbedBuilder()
-                embed.image = PINGUINO_PFP
-                embed.title = "Invite Pinguino!"
-                embed.description = "Click [here]" +
-                        "(https://discord.com/api/oauth2/authorize?client_id=896758540784500797&permissions=8&scope=bot%20applications.commands)" +
-                        " to invite Pinguino to your own server"
-
                 respond {
-                    embeds.add(embed)
+                    embed {
+                        info("Invite Pinguino")
+                        pinguino()
+                        now()
+                        success()
+                        url =
+                            "https://discord.com/api/oauth2/authorize?client_id=896758540784500797&permissions=8&scope=bot%20applications.commands"
+                    }
                 }
             }
         }
@@ -133,7 +127,12 @@ class UserUtilityExtension : Extension() {
                                 }
 
                                 respond {
-                                    content = "Successfully archived and locked thread"
+                                    embed {
+                                        info("Thread archived and locked")
+                                        pinguino()
+                                        now()
+                                        success()
+                                    }
                                 }
                             } else if (arguments.lock == true) {
                                 channel.edit {
@@ -142,8 +141,12 @@ class UserUtilityExtension : Extension() {
                                 }
 
                                 respond {
-                                    content =
-                                        "Successfully archived thread, but you do not have permission to lock this thread"
+                                    embed {
+                                        info("Thread archived and not locked (lacking permission)")
+                                        pinguino()
+                                        now()
+                                        success()
+                                    }
                                 }
                             } else {
                                 channel.edit {
@@ -152,24 +155,45 @@ class UserUtilityExtension : Extension() {
                                 }
 
                                 respond {
-                                    content = "Successfully archived thread"
+                                    embed {
+                                        info("Thread archived")
+                                        pinguino()
+                                        now()
+                                        success()
+                                    }
                                 }
                             }
                         } else {
                             respond {
-                                content = "This thread is already archived"
+                                embed {
+                                    info("This thread is already archived")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
                             }
+
+                            return@action
                         }
 
-                        bot.getLoggingExtension().logAction(
-                            "Thread archived",
-                            if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock!!) "Locked" else "Not Locked",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Thread archived")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField(
+                                "Locked",
+                                if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock!!) "Yes" else "No"
+                            )
+                        }
                     } else {
                         respond {
-                            content = "You do not have permission to archive or lock this thread"
+                            embed {
+                                info("You do not have permission to archive this thread")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -195,20 +219,32 @@ class UserUtilityExtension : Extension() {
                             this.name = arguments.name
                             reason = "Renamed by ${user.mention}"
                         }
-
-                        respond {
-                            content = "Successfully renamed thread"
+                        
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Thread renamed")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Before", before)
+                            stringField("After", arguments.name)
                         }
 
-                        bot.getLoggingExtension().logAction(
-                            "Thread renamed",
-                            "'$before' --> '${arguments.name}",
-                            user.asUser(),
-                            guild!!.asGuild()
-                        )
+                        respond {
+                            embed {
+                                info("Thread renamed")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
                     } else {
                         respond {
-                            content = "You do not have permission to rename this thread"
+                            embed {
+                                info("You do not have permission to rename this thread")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -226,16 +262,21 @@ class UserUtilityExtension : Extension() {
                 action {
                     (channel as ThreadChannel).save(arguments.save)
 
-                    bot.getLoggingExtension().logAction(
-                        if (arguments.save) "Thread Saved" else "Thread Unsaved",
-                        channel.mention,
-                        user.asUser(),
-                        guild!!.asGuild()
-                    )
+                    guild!!.getLogChannel()?.createEmbed {
+                        info("Thread save status updated")
+                        userAuthor(user.asUser())
+                        now()
+                        log()
+                        stringField("Saved", if (arguments.save) "Yes" else "No")
+                    }
 
                     respond {
-                        content =
-                            "Successfully ${if (arguments.save) "set thread to be saved" else "set thread to not be saved"}"
+                        embed {
+                            info(if (arguments.save) "Thread saved" else "Thread unsaved")
+                            pinguino()
+                            now()
+                            success()
+                        }
                     }
                 }
             }
@@ -246,36 +287,19 @@ class UserUtilityExtension : Extension() {
             description = "Get a link to the help page"
 
             action {
-                val embed = EmbedBuilder()
-                embed.image = PINGUINO_PFP
-                embed.title = "Learn how to use Pinguino!"
-                embed.description = "Click [here]" +
-                        "(https://github.com/JamCoreDiscord/Pinguino/wiki)" +
-                        " to learn about Pinguino's features and commands. " +
-                        "If you have any issues or further questions, join the" +
-                        " [support server](https://discord.gg/88PWg5TySd)"
-
                 respond {
-                    embeds.add(embed)
-                }
-            }
-        }
-
-        ephemeralSlashCommand {
-            name = "bugs"
-            description = "Get a link to the bug tracker"
-
-            action {
-                val embed = EmbedBuilder()
-                embed.image = PINGUINO_PFP
-                embed.title = "Report bugs with Pinguino"
-                embed.description = "Click [here]" +
-                        "(https://github.com/JamCoreDiscord/Pinguino/issues)" +
-                        " to report bugs with Pinguino. Reports are appreciated " +
-                        "and we will get to your report ASAP."
-
-                respond {
-                    embeds.add(embed)
+                    embed {
+                        info("Help Pages")
+                        pinguino()
+                        now()
+                        success()
+                        stringField("Issue Tracker", "[Link](https://github.com/JamCoreDiscord/Pinguino/issues)")
+                        stringField(
+                            "Wiki",
+                            "[Link](https://github.com/JamCoreDiscord/Pinguino/blob/release/docs/README.md)"
+                        )
+                        stringField("Support", "[Link](https://discord.jamalam.tech)")
+                    }
                 }
             }
         }
@@ -288,9 +312,11 @@ class UserUtilityExtension : Extension() {
                 link.shorten(arguments.link).let {
                     respond {
                         embed {
-                            title = "Shortened Link"
+                            info("Shortened Link")
+                            pinguino()
+                            now()
+                            success()
                             url = it
-                            color = DISCORD_GREEN
                         }
                     }
                 }
@@ -311,10 +337,12 @@ class UserUtilityExtension : Extension() {
                     hasteBin.pasteFromCdn("https://www.toptal.com/developers/hastebin/documents", arguments.link).let {
                         respond {
                             embed {
-                                title = "File Uploaded to Hastebin"
+                                info("File Uploaded to Hastebin")
+                                pinguino()
+                                now()
+                                success()
                                 url =
                                     "https://www.toptal.com/developers/hastebin/${it}"
-                                color = DISCORD_GREEN
                             }
                         }
                     }
@@ -329,10 +357,12 @@ class UserUtilityExtension : Extension() {
                     hasteBin.paste("https://www.toptal.com/developers/hastebin/documents", arguments.string).let {
                         respond {
                             embed {
-                                title = "File Uploaded to Hastebin"
+                                info("File Uploaded to Hastebin")
+                                pinguino()
+                                now()
+                                success()
                                 url =
                                     "https://www.toptal.com/developers/hastebin/${it}"
-                                color = DISCORD_GREEN
                             }
                         }
                     }
@@ -378,7 +408,12 @@ class UserUtilityExtension : Extension() {
                 targetMessages.first().pin("Pinned by ${user.asUser()}")
 
                 respond {
-                    content = "Message pinned!"
+                    embed {
+                        info("Pinned Message")
+                        pinguino()
+                        now()
+                        success()
+                    }
                 }
             }
         }
