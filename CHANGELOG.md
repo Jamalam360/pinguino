@@ -6,6 +6,8 @@
 
 - Re-licensed to GPLv3.
 - Added license headers to all files, and updated GitHub actions to account for that.
+- Update Git structure; development for new versions now occurs on the `develop` branch, while
+  stable releases are on the `release` branch.
 
 ## Version 0.5.2
 
