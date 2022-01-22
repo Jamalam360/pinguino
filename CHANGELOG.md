@@ -1,5 +1,9 @@
 # Pinguino Changelog
 
+## Version 0.6.1
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.0...v0.6.1)**
+
 ## Version 0.6.0
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.2...v0.6.0)**
