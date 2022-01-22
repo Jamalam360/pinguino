@@ -185,8 +185,8 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
-                    stringField("Author", quoteAuthor)
                     stringField("Quote", quote)
+                    stringField("Author", quoteAuthor)
                 }
             }
         }
@@ -221,8 +221,8 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
-                    userField("Author", author2ElectricBoogaloo)
                     stringField("Quote", content)
+                    userField("Author", author2ElectricBoogaloo)
                 }
             }
         }

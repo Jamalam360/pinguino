@@ -6,6 +6,7 @@
 
 - Fix an error caused by an unsafe cast.
 - Quotes created by reacting with `:star:` no longer quote multiple times for each reaction.
+- Display `Content` on top of `Author` in `Quote sent` logging
 
 ## Version 0.6.0
 
