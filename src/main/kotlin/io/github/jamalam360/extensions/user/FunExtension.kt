@@ -71,7 +71,7 @@ class FunExtension : Extension() {
                 action {
                     respond {
                         embed {
-                            info("${user.mention} is rolling a dice...")
+                            info("${user.asUser().username} is rolling a dice...")
                             pinguino()
                             success()
                             now()
@@ -79,12 +79,12 @@ class FunExtension : Extension() {
                     }
 
                     channel.withTyping {
-                        delay(Duration.seconds(3))
+                        delay(Duration.seconds(random.nextInt(3, 8)))
                     }
 
                     interactionResponse.edit {
                         embed {
-                            info("${user.mention} rolled a ${random.nextInt(1, 7)}!")
+                            info("${user.asUser().username} rolled a ${random.nextInt(1, 7)}!")
                             pinguino()
                             success()
                             now()
@@ -100,7 +100,7 @@ class FunExtension : Extension() {
                 action {
                     respond {
                         embed {
-                            info("${user.mention} is flipping a coin...")
+                            info("${user.asUser().username} is flipping a coin...")
                             pinguino()
                             success()
                             now()
@@ -112,14 +112,8 @@ class FunExtension : Extension() {
                     }
 
                     interactionResponse.edit {
-                        content = if (random.nextBoolean()) {
-                            "It's heads!"
-                        } else {
-                            "It's tails!"
-                        }
-
                         embed {
-                            info("${user.mention}'s coin landed on ${if (random.nextBoolean()) "It's heads!" else "It's tails!"}!")
+                            info("${user.asUser().username}'s coin landed on ${if (random.nextBoolean()) "heads" else "tails"}!")
                             pinguino()
                             success()
                             now()
@@ -152,7 +146,7 @@ class FunExtension : Extension() {
                 action {
                     respond {
                         embed {
-                            info("${user.mention} is asking the magic eight ball ${arguments.question}")
+                            info("${user.asUser().username} is asking the magic eight ball ${arguments.question}")
                             pinguino()
                             success()
                             now()
@@ -160,7 +154,7 @@ class FunExtension : Extension() {
                     }
 
                     channel.withTyping {
-                        delay(Duration.seconds(3))
+                        delay(Duration.seconds(random.nextInt(3, 8)))
                     }
 
                     interactionResponse.edit {

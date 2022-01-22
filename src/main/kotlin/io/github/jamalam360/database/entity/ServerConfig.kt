@@ -46,7 +46,8 @@ data class ServerModerationConfig(
     var moderatorRole: Long,
     var mutedRole: Long,
     var threadAutoJoinRoles: MutableList<Long>,
-    var autoSaveThreads: Boolean
+    var autoSaveThreads: Boolean,
+    var publicModLogChannel: Long?
 )
 
 data class ServerTagsConfig(

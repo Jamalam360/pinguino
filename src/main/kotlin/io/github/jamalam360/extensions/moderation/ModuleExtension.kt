@@ -29,7 +29,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.util.*
@@ -54,7 +53,7 @@ class ModuleExtension : Extension() {
             description = "Enables the $moduleName module"
 
             action {
-                val config = database.config.getConfig(guild!!.id)
+                val config = guild!!.getConfig()
                 lambda(config)
                 database.config.updateConfig(guild!!.id, config)
 
@@ -63,7 +62,7 @@ class ModuleExtension : Extension() {
                 respond {
                     embed {
                         info("Enabled $moduleName module")
-                        userAuthor(user.asUser())
+                        pinguino()
                         now()
                         success()
                     }
@@ -78,7 +77,7 @@ class ModuleExtension : Extension() {
             description = "Disables the $moduleName module"
 
             action {
-                val config = database.config.getConfig(guild!!.id)
+                val config = guild!!.getConfig()
                 lambda(config)
                 database.config.updateConfig(guild!!.id, config)
 
@@ -87,7 +86,7 @@ class ModuleExtension : Extension() {
                 respond {
                     embed {
                         info("Disabled $moduleName module")
-                        userAuthor(user.asUser())
+                        pinguino()
                         now()
                         success()
                     }
@@ -123,7 +122,7 @@ class ModuleExtension : Extension() {
                     description = "Set the channel quote embeds will be sent to"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.quotesConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -132,7 +131,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
@@ -163,7 +162,7 @@ class ModuleExtension : Extension() {
                     description = "Set the channel logging embeds will be sent to"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.loggingConfig.channel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -172,7 +171,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
@@ -203,7 +202,7 @@ class ModuleExtension : Extension() {
                     description = "Set role required to run moderator level commands"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.moderationConfig.moderatorRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -231,7 +230,7 @@ class ModuleExtension : Extension() {
                     description = "Set role to apply to muted users"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.moderationConfig.mutedRole = arguments.role.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -259,7 +258,7 @@ class ModuleExtension : Extension() {
                     description = "Set whether threads are prevented from archiving by default"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.moderationConfig.autoSaveThreads = arguments.boolean
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -274,6 +273,34 @@ class ModuleExtension : Extension() {
                         respond {
                             embed {
                                 info("Auto-save-threads updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::SingleChannelArgs) {
+                    name = "set-public-mod-log-channel"
+                    description = "Set the channel public mod-logs will be sent to"
+
+                    action {
+                        val conf = guild!!.getConfig()
+                        conf.moderationConfig.publicModLogChannel = arguments.channel.id.value.toLong()
+                        database.config.updateConfig(guild!!.id, conf)
+
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Public mod-log channel updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", arguments.channel)
+                        }
+
+                        respond {
+                            embed {
+                                info("Public mod-log channel updated")
                                 pinguino()
                                 now()
                                 success()
@@ -299,7 +326,7 @@ class ModuleExtension : Extension() {
                     description = "Set the channel to send greetings and farewells to"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.notificationsConfig.greetingChannel = arguments.channel.id.value.toLong()
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -308,7 +335,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
@@ -327,7 +354,7 @@ class ModuleExtension : Extension() {
                     description = "Set the message to send to the greeting channel when a member joins"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.notificationsConfig.greetingMessage = arguments.string
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -355,7 +382,7 @@ class ModuleExtension : Extension() {
                     description = "Set the message to send to the greeting channel when a member leaves"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.notificationsConfig.farewellMessage = arguments.string
                         database.config.updateConfig(guild!!.id, conf)
 
@@ -397,7 +424,7 @@ class ModuleExtension : Extension() {
                     action {
                         val url = if (arguments.url.endsWith("/")) arguments.url else "${arguments.url}/"
 
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = guild!!.getConfig()
                         conf.filePasteConfig.hastebinUrl = url
                         database.config.updateConfig(guild!!.id, conf)
 

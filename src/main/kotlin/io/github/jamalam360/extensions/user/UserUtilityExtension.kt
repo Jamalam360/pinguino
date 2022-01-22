@@ -35,9 +35,11 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.threads.edit
+import dev.kord.core.behavior.reply
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.channel.thread.ThreadChannelCreateEvent
 import dev.kord.core.event.channel.thread.ThreadUpdateEvent
+import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.api.HastebinApi
@@ -55,6 +57,17 @@ class UserUtilityExtension : Extension() {
     private val link = LinkApi()
 
     override suspend fun setup() {
+        event<MessageCreateEvent> {
+            action {
+                val kord = this@UserUtilityExtension.kord
+                if (event.message.mentionedUserIds.contains(kord.selfId) && event.message.content == "<@${kord.selfId.value}>") {
+                    event.message.reply {
+                        content = "Hi, I'm Pinguino! To get started, use the `/help` command. Have fun!"
+                    }
+                }
+            }
+        }
+
         event<ThreadChannelCreateEvent> {
             action {
                 if (event.channel.guild.getConfig().moderationConfig.autoSaveThreads) {

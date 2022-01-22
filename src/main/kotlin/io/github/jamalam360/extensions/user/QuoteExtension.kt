@@ -136,14 +136,20 @@ class QuoteExtension : Extension() {
 
         //region Events
 
-        // TODO: This is deprecated, for removal when discord adds message command support to mobile
+        //TODO: This is deprecated, for removal when discord adds message command support to mobile
         event<ReactionAddEvent> {
             check {
                 isModuleEnabled(Modules.Quotes)
+
+                event.message.asMessage().reactions.filter { it.emoji.name == "⭐" }.let {
+                    if (it.isNotEmpty() && it[0].count > 1) {
+                        fail("That message has already been quoted")
+                    }
+                }
             }
 
             action {
-                if (event.emoji.name == "\u2B50") {
+                if (event.emoji.name == "⭐") {
                     val msg = event.channel.getMessage(event.messageId)
                     msg.quote(event.user.asUser())
                 }
@@ -179,8 +185,8 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
-                    stringField("Author", quoteAuthor)
                     stringField("Quote", quote)
+                    stringField("Author", quoteAuthor)
                 }
             }
         }
@@ -215,8 +221,8 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
-                    userField("Author", author2ElectricBoogaloo)
                     stringField("Quote", content)
+                    userField("Author", author2ElectricBoogaloo)
                 }
             }
         }

@@ -25,6 +25,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.User
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.database.entity.ServerConfig
@@ -39,6 +40,20 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
 
     if (conf.loggingConfig.enabled && conf.loggingConfig.channel != null) {
         val channel = this.getChannel(Snowflake(conf.loggingConfig.channel!!))
+
+        if (channel.type == ChannelType.GuildText) {
+            return channel as MessageChannel
+        }
+    }
+
+    return null
+}
+
+suspend fun GuildBehavior.getPublicModLogChannel(): MessageChannel? {
+    val conf = this.getConfig()
+
+    if (conf.moderationConfig.enabled && conf.moderationConfig.publicModLogChannel != null) {
+        val channel = this.getChannel(Snowflake(conf.moderationConfig.publicModLogChannel!!))
 
         if (channel.type == ChannelType.GuildText) {
             return channel as MessageChannel
@@ -87,7 +102,7 @@ fun EmbedBuilder.userField(name: String, user: User) {
     }
 }
 
-fun EmbedBuilder.channelField(name: String, channel: MessageChannel) {
+fun EmbedBuilder.channelField(name: String, channel: Channel) {
     field {
         this.name = name
         this.value = channel.mention

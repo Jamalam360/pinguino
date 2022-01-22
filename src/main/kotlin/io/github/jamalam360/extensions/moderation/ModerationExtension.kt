@@ -225,6 +225,14 @@ class ModerationExtension : Extension() {
                                         userField("Member", member.asUser())
                                     }
 
+                                    guild?.getPublicModLogChannel()?.createEmbed {
+                                        info("Member Unmuted")
+                                        userAuthor(user.asUser())
+                                        log()
+                                        success()
+                                        userField("Member", member.asUser())
+                                    }
+
                                     if (!member.isBot) {
                                         member.dm {
                                             embed {
@@ -239,6 +247,16 @@ class ModerationExtension : Extension() {
                             }
 
                             guild?.getLogChannel()?.createEmbed {
+                                info("Member Muted")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Duration", arguments.duration.toString())
+                                stringField("Reason", arguments.reason)
+                            }
+
+                            guild?.getPublicModLogChannel()?.createEmbed {
                                 info("Member Muted")
                                 userAuthor(user.asUser())
                                 now()
@@ -315,6 +333,14 @@ class ModerationExtension : Extension() {
                                 userField("Member", member.asUser())
                             }
 
+                            guild?.getPublicModLogChannel()?.createEmbed {
+                                info("Member Unmuted")
+                                userAuthor(user.asUser())
+                                log()
+                                success()
+                                userField("Member", member.asUser())
+                            }
+
                             respond {
                                 embed {
                                     info("Member Unmuted")
@@ -359,6 +385,15 @@ class ModerationExtension : Extension() {
                             member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
                             guild?.getLogChannel()?.createEmbed {
+                                info("Member Kicked")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
+
+                            guild?.getPublicModLogChannel()?.createEmbed {
                                 info("Member Kicked")
                                 userAuthor(user.asUser())
                                 now()
@@ -426,6 +461,15 @@ class ModerationExtension : Extension() {
                                 stringField("Reason", arguments.reason)
                             }
 
+                            guild?.getPublicModLogChannel()?.createEmbed {
+                                info("Member Banned")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
+
                             respond {
                                 embed {
                                     info("Member Banned")
@@ -459,6 +503,15 @@ class ModerationExtension : Extension() {
                         channel.createMessage("Thread locked by a moderator")
 
                         guild?.getLogChannel()?.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
+
+                        guild?.getPublicModLogChannel()?.createEmbed {
                             info("Thread locked")
                             userAuthor(user.asUser())
                             now()
@@ -505,6 +558,15 @@ class ModerationExtension : Extension() {
                             stringField("Reason", arguments.reason)
                         }
 
+                        guild?.getPublicModLogChannel()?.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
+
                         if (arguments.duration != null) {
                             scheduler.schedule(arguments.duration!!.seconds.toLong()) {
                                 text.editRolePermission(guild!!.id) {
@@ -517,6 +579,14 @@ class ModerationExtension : Extension() {
 
                                 guild?.getLogChannel()?.createEmbed {
                                     info("Channel unlocked automatically after timeout")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    log()
+                                    channelField("Channel", channel.asChannel())
+                                }
+
+                                guild?.getPublicModLogChannel()?.createEmbed {
+                                    info("Channel unlocked")
                                     userAuthor(user.asUser())
                                     now()
                                     log()
@@ -549,13 +619,13 @@ class ModerationExtension : Extension() {
                     }
 
                     when (channel) {
-                        is TextChannelThread -> {
+                        is TextChannelThread ->
                             channel.edit {
                                 locked = true
                                 reason = "Thread being unlocked by ${user.mention}"
                             }
-                        }
-                        is TextChannel -> {
+
+                        is TextChannel ->
                             channel.editRolePermission(guild!!.id) {
                                 speakingPermissions.forEach {
                                     allowed += it
@@ -563,7 +633,7 @@ class ModerationExtension : Extension() {
 
                                 reason = "Channel being unlocked by ${user.asUser().username}"
                             }
-                        }
+
                         else -> {
                             respond {
                                 embed {
@@ -581,6 +651,14 @@ class ModerationExtension : Extension() {
                     (channel as TextChannel).createMessage("Thread unlocked by a moderator")
 
                     guild?.getLogChannel()?.createEmbed {
+                        info("Channel unlocked")
+                        userAuthor(user.asUser())
+                        now()
+                        log()
+                        channelField("Channel", channel.asChannel())
+                    }
+
+                    guild?.getPublicModLogChannel()?.createEmbed {
                         info("Channel unlocked")
                         userAuthor(user.asUser())
                         now()
@@ -643,7 +721,6 @@ class ModerationExtension : Extension() {
         }
     }
 
-    //region Arguments
     inner class MuteArgs : SingleUserArgs() {
         val reason by string(
             "reason",
@@ -694,5 +771,4 @@ class ModerationExtension : Extension() {
             "The channel to unlock, optionally"
         )
     }
-    //endregion
 }

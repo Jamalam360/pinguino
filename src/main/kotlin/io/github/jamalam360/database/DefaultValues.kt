@@ -59,8 +59,8 @@ fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
         moderatorRole = 0,
         mutedRole = 0,
         mutableListOf(),
-        autoSaveThreads = false
-
+        autoSaveThreads = false,
+        publicModLogChannel = 0
     )
 }
 
