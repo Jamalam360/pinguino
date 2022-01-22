@@ -4,10 +4,18 @@
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.0...v0.6.1)**
 
+Note: for this release, I have updated the structure of the changelog, as an ongoing change.
+
+### Fixes
 - Fix an error caused by an unsafe cast.
 - Quotes created by reacting with `:star:` no longer quote multiple times for each reaction.
+- Fixed the formatting of `/fun coin` response.
+- `/fun` commands now mention users correctly.
+
+### Features
 - Display `Content` on top of `Author` in `Quote sent` logging.
 - Pinging the bot will now display a help message.
+- `/fun` commands that had a delay now have a random delay.
 
 ## Version 0.6.0
 
