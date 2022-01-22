@@ -20,10 +20,7 @@ package io.github.jamalam360.extensions.moderation
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
@@ -38,6 +35,7 @@ import dev.kord.core.behavior.channel.editRolePermission
 import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.channel.thread.TextChannelThread
@@ -46,7 +44,7 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
 import io.github.jamalam360.util.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -549,13 +547,13 @@ class ModerationExtension : Extension() {
                     }
 
                     when (channel) {
-                        is TextChannelThread -> {
+                        is TextChannelThread ->
                             channel.edit {
                                 locked = true
                                 reason = "Thread being unlocked by ${user.mention}"
                             }
-                        }
-                        is TextChannel -> {
+
+                        is TextChannel ->
                             channel.editRolePermission(guild!!.id) {
                                 speakingPermissions.forEach {
                                     allowed += it
@@ -563,7 +561,7 @@ class ModerationExtension : Extension() {
 
                                 reason = "Channel being unlocked by ${user.asUser().username}"
                             }
-                        }
+
                         else -> {
                             respond {
                                 embed {
