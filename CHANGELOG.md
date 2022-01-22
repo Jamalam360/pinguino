@@ -4,6 +4,9 @@
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.0...v0.6.1)**
 
+- Fix an error caused by an unsafe cast.
+- Quotes created by reacting with `:star:` no longer quote multiple times for each reaction.
+
 ## Version 0.6.0
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.5.2...v0.6.0)**
