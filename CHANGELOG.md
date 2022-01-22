@@ -17,6 +17,7 @@ Note: for this release, I have updated the structure of the changelog, as an ong
 - Display `Content` on top of `Author` in `Quote sent` logging.
 - Pinging the bot will now display a help message.
 - `/fun` commands that had a delay now have a random delay.
+- Added a public mod-log option.
 
 ## Version 0.6.0
 

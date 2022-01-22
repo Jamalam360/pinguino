@@ -20,7 +20,10 @@ package io.github.jamalam360.extensions.moderation
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.*
+import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
@@ -35,7 +38,6 @@ import dev.kord.core.behavior.channel.editRolePermission
 import dev.kord.core.behavior.channel.threads.edit
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.edit
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.channel.thread.TextChannelThread
@@ -44,7 +46,7 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.Modules
 import io.github.jamalam360.util.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -223,6 +225,14 @@ class ModerationExtension : Extension() {
                                         userField("Member", member.asUser())
                                     }
 
+                                    guild?.getPublicModLogChannel()?.createEmbed {
+                                        info("Member Unmuted")
+                                        userAuthor(user.asUser())
+                                        log()
+                                        success()
+                                        userField("Member", member.asUser())
+                                    }
+
                                     if (!member.isBot) {
                                         member.dm {
                                             embed {
@@ -237,6 +247,16 @@ class ModerationExtension : Extension() {
                             }
 
                             guild?.getLogChannel()?.createEmbed {
+                                info("Member Muted")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Duration", arguments.duration.toString())
+                                stringField("Reason", arguments.reason)
+                            }
+
+                            guild?.getPublicModLogChannel()?.createEmbed {
                                 info("Member Muted")
                                 userAuthor(user.asUser())
                                 now()
@@ -313,6 +333,14 @@ class ModerationExtension : Extension() {
                                 userField("Member", member.asUser())
                             }
 
+                            guild?.getPublicModLogChannel()?.createEmbed {
+                                info("Member Unmuted")
+                                userAuthor(user.asUser())
+                                log()
+                                success()
+                                userField("Member", member.asUser())
+                            }
+
                             respond {
                                 embed {
                                     info("Member Unmuted")
@@ -357,6 +385,15 @@ class ModerationExtension : Extension() {
                             member.kick("Kicked by ${user.asUser().username} with reason '${arguments.reason}'")
 
                             guild?.getLogChannel()?.createEmbed {
+                                info("Member Kicked")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
+
+                            guild?.getPublicModLogChannel()?.createEmbed {
                                 info("Member Kicked")
                                 userAuthor(user.asUser())
                                 now()
@@ -424,6 +461,15 @@ class ModerationExtension : Extension() {
                                 stringField("Reason", arguments.reason)
                             }
 
+                            guild?.getPublicModLogChannel()?.createEmbed {
+                                info("Member Banned")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+                                userField("Member", member.asUser())
+                                stringField("Reason", arguments.reason)
+                            }
+
                             respond {
                                 embed {
                                     info("Member Banned")
@@ -457,6 +503,15 @@ class ModerationExtension : Extension() {
                         channel.createMessage("Thread locked by a moderator")
 
                         guild?.getLogChannel()?.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
+
+                        guild?.getPublicModLogChannel()?.createEmbed {
                             info("Thread locked")
                             userAuthor(user.asUser())
                             now()
@@ -503,6 +558,15 @@ class ModerationExtension : Extension() {
                             stringField("Reason", arguments.reason)
                         }
 
+                        guild?.getPublicModLogChannel()?.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            channelField("Channel", channel.asChannel())
+                            stringField("Reason", arguments.reason)
+                        }
+
                         if (arguments.duration != null) {
                             scheduler.schedule(arguments.duration!!.seconds.toLong()) {
                                 text.editRolePermission(guild!!.id) {
@@ -515,6 +579,14 @@ class ModerationExtension : Extension() {
 
                                 guild?.getLogChannel()?.createEmbed {
                                     info("Channel unlocked automatically after timeout")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    log()
+                                    channelField("Channel", channel.asChannel())
+                                }
+
+                                guild?.getPublicModLogChannel()?.createEmbed {
+                                    info("Channel unlocked")
                                     userAuthor(user.asUser())
                                     now()
                                     log()
@@ -586,6 +658,14 @@ class ModerationExtension : Extension() {
                         channelField("Channel", channel.asChannel())
                     }
 
+                    guild?.getPublicModLogChannel()?.createEmbed {
+                        info("Channel unlocked")
+                        userAuthor(user.asUser())
+                        now()
+                        log()
+                        channelField("Channel", channel.asChannel())
+                    }
+
                     respond {
                         embed {
                             info("Channel unlocked")
@@ -641,7 +721,6 @@ class ModerationExtension : Extension() {
         }
     }
 
-    //region Arguments
     inner class MuteArgs : SingleUserArgs() {
         val reason by string(
             "reason",
@@ -692,5 +771,4 @@ class ModerationExtension : Extension() {
             "The channel to unlock, optionally"
         )
     }
-    //endregion
 }

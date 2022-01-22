@@ -49,6 +49,20 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
     return null
 }
 
+suspend fun GuildBehavior.getPublicModLogChannel(): MessageChannel? {
+    val conf = this.getConfig()
+
+    if (conf.moderationConfig.enabled && conf.moderationConfig.publicModLogChannel != null) {
+        val channel = this.getChannel(Snowflake(conf.moderationConfig.publicModLogChannel!!))
+
+        if (channel.type == ChannelType.GuildText) {
+            return channel as MessageChannel
+        }
+    }
+
+    return null
+}
+
 fun GuildBehavior.getConfig(): ServerConfig = database.config.getConfig(this.id)
 
 fun ThreadChannelBehavior.save(save: Boolean = true) {

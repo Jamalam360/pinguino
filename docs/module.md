@@ -32,6 +32,8 @@ The module module is responsible for configuring the bot.
             - Set the role to apply to muted members
         - `auto-save-threads`
             - Set whether threads should be prevented from archiving by default.
+        - `set-public-mod-log-channel`
+            - Sets the channel to post public moderation logs to.
     - `greeting`
         - `enable`
             - Enables the greeting module.
