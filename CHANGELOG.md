@@ -11,6 +11,7 @@ Note: for this release, I have updated the structure of the changelog, as an ong
 - Quotes created by reacting with `:star:` no longer quote multiple times for each reaction.
 - Fixed the formatting of `/fun coin` response.
 - `/fun` commands now mention users correctly.
+- `/module [enable | disable]` commands now use the standard response author.
 
 ### Features
 - Display `Content` on top of `Author` in `Quote sent` logging.

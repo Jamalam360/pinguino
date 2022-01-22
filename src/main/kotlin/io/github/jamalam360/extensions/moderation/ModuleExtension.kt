@@ -62,7 +62,7 @@ class ModuleExtension : Extension() {
                 respond {
                     embed {
                         info("Enabled $moduleName module")
-                        userAuthor(user.asUser())
+                        pinguino()
                         now()
                         success()
                     }
@@ -86,7 +86,7 @@ class ModuleExtension : Extension() {
                 respond {
                     embed {
                         info("Disabled $moduleName module")
-                        userAuthor(user.asUser())
+                        pinguino()
                         now()
                         success()
                     }
