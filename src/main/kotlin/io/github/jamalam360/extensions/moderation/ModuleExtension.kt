@@ -29,7 +29,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam360.database.entity.ServerConfig
 import io.github.jamalam360.util.*
@@ -132,7 +131,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
@@ -172,7 +171,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
@@ -308,7 +307,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            channelField("Channel", arguments.channel as MessageChannel)
+                            channelField("Channel", arguments.channel)
                         }
 
                         respond {
