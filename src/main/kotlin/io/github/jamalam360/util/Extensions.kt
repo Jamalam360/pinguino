@@ -25,6 +25,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.User
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam360.database.entity.ServerConfig
@@ -87,7 +88,7 @@ fun EmbedBuilder.userField(name: String, user: User) {
     }
 }
 
-fun EmbedBuilder.channelField(name: String, channel: MessageChannel) {
+fun EmbedBuilder.channelField(name: String, channel: Channel) {
     field {
         this.name = name
         this.value = channel.mention
