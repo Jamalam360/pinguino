@@ -1,5 +1,26 @@
 # Pinguino Changelog
 
+## Version 0.7.0
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.7.0)**
+
+### Fixes
+- When channels are locked, the message sent to the channel is now an embed, to be in 
+  line with the rest of the bot.
+- The code package is now `io.github.jamalam`, changed from `io.github.jamalam360`, to
+  reflect my username transitioning I have been attempting to do.
+- Sending `@Pinguino` to get the help message now works with trailing whitespace.
+- Mod-log unmute logging now uses the correct embed colour.
+- Logging events now respect whether the logging module is enabled or disabled.
+- Trying to quote when the quotes channel has not been configured now responds accordingly.
+  
+### Features
+
+- Mute commands now use native discord timeouts, rather than a custom system. This means that
+  the duration argument for mute commands is no longer optional.
+- Added logging for the modification of guild emojis.
+- Update to latest KordEx snapshots.
+
 ## Version 0.6.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.0...v0.6.1)**

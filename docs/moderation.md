@@ -16,9 +16,9 @@ The moderation module provides traditional moderation commands (ban, mute, kick 
             - Removes a role from the list of roles to add to new threads.
     - `discipline`
         - `mute`
-            - Mutes a member
+            - Mutes a member using Discord's timeout system
         - `unmute`
-            - Unmutes a member
+            - Unmutes a member using Discord's timeout system
         - `kick`
             - Kicks a member
         - `ban`
