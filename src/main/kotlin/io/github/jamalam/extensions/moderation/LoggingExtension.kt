@@ -46,7 +46,6 @@ class LoggingExtension : Extension() {
     override val name: String = "logging"
 
     override suspend fun setup() {
-        //region Events
         event<MemberJoinEvent> {
             action {
                 event.guild.getLogChannel()?.createEmbed {
@@ -120,7 +119,6 @@ class LoggingExtension : Extension() {
                 }
             }
         }
-        //endregion
     }
 
     @Deprecated("Use getLogChannel() instead.")
