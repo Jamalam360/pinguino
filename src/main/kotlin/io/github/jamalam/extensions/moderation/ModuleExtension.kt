@@ -225,34 +225,6 @@ class ModuleExtension : Extension() {
                     }
                 }
 
-                ephemeralSubCommand(::SingleRoleArgs) {
-                    name = "set-muted-role"
-                    description = "Set role to apply to muted users"
-
-                    action {
-                        val conf = guild!!.getConfig()
-                        conf.moderationConfig.mutedRole = arguments.role.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
-
-                        guild!!.getLogChannel()?.createEmbed {
-                            info("Muted role updated")
-                            userAuthor(user.asUser())
-                            now()
-                            log()
-                            stringField("Role", arguments.role.mention)
-                        }
-
-                        respond {
-                            embed {
-                                info("Muted role updated")
-                                pinguino()
-                                now()
-                                success()
-                            }
-                        }
-                    }
-                }
-
                 ephemeralSubCommand(::SingleBooleanArgs) {
                     name = "auto-save-threads"
                     description = "Set whether threads are prevented from archiving by default"

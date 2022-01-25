@@ -28,8 +28,6 @@ The module module is responsible for configuring the bot.
             - Disables the moderation module.
         - `set-role`
             - Set the role required to run moderator level commands.
-        - `set-muted-role`
-            - Set the role to apply to muted members
         - `auto-save-threads`
             - Set whether threads should be prevented from archiving by default.
         - `set-public-mod-log-channel`

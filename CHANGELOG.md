@@ -15,6 +15,7 @@
   
 ### Features
 
+- Mute commands now use native discord timeouts, rather than a custom system.
 - Added logging for the modification of guild emojis.
 - Update to latest KordEx snapshots.
 

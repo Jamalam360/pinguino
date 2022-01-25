@@ -20,15 +20,13 @@ package io.github.jamalam.extensions.moderation
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalDuration
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
+import com.kotlindiscord.kord.extensions.utils.timeoutUntil
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
@@ -47,6 +45,9 @@ import io.github.jamalam.Modules
 import io.github.jamalam.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -167,20 +168,6 @@ class ModerationExtension : Extension() {
 
                     action {
                         val member = guild!!.getMemberOrNull(arguments.user.id)
-                        val role = database.config.getConfig(guild!!.id).moderationConfig.mutedRole
-
-                        if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
-                            respond {
-                                embed {
-                                    info("The muted role is not yet configured for this server")
-                                    pinguino()
-                                    now()
-                                    error()
-                                }
-                            }
-
-                            return@action
-                        }
 
                         if (member == null) {
                             respond {
@@ -203,25 +190,21 @@ class ModerationExtension : Extension() {
                                         stringField("Reason", arguments.reason)
                                     }
                                 }
-                            }
 
-                            member.addRole(
-                                Snowflake(role),
-                                "Muted by ${user.asUser().username} for ${arguments.duration.toString()} with the reason '${arguments.reason}'"
-                            )
-
-                            if (arguments.duration != null) {
-                                scheduler.schedule(arguments.duration!!.seconds.toLong()) {
-                                    member.removeRole(
-                                        Snowflake(role),
-                                        "Automatic unmute from mute made ${arguments.duration} ago"
-                                    )
+                                scheduler.schedule(arguments.duration.seconds.toLong()) {
+                                    member.dm {
+                                        embed {
+                                            info("Unmuted in ${guild!!.asGuild().name}!")
+                                            userAuthor(user.asUser())
+                                            now()
+                                            success()
+                                        }
+                                    }
 
                                     guild?.getLogChannel()?.createEmbed {
                                         info("Member Unmuted")
                                         userAuthor(user.asUser())
                                         log()
-                                        success()
                                         userField("Member", member.asUser())
                                     }
 
@@ -231,18 +214,14 @@ class ModerationExtension : Extension() {
                                         log()
                                         userField("Member", member.asUser())
                                     }
-
-                                    if (!member.isBot) {
-                                        member.dm {
-                                            embed {
-                                                info("Unmuted in ${guild!!.asGuild().name}!")
-                                                pinguino()
-                                                now()
-                                                success()
-                                            }
-                                        }
-                                    }
                                 }
+                            }
+
+                            member.edit {
+                                timeoutUntil = Clock.System.now().plus(arguments.duration, TimeZone.currentSystemDefault())
+
+                                reason =
+                                    "Muted by ${user.asUser().username} for ${arguments.duration} with the reason '${arguments.reason}'"
                             }
 
                             guild?.getLogChannel()?.createEmbed {
@@ -283,20 +262,6 @@ class ModerationExtension : Extension() {
 
                     action {
                         val member = guild!!.getMemberOrNull(arguments.user.id)
-                        val role = database.config.getConfig(guild!!.id).moderationConfig.mutedRole
-
-                        if (guild!!.asGuild().getRoleOrNull(Snowflake(role)) == null) {
-                            respond {
-                                embed {
-                                    info("The muted role is not yet configured for this server")
-                                    pinguino()
-                                    now()
-                                    error()
-                                }
-                            }
-
-                            return@action
-                        }
 
                         if (member == null) {
                             respond {
@@ -319,16 +284,15 @@ class ModerationExtension : Extension() {
                                 }
                             }
 
-                            member.removeRole(
-                                Snowflake(role),
-                                "Unmuted by ${user.asUser().username}'"
-                            )
+                            member.edit {
+                                timeoutUntil = null
+                                reason = "Unmuted by ${user.asUser().username}"
+                            }
 
                             guild?.getLogChannel()?.createEmbed {
                                 info("Member Unmuted")
                                 userAuthor(user.asUser())
                                 log()
-                                success()
                                 userField("Member", member.asUser())
                             }
 
@@ -336,7 +300,6 @@ class ModerationExtension : Extension() {
                                 info("Member Unmuted")
                                 userAuthor(user.asUser())
                                 log()
-                                success()
                                 userField("Member", member.asUser())
                             }
 
@@ -767,7 +730,7 @@ class ModerationExtension : Extension() {
             name = "reason"
             description = "The reason for the mute"
         }
-        val duration by optionalDuration {
+        val duration by duration {
             name = "duration"
             description = "The duration of the mute - optionally"
         }
