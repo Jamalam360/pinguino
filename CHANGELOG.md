@@ -1,8 +1,8 @@
 # Pinguino Changelog
 
-## Version 0.6.2
+## Version 0.7.0
 
-**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.6.2)**
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.7.0)**
 
 ### Fixes
 - When channels are locked, the message sent to the channel is now an embed, to be in 
@@ -16,7 +16,8 @@
   
 ### Features
 
-- Mute commands now use native discord timeouts, rather than a custom system.
+- Mute commands now use native discord timeouts, rather than a custom system. This means that
+  the duration argument for mute commands is no longer optional.
 - Added logging for the modification of guild emojis.
 - Update to latest KordEx snapshots.
 
