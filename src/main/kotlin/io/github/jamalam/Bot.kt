@@ -53,7 +53,7 @@ suspend fun main() {
                     enable = true
                     dsn = SENTRY_URL
                     environment = "Production"
-                    distribution = VERSION //TODO: Use release instead of distribution - waiting on fix on KordEx's side
+                    release = VERSION
                 }
             }
         }
