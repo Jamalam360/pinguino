@@ -229,7 +229,6 @@ class ModerationExtension : Extension() {
                                         info("Member Unmuted")
                                         userAuthor(user.asUser())
                                         log()
-                                        success()
                                         userField("Member", member.asUser())
                                     }
 

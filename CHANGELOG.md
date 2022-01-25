@@ -10,6 +10,7 @@
 - The code package is now `io.github.jamalam`, changed from `io.github.jamalam360`, to
   reflect my username transitioning I have been attempting to do.
 - Sending `@Pinguino` to get the help message now works with trailing whitespace.
+- Mod-log unmute logging now uses the correct embed colour.
   
 ### Features
 
