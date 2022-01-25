@@ -16,6 +16,7 @@
 ### Features
 
 - Added logging for the modification of guild emojis.
+- Update to latest KordEx snapshots.
 
 ## Version 0.6.1
 
