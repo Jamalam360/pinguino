@@ -12,7 +12,7 @@ plugins {
     id("org.cadixdev.licenser")
 }
 
-group = "io.github.jamalam360"
+group = "io.github.jamalam"
 version = "0.6.2"
 
 repositories {
@@ -38,7 +38,7 @@ dependencies {
 
 application {
     // This is deprecated, but the Shadow plugin requires it
-    mainClassName = "io.github.jamalam360.BotKt"
+    mainClassName = "io.github.jamalam.BotKt"
 }
 
 gitHooks {
@@ -73,7 +73,7 @@ tasks.withType<KotlinCompile> {
 tasks.jar {
     manifest {
         attributes(
-            "Main-Class" to "io.github.jamalam360.BotKt"
+            "Main-Class" to "io.github.jamalam.BotKt"
         )
     }
 }

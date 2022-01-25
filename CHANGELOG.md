@@ -7,7 +7,9 @@
 ### Fixes
 - When channels are locked, the message sent to the channel is now an embed, to be in 
   line with the rest of the bot.
-
+- The code package is now `io.github.jamalam`, changed from `io.github.jamalam360`, to
+  reflect my username transitioning I have been attempting to do.
+  
 ### Features
 
 ## Version 0.6.1
