@@ -11,8 +11,11 @@
   reflect my username transitioning I have been attempting to do.
 - Sending `@Pinguino` to get the help message now works with trailing whitespace.
 - Mod-log unmute logging now uses the correct embed colour.
+- Logging events now respect whether the logging module is enabled or disabled.
   
 ### Features
+
+- Added logging for the modification of guild emojis.
 
 ## Version 0.6.1
 

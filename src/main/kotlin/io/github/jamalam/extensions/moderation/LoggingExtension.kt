@@ -31,10 +31,12 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.event.guild.EmojisUpdateEvent
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
+import io.github.jamalam.Modules
 import io.github.jamalam.util.*
 
 /**
@@ -47,6 +49,10 @@ class LoggingExtension : Extension() {
 
     override suspend fun setup() {
         event<MemberJoinEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
             action {
                 event.guild.getLogChannel()?.createEmbed {
                     info("Member Joined")
@@ -59,6 +65,10 @@ class LoggingExtension : Extension() {
         }
 
         event<MemberLeaveEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
             action {
                 event.guild.getLogChannel()?.createEmbed {
                     info("Member Left")
@@ -73,6 +83,7 @@ class LoggingExtension : Extension() {
         event<MessageDeleteEvent> {
             check {
                 isNotBot()
+                isModuleEnabled(Modules.Logging)
             }
 
             action {
@@ -96,6 +107,7 @@ class LoggingExtension : Extension() {
         event<MessageUpdateEvent> {
             check {
                 isNotBot()
+                isModuleEnabled(Modules.Logging)
             }
 
             action {
@@ -116,6 +128,22 @@ class LoggingExtension : Extension() {
                         stringField("Before", before)
                         stringField("After", msg.content)
                     }
+                }
+            }
+        }
+
+        event<EmojisUpdateEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                event.guild.getLogChannel()?.createEmbed {
+                    info("Emojis Updated")
+                    pinguino()
+                    log()
+                    now()
+                    stringField("Emojis", event.emojis.joinToString("\n") { it.name + " - " + it.mention })
                 }
             }
         }
