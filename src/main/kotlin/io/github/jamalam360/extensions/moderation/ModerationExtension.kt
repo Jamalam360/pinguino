@@ -500,7 +500,13 @@ class ModerationExtension : Extension() {
                             reason = arguments.reason
                         }
 
-                        channel.createMessage("Thread locked by a moderator")
+                        channel.createEmbed {
+                            info("Thread locked")
+                            userAuthor(user.asUser())
+                            now()
+                            error()
+                            stringField("Reason", arguments.reason)
+                        }
 
                         guild?.getLogChannel()?.createEmbed {
                             info("Thread locked")
@@ -527,6 +533,13 @@ class ModerationExtension : Extension() {
                                     reason = arguments.reason
                                 }
 
+                                channel.createEmbed {
+                                    info("Thread unlocked")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    success()
+                                }
+
                                 guild?.getLogChannel()?.createEmbed {
                                     info("Thread unlocked automatically after timeout")
                                     userAuthor(user.asUser())
@@ -549,6 +562,14 @@ class ModerationExtension : Extension() {
 
                         text.createMessage("Channel locked by a moderator")
 
+                        channel.createEmbed {
+                            info("Channel locked")
+                            userAuthor(user.asUser())
+                            now()
+                            error()
+                            stringField("Reason", arguments.reason)
+                        }
+
                         guild?.getLogChannel()?.createEmbed {
                             info("Channel locked")
                             userAuthor(user.asUser())
@@ -559,7 +580,7 @@ class ModerationExtension : Extension() {
                         }
 
                         guild?.getPublicModLogChannel()?.createEmbed {
-                            info("Thread locked")
+                            info("Channel locked")
                             userAuthor(user.asUser())
                             now()
                             log()
@@ -575,6 +596,13 @@ class ModerationExtension : Extension() {
                                     }
 
                                     reason = arguments.reason
+                                }
+
+                                channel.createEmbed {
+                                    info("Channel unlocked")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    success()
                                 }
 
                                 guild?.getLogChannel()?.createEmbed {
@@ -619,13 +647,21 @@ class ModerationExtension : Extension() {
                     }
 
                     when (channel) {
-                        is TextChannelThread ->
+                        is TextChannelThread -> {
                             channel.edit {
                                 locked = true
                                 reason = "Thread being unlocked by ${user.mention}"
                             }
 
-                        is TextChannel ->
+                            channel.createEmbed {
+                                info("Thread unlocked")
+                                userAuthor(user.asUser())
+                                now()
+                                success()
+                            }
+                        }
+
+                        is TextChannel -> {
                             channel.editRolePermission(guild!!.id) {
                                 speakingPermissions.forEach {
                                     allowed += it
@@ -633,6 +669,14 @@ class ModerationExtension : Extension() {
 
                                 reason = "Channel being unlocked by ${user.asUser().username}"
                             }
+
+                            channel.createEmbed {
+                                info("Channel unlocked")
+                                userAuthor(user.asUser())
+                                now()
+                                success()
+                            }
+                        }
 
                         else -> {
                             respond {
@@ -647,8 +691,6 @@ class ModerationExtension : Extension() {
                             return@action
                         }
                     }
-
-                    (channel as TextChannel).createMessage("Thread unlocked by a moderator")
 
                     guild?.getLogChannel()?.createEmbed {
                         info("Channel unlocked")

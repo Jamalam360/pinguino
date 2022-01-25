@@ -5,6 +5,8 @@
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.6.2)**
 
 ### Fixes
+- When channels are locked, the message sent to the channel is now an embed, to be in 
+  line with the rest of the bot.
 
 ### Features
 
