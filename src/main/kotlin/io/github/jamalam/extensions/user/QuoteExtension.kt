@@ -66,20 +66,31 @@ class QuoteExtension : Extension() {
                 }
 
                 action {
-                    sendQuote(
-                        this.guild!!.asGuild(),
-                        arguments.quote,
-                        arguments.author.username,
-                        arguments.author.avatar!!.url,
-                        user.asUser()
-                    )
+                    if (guild!!.getConfig().quotesConfig.channel != null) {
+                        sendQuote(
+                            this.guild!!.asGuild(),
+                            arguments.quote,
+                            arguments.author.username,
+                            arguments.author.avatar!!.url,
+                            user.asUser()
+                        )
 
-                    respond {
-                        embed {
-                            info("Quote recorded")
-                            pinguino()
-                            now()
-                            success()
+                        respond {
+                            embed {
+                                info("Quote recorded")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    } else {
+                        respond {
+                            embed {
+                                info("The Quotes channel has not been configured")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -94,14 +105,24 @@ class QuoteExtension : Extension() {
                 }
 
                 action {
-                    sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
-
-                    respond {
-                        embed {
-                            info("Quote recorded")
-                            pinguino()
-                            now()
-                            success()
+                    if (guild!!.getConfig().quotesConfig.channel != null) {
+                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
+                        respond {
+                            embed {
+                                info("Quote recorded")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    } else {
+                        respond {
+                            embed {
+                                info("The Quotes channel has not been configured")
+                                pinguino()
+                                now()
+                                error()
+                            }
                         }
                     }
                 }
@@ -116,14 +137,25 @@ class QuoteExtension : Extension() {
             }
 
             action {
-                targetMessages.first().quote(user.asUser())
+                if (guild!!.getConfig().quotesConfig.channel != null) {
+                    targetMessages.first().quote(user.asUser())
 
-                respond {
-                    embed {
-                        info("Quote recorded")
-                        pinguino()
-                        now()
-                        success()
+                    respond {
+                        embed {
+                            info("Quote recorded")
+                            pinguino()
+                            now()
+                            success()
+                        }
+                    }
+                } else {
+                    respond {
+                        embed {
+                            info("The Quotes channel has not been configured")
+                            pinguino()
+                            now()
+                            error()
+                        }
                     }
                 }
             }

@@ -12,6 +12,7 @@
 - Sending `@Pinguino` to get the help message now works with trailing whitespace.
 - Mod-log unmute logging now uses the correct embed colour.
 - Logging events now respect whether the logging module is enabled or disabled.
+- Trying to quote when the quotes channel has not been configured now responds accordingly.
   
 ### Features
 
