@@ -24,36 +24,36 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.*
  * @author  Jamalam360
  */
 open class SingleChannelArgs : Arguments() {
-    val channel by channel(
-        "channel",
-        "The channel"
-    )
+    val channel by channel {
+        name = "channel"
+        description = "The channel"
+    }
 }
 
 class SingleRoleArgs : Arguments() {
-    val role by role(
-        "role",
-        "The role"
-    )
+    val role by role {
+        name = "role"
+        description = "The role"
+    }
 }
 
 class SingleBooleanArgs : Arguments() {
-    val boolean by boolean(
-        "enabled",
-        "Whether to enable this option"
-    )
+    val boolean by boolean {
+        name = "enabled"
+        description = "Whether to enable this option"
+    }
 }
 
 open class SingleUserArgs : Arguments() {
-    val user by user(
-        "user",
-        "The user"
-    )
+    val user by user {
+        name = "user"
+        description = "The user"
+    }
 }
 
 class SingleStringArgs : Arguments() {
-    val string by string(
-        "string",
-        "The string"
-    )
+    val string by string {
+        name = "string"
+        description = "The string"
+    }
 }

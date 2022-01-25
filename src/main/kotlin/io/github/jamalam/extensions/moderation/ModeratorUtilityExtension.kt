@@ -272,66 +272,66 @@ class ModeratorUtilityExtension : Extension() {
     }
 
     inner class AskArgs : Arguments() {
-        val string by string(
-            "question",
-            "The question to ask"
-        )
-        val channel by optionalChannel(
-            "channel",
-            "The channel to send the message to, or the current one if unspecified"
-        )
+        val string by string {
+            name = "question"
+            description = "The question to ask"
+        }
+        val channel by optionalChannel {
+            name = "channel"
+            description = "The channel to send the message to, or the current one if unspecified"
+        }
     }
 
     inner class EchoArgs : Arguments() {
-        val message by string(
-            "message",
-            "The message to be sent"
-        )
-        val channel by optionalChannel(
-            "channel",
-            "The channel to send the message to, or the current one if unspecified"
-        )
+        val message by string {
+            name = "message"
+            description = "The message to be sent"
+        }
+        val channel by optionalChannel {
+            name = "channel"
+            description = "The channel to send the message to, or the current one if unspecified"
+        }
     }
 
     inner class EmbedCreateArgs : Arguments() {
-        val channel by optionalChannel(
-            "channel",
-            "The channel to send the message to, or the current one if unspecified"
-        )
-        val delay by optionalDuration(
-            "delay",
-            "The time until the embed should be sent - optional"
-        )
-        val title by optionalString(
-            "title",
-            "The title of the embed"
-        )
-        val description by optionalString(
-            "description",
-            "The description of the embed"
-        )
-        val image by optionalString(
-            "image-url",
-            "The URL of the image of the embed"
-        )
-        val author by optionalUser(
-            "author",
-            "The author"
-        )
+        val channel by optionalChannel {
+            name = "channel"
+            description = "The channel to send the message to, or the current one if unspecified"
+        }
+        val delay by optionalDuration {
+            name = "delay"
+            description = "The time until the embed should be sent - optional"
+        }
+        val title by optionalString {
+            name = "title"
+            description = "The title of the embed"
+        }
+        val description by optionalString {
+            name = "description"
+            description = "The description of the embed"
+        }
+        val image by optionalString {
+            name = "image-url"
+            description = "The URL of the image of the embed"
+        }
+        val author by optionalUser {
+            name = "author"
+            description = "The author"
+        }
     }
 
     inner class ScheduleMessageArgs : Arguments() {
-        val channel by channel(
-            "channel",
-            "The channel to send the message to"
-        )
-        val delay by duration(
-            "duration",
-            "The time until the message should be sent"
-        )
-        val message by string(
-            "message",
-            "The message to send"
-        )
+        val channel by channel {
+            name = "channel"
+            description = "The channel to send the message to"
+        }
+        val delay by duration {
+            name = "duration"
+            description = "The time until the message should be sent"
+        }
+        val message by string {
+            name = "message"
+            description = "The message to send"
+        }
     }
 }

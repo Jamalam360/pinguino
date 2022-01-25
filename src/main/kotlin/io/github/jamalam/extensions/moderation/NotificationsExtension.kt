@@ -41,7 +41,6 @@ class NotificationsExtension : Extension() {
     override val name = "notifications"
 
     override suspend fun setup() {
-        //region Events
         event<MemberJoinEvent> {
             check {
                 isModuleEnabled(Modules.Notifications)
@@ -61,10 +60,8 @@ class NotificationsExtension : Extension() {
                 sendFarewell(event.guild.asGuild(), event.user)
             }
         }
-        //endregion
     }
 
-    //region Util Methods
     private suspend fun sendGreeting(guild: Guild, user: User) {
         val conf = database.config.getConfig(guild.id)
 
@@ -102,5 +99,4 @@ class NotificationsExtension : Extension() {
             }
         }
     }
-    //endregion
 }

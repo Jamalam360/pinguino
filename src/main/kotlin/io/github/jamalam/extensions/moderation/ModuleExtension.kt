@@ -472,16 +472,16 @@ class ModuleExtension : Extension() {
     }
 
     class GreetingArgs : Arguments() {
-        val string by string(
-            "value",
-            "The value - use \$user to use the username of the user in your message"
-        )
+        val string by string {
+            name = "value"
+            description = "The value - use \$user to use the username of the user in your message"
+        }
     }
 
     class HastebinUrlArgs : Arguments() {
-        val url by string(
-            "url",
-            "The Hastebin server to use for the file paste module. Defaults to the official Hastebin site"
-        )
+        val url by string {
+            name = "url"
+            description = "The Hastebin server to use for the file paste module. Defaults to the official Hastebin site"
+        }
     }
 }

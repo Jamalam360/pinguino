@@ -177,11 +177,13 @@ class FunExtension : Extension() {
                         if (arguments.comic != null) xkcd.getComic(arguments.comic!!) else xkcd.getLatestComic()
                     respond {
                         embed {
-                            info(if (arguments.comic != null) {
-                                "xkcd #${arguments.comic} - ${response.title}"
-                            } else {
-                                "Today's xkcd - ${response.title}"
-                            })
+                            info(
+                                if (arguments.comic != null) {
+                                    "xkcd #${arguments.comic} - ${response.title}"
+                                } else {
+                                    "Today's xkcd - ${response.title}"
+                                }
+                            )
                             pinguino()
                             success()
                             now()
@@ -308,24 +310,24 @@ class FunExtension : Extension() {
     }
 
     inner class EightBallArgs : Arguments() {
-        val question by string(
-            "question",
-            "The question you want to ask the magic 8-ball",
-        )
+        val question by string {
+            name = "question"
+            description = "The question you want to ask the magic 8-ball"
+        }
     }
 
     inner class XkcdArgs : Arguments() {
-        val comic by optionalInt(
-            "comic",
-            "The comic you want to get, or today's comic if not specified",
-        )
+        val comic by optionalInt {
+            name = "comic"
+            description = "The comic you want to get, or today's comic if not specified"
+        }
     }
 
     inner class AgeArgs : Arguments() {
-        val name by string(
-            "name",
-            "The name of the person you want to predict the age of",
-        )
+        val name by string {
+            name = "name"
+            description = "The name of the person you want to predict the age of"
+        }
     }
 }
 

@@ -433,31 +433,31 @@ class UserUtilityExtension : Extension() {
     }
 
     inner class ThreadRenameArgs : Arguments() {
-        val name by string(
-            "name",
-            "The threads new name"
-        )
+        val name by string {
+            name = "name"
+            description = "The threads new name"
+        }
     }
 
     inner class ThreadSaveArgs : Arguments() {
-        val save by defaultingBoolean(
-            "save",
-            "Whether or not to prevent the thread from archiving",
-            true
-        )
+        val save by defaultingBoolean {
+            name = "save"
+            description = "Whether or not to prevent the thread from archiving"
+            defaultValue = true
+        }
     }
 
     inner class ThreadArchiveArgs : Arguments() {
-        val lock by optionalBoolean(
-            "lock",
-            "Whether to lock the thread as well, if you are a moderator"
-        )
+        val lock by optionalBoolean {
+            name = "lock"
+            description = "Whether to lock the thread as well, if you are a moderator"
+        }
     }
 
     inner class SingleLinkArgs : Arguments() {
-        val link by string(
-            "link",
-            "The link"
-        )
+        val link by string {
+            name = "link"
+            description = "The link"
+        }
     }
 }

@@ -166,58 +166,56 @@ class TagExtension : Extension() {
                 action {
                     val conf = database.config.getConfig(guild!!.id)
 
-                        if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
-                            respond {
-                                embed {
-                                    info("There is not a tag with that name")
-                                    pinguino()
-                                    now()
-                                    error()
-                                }
-                            }
-                        } else {
-                            conf.tagsConfig.tags.remove(arguments.name.lowercase())
-                            database.config.updateConfig(guild!!.id, conf)
-
-                            guild!!.getLogChannel()?.createEmbed {
-                                info("Tag deleted")
-                                userAuthor(user.asUser())
+                    if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
+                        respond {
+                            embed {
+                                info("There is not a tag with that name")
+                                pinguino()
                                 now()
-                                log()
-                                stringField("Tag Name", arguments.name)
+                                error()
                             }
+                        }
+                    } else {
+                        conf.tagsConfig.tags.remove(arguments.name.lowercase())
+                        database.config.updateConfig(guild!!.id, conf)
 
-                            respond {
-                                embed {
-                                    info("Tag deleted")
-                                    pinguino()
-                                    now()
-                                    success()
-                                }
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Tag deleted")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Tag Name", arguments.name)
+                        }
+
+                        respond {
+                            embed {
+                                info("Tag deleted")
+                                pinguino()
+                                now()
+                                success()
                             }
                         }
                     }
+                }
             }
         }
     }
 
-    //region Arguments
     inner class TagNameArgs : Arguments() {
-        val name by string(
-            "name",
-            "The name of the tag"
-        )
+        val name by string {
+            name = "name"
+            description = "The name of the tag"
+        }
     }
 
     inner class TagCreateArgs : Arguments() {
-        val name by string(
-            "name",
-            "The name of the tag"
-        )
-        val content by string(
-            "content",
-            "The content of the tag"
-        )
+        val name by string {
+            name = "name"
+            description = "The name of the tag"
+        }
+        val content by string {
+            name = "content"
+            description = "The content of the tag"
+        }
     }
-    //endregion
 }

@@ -53,7 +53,6 @@ class QuoteExtension : Extension() {
     private val dog = DogApi()
 
     override suspend fun setup() {
-        // region Slash commands
         ephemeralSlashCommand {
             name = quoteText
             description = "Record a quote!"
@@ -108,9 +107,7 @@ class QuoteExtension : Extension() {
                 }
             }
         }
-        //endregion
 
-        //region Message commands
         ephemeralMessageCommand {
             name = "Quote"
 
@@ -132,10 +129,6 @@ class QuoteExtension : Extension() {
             }
         }
 
-        //endregion
-
-        //region Events
-
         //TODO: This is deprecated, for removal when discord adds message command support to mobile
         event<ReactionAddEvent> {
             check {
@@ -155,10 +148,8 @@ class QuoteExtension : Extension() {
                 }
             }
         }
-        //endregion
     }
 
-    //region Util Methods
     private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?, quoter: User) {
         val conf = database.config.getConfig(guild.id)
 
@@ -227,26 +218,26 @@ class QuoteExtension : Extension() {
             }
         }
     }
-    //endregion
 
-    // region Arguments
     inner class QuoteArgsMention : Arguments() {
-        val quote by string(
-            quoteText,
-            "The quote"
-        )
-        val author by user("author", description = "The author of the quote")
+        val quote by string {
+            name = quoteText
+            description = "The quote"
+        }
+        val author by user {
+            name = "author"
+            description = "The author of the quote"
+        }
     }
 
     inner class QuoteArgsString : Arguments() {
-        val quote by string(
-            quoteText,
-            "The quote"
-        )
-        val author by string(
-            "author",
-            "The author of the quote"
-        )
+        val quote by string {
+            name = quoteText
+            description = "The quote"
+        }
+        val author by string {
+            name = "author"
+            description = "The author of the quote"
+        }
     }
-    // endregion
 }

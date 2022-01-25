@@ -763,53 +763,53 @@ class ModerationExtension : Extension() {
     }
 
     inner class MuteArgs : SingleUserArgs() {
-        val reason by string(
-            "reason",
-            "The reason for the kick"
-        )
-        val duration by optionalDuration(
-            "duration",
-            "The duration of the mute - optionally"
-        )
+        val reason by string {
+            name = "reason"
+            description = "The reason for the mute"
+        }
+        val duration by optionalDuration {
+            name = "duration"
+            description = "The duration of the mute - optionally"
+        }
     }
 
     inner class KickArgs : SingleUserArgs() {
-        val reason by string(
-            "reason",
-            "The reason for the kick"
-        )
+        val reason by string {
+            name = "reason"
+            description = "The reason for the kick"
+        }
     }
 
     inner class BanArgs : SingleUserArgs() {
-        val reason by string(
-            "reason",
-            "The reason for the ban"
-        )
-        val deleteMessages by boolean(
-            "delete-message-history",
-            "Whether to delete the users message history"
-        )
+        val reason by string {
+            name = "reason"
+            description = "The reason for the ban"
+        }
+        val deleteMessages by boolean {
+            name = "delete-message-history"
+            description = "Whether to delete the users message history"
+        }
     }
 
     inner class LockArgs : Arguments() {
-        val reason by string(
-            "reason",
-            "The reason for the lock"
-        )
-        val channel by optionalChannel(
-            "channel",
-            "The channel to lock, optionally"
-        )
-        val duration by optionalDuration(
-            "duration",
-            "The duration of the lock, optionally"
-        )
+        val reason by string {
+            name = "reason"
+            description = "The reason for the lock"
+        }
+        val channel by optionalChannel {
+            name = "channel"
+            description = "The channel to lock, optionally"
+        }
+        val duration by optionalDuration {
+            name = "duration"
+            description = "The duration of the lock, optionally"
+        }
     }
 
     inner class UnlockArgs : Arguments() {
-        val channel by optionalChannel(
-            "channel",
-            "The channel to unlock, optionally"
-        )
+        val channel by optionalChannel {
+            name = "channel"
+            description = "The channel to unlock, optionally"
+        }
     }
 }
