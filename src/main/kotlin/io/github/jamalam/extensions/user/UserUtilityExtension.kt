@@ -60,7 +60,7 @@ class UserUtilityExtension : Extension() {
         event<MessageCreateEvent> {
             action {
                 val kord = this@UserUtilityExtension.kord
-                if (event.message.mentionedUserIds.contains(kord.selfId) && event.message.content == "<@${kord.selfId.value}>") {
+                if (event.message.mentionedUserIds.contains(kord.selfId) && event.message.content.filterNot { it.isWhitespace() } == "<@${kord.selfId.value}>") {
                     event.message.reply {
                         content = "Hi, I'm Pinguino! To get started, use the `/help` command. Have fun!"
                     }
