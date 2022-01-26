@@ -14,5 +14,5 @@
 
 <p align="center">Compiled artifacts can be found via GitHub Actions or the <a href="https://github.com/JamCoreDiscord/builds">builds</a> repository</p>
 
-<p align="center"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"> <img src="https://img.shields.io/badge/License-MIT-blue.svg"></p>
+<p align="center"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"> <img src="https://img.shields.io/github/license/JamCoreDiscord/Pinguino"></p>
 <p align="center"><img src="https://img.shields.io/github/issues/JamCoreDiscord/Pinguino.svg"> <img src="https://top.gg/api/widget/servers/896758540784500797.svg"></p>
