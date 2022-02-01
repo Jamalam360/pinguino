@@ -190,8 +190,10 @@ class ModerationExtension : Extension() {
                                         stringField("Reason", arguments.reason)
                                     }
                                 }
+                            }
 
-                                scheduler.schedule(arguments.duration.seconds.toLong()) {
+                            scheduler.schedule(arguments.duration.seconds.toLong()) {
+                                if (!member.isBot) {
                                     member.dm {
                                         embed {
                                             info("Unmuted in ${guild!!.asGuild().name}!")
@@ -200,25 +202,26 @@ class ModerationExtension : Extension() {
                                             success()
                                         }
                                     }
+                                }
 
-                                    guild?.getLogChannel()?.createEmbed {
-                                        info("Member Unmuted")
-                                        userAuthor(user.asUser())
-                                        log()
-                                        userField("Member", member.asUser())
-                                    }
+                                guild?.getLogChannel()?.createEmbed {
+                                    info("Member Unmuted")
+                                    userAuthor(user.asUser())
+                                    log()
+                                    userField("Member", member.asUser())
+                                }
 
-                                    guild?.getPublicModLogChannel()?.createEmbed {
-                                        info("Member Unmuted")
-                                        userAuthor(user.asUser())
-                                        log()
-                                        userField("Member", member.asUser())
-                                    }
+                                guild?.getPublicModLogChannel()?.createEmbed {
+                                    info("Member Unmuted")
+                                    userAuthor(user.asUser())
+                                    log()
+                                    userField("Member", member.asUser())
                                 }
                             }
 
                             member.edit {
-                                timeoutUntil = Clock.System.now().plus(arguments.duration, TimeZone.currentSystemDefault())
+                                timeoutUntil =
+                                    Clock.System.now().plus(arguments.duration, TimeZone.currentSystemDefault())
 
                                 reason =
                                     "Muted by ${user.asUser().username} for ${arguments.duration} with the reason '${arguments.reason}'"

@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- Bots being unmuted will now be logged
+
 ### Features
 
 ## Version 0.7.0
