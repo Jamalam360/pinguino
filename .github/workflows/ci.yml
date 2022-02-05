@@ -3,7 +3,8 @@ name: Build (CI)
 on:
   push:
     branches:
-      - main
+      - release 
+      - develop
   pull_request:
 
 jobs:
