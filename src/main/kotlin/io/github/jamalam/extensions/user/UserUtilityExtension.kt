@@ -26,11 +26,11 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSub
 import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.ephemeralMessageCommand
-import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.extensions.*
+import com.kotlindiscord.kord.extensions.time.TimestampType
+import com.kotlindiscord.kord.extensions.time.toDiscord
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.createdAt
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
@@ -45,6 +45,7 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.HastebinApi
 import io.github.jamalam.api.LinkApi
 import io.github.jamalam.util.*
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 
 /**
@@ -383,6 +384,46 @@ class UserUtilityExtension : Extension() {
             }
         }
 
+        ephemeralSlashCommand(::SingleUserArgs) {
+            name = "user-info"
+            description = "Get information about a user"
+
+            action {
+                respond {
+                    embed {
+                        info("Info for ${arguments.user.mention}")
+                        pinguino()
+                        now()
+                        success()
+
+                        stringField("Username", arguments.user.username)
+                        stringField("Discriminator", arguments.user.discriminator)
+                        stringField("ID", arguments.user.id.value.toString())
+                        stringField("Created At", arguments.user.createdAt.toDiscord(TimestampType.Default))
+
+                        if (guild != null) {
+                            var roles = ""
+
+                            arguments.user.asMember(guild!!.id).roles.map { it.mention }.collect {
+                                roles += "$it\n,"
+                            }
+
+                            if (roles.isNotBlank()) {
+                                stringField(
+                                    "Roles",
+                                    roles
+                                )
+                            } else {
+                                stringField("Roles", "Empty")
+                            }
+                        }
+
+                        image = arguments.user.avatar?.url
+                    }
+                }
+            }
+        }
+
         ephemeralMessageCommand {
             name = "Pin In Thread"
 
@@ -426,6 +467,45 @@ class UserUtilityExtension : Extension() {
                         pinguino()
                         now()
                         success()
+                    }
+                }
+            }
+        }
+
+        ephemeralUserCommand {
+            name = "Info"
+
+            action {
+                respond {
+                    embed {
+                        info("Info for ${targetUsers.first().mention}")
+                        pinguino()
+                        now()
+                        success()
+
+                        stringField("Username", targetUsers.first().username)
+                        stringField("Discriminator", targetUsers.first().discriminator)
+                        stringField("ID", targetUsers.first().id.value.toString())
+                        stringField("Created At", targetUsers.first().createdAt.toDiscord(TimestampType.Default))
+
+                        if (guild != null) {
+                            var roles = ""
+
+                            targetUsers.first().asMember(guild!!.id).roles.map { it.mention }.collect {
+                                roles += "$it\n,"
+                            }
+
+                            if (roles.isNotBlank()) {
+                                stringField(
+                                    "Roles",
+                                    roles
+                                )
+                            } else {
+                                stringField("Roles", "Empty")
+                            }
+                        }
+
+                        image = targetUsers.first().avatar?.url
                     }
                 }
             }

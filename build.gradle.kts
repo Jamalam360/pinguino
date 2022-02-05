@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "io.github.jamalam"
-version = "0.7.0"
+version = "0.7.1"
 
 repositories {
     maven {
@@ -26,6 +26,7 @@ dependencies {
     detektPlugins(libs.detekt)
 
     implementation(libs.kord.extensions)
+    implementation(libs.kord.phishing)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kx.ser)
     implementation(libs.kmongo)

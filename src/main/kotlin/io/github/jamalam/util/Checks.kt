@@ -91,6 +91,39 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
     }
 }
 
+suspend fun <T : Event> CheckContext<T>.notHasModeratorRole() {
+    if (!passed) {
+        return
+    }
+
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
+    val guild = guildFor(event)
+    val member = memberFor(event)
+
+    if (guild == null) {
+        logger.nullGuild(event)
+        fail()
+    } else if (member == null) {
+        logger.nullMember(event)
+        fail()
+    } else {
+        try {
+            if (member.asMember().roles.toList()
+                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+            ) {
+                logger.failed("Member ${member.id} has the moderator role set for this server")
+                fail("Moderators are exempt from this check")
+            } else {
+                logger.passed()
+                pass()
+            }
+        } catch (e: EntityNotFoundException) {
+            logger.failed("Guild ${guild.id} does not have a role with the requested ID")
+            fail("Moderators are exempt from this check")
+        }
+    }
+}
+
 suspend fun <T : Event> CheckContext<T>.ownsThread() {
     if (!passed) {
         return

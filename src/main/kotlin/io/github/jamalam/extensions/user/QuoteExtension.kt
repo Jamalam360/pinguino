@@ -29,6 +29,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
@@ -66,13 +67,26 @@ class QuoteExtension : Extension() {
                 }
 
                 action {
+                    if (user.id == arguments.author.id) {
+                        respond {
+                            embed {
+                                info("You cannot quote yourself")
+                                pinguino()
+                                now()
+                                error()
+                            }
+                        }
+                        return@action
+                    }
+
                     if (guild!!.getConfig().quotesConfig.channel != null) {
                         sendQuote(
                             this.guild!!.asGuild(),
                             arguments.quote,
                             arguments.author.username,
                             arguments.author.avatar!!.url,
-                            user.asUser()
+                            user.asUser(),
+                            channel.asChannel()
                         )
 
                         respond {
@@ -106,7 +120,14 @@ class QuoteExtension : Extension() {
 
                 action {
                     if (guild!!.getConfig().quotesConfig.channel != null) {
-                        sendQuote(this.guild!!.asGuild(), arguments.quote, arguments.author, null, user.asUser())
+                        sendQuote(
+                            this.guild!!.asGuild(),
+                            arguments.quote,
+                            arguments.author,
+                            null,
+                            user.asUser(),
+                            channel.asChannel()
+                        )
                         respond {
                             embed {
                                 info("Quote recorded")
@@ -137,6 +158,18 @@ class QuoteExtension : Extension() {
             }
 
             action {
+                if (user.id == targetMessages.first().author!!.id) {
+                    respond {
+                        embed {
+                            info("You cannot quote yourself")
+                            pinguino()
+                            now()
+                            error()
+                        }
+                    }
+                    return@action
+                }
+
                 if (guild!!.getConfig().quotesConfig.channel != null) {
                     targetMessages.first().quote(user.asUser())
 
@@ -176,13 +209,25 @@ class QuoteExtension : Extension() {
             action {
                 if (event.emoji.name == "⭐") {
                     val msg = event.channel.getMessage(event.messageId)
+
+                    if (event.user.id == msg.author!!.id) {
+                        return@action
+                    }
+
                     msg.quote(event.user.asUser())
                 }
             }
         }
     }
 
-    private suspend fun sendQuote(guild: Guild, quote: String, quoteAuthor: String, authorIcon: String?, quoter: User) {
+    private suspend fun sendQuote(
+        guild: Guild,
+        quote: String,
+        quoteAuthor: String,
+        authorIcon: String?,
+        quoter: User,
+        commandChannel: ChannelBehavior
+    ) {
         val conf = database.config.getConfig(guild.id)
 
         if (conf.quotesConfig.channel != null) {
@@ -208,6 +253,7 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
+                    channelField("Channel", commandChannel.asChannel())
                     stringField("Quote", quote)
                     stringField("Author", quoteAuthor)
                 }
@@ -244,6 +290,7 @@ class QuoteExtension : Extension() {
                     userAuthor(quoter.asUser())
                     now()
                     log()
+                    channelField("Channel", this@quote.channel.asChannel())
                     stringField("Quote", content)
                     userField("Author", author2ElectricBoogaloo)
                 }

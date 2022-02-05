@@ -52,6 +52,15 @@ class ModeratorUtilityExtension : Extension() {
                     (arguments.channel.asChannel() as MessageChannel).createMessage(arguments.message)
                 }
 
+                guild?.getLogChannel()?.createEmbed {
+                    info("Message Scheduled")
+                    userAuthor(user.asUser())
+                    log()
+                    now()
+                    channelField("Channel", arguments.channel)
+                    stringField("Message", arguments.message)
+                }
+
                 respond {
                     embed {
                         info("Message scheduled")
@@ -85,8 +94,8 @@ class ModeratorUtilityExtension : Extension() {
                     userAuthor(user.asUser())
                     now()
                     log()
-                    stringField("Content", arguments.message)
                     channelField("Channel", channel)
+                    stringField("Content", arguments.message)
                 }
 
                 respond {
@@ -130,6 +139,7 @@ class ModeratorUtilityExtension : Extension() {
                     userAuthor(user.asUser())
                     now()
                     log()
+                    channelField("Channel", channel)
                     stringField("Content", arguments.string)
                 }
 

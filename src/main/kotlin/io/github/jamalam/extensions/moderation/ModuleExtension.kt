@@ -46,6 +46,7 @@ class ModuleExtension : Extension() {
     private val moderationModule: String = "the Moderation module"
     private val notificationsModule: String = "the Greetings module"
     private val filePasteModule: String = "the File Paste module"
+    private val phishingModule: String = "the Phishing module"
 
     private suspend fun SlashGroup.moduleEnable(moduleName: String, lambda: (ServerConfig) -> Unit) {
         ephemeralSubCommand {
@@ -417,6 +418,18 @@ class ModuleExtension : Extension() {
                             }
                         }
                     }
+                }
+            }
+
+            group("phishing") {
+                description = "Alter the settings of $phishingModule"
+
+                moduleEnable("Phishing") { conf ->
+                    conf.phishingConfig.enabled = true
+                }
+
+                moduleDisable("Phishing") { conf ->
+                    conf.phishingConfig.enabled = false
                 }
             }
         }

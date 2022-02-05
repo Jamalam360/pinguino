@@ -1,5 +1,32 @@
 # Pinguino Changelog
 
+## Version 0.7.1
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.0...v0.7.1)**
+
+### Fixes
+
+- Bots being unmuted will now be logged.
+- Message edited, quote sent and `/ask` used logs now include the relevant channel.
+
+### Features
+
+- You can no longer quote yourself/your own messages.
+- New logging features:
+  - Reaction removed.
+  - Message scheduled.
+  - Member nickname updated.
+  - Member avatar updated.
+  - Member roles added/removed.
+  - Guild role added/updated/removed.
+  - Message pinned/unpinned.
+  - Message published.
+- Durations in logs are now more readable.
+- KordEx built-in error responses now use embeds.
+- A new phishing-detection extension.
+- Add a ping command
+- Add a user-information command (context and slash).
+
 ## Version 0.7.0
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.7.0)**
