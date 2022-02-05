@@ -108,6 +108,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
             Modules.Logging -> config.loggingConfig.enabled
             Modules.Notifications -> config.notificationsConfig.enabled
             Modules.FilePaste -> config.filePasteConfig.enabled
+            Modules.Phishing -> config.phishingConfig.enabled
         }
     }
 }

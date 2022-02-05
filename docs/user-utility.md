@@ -1,6 +1,6 @@
 # User Utility Module
 
-The user utliity module provides various useful commands for users and moderators (although more commands for moderators
+The user utility module provides various useful commands for users and moderators (although more commands for moderators
 can be found in the moderator utility extension).
 
 ## Commands
@@ -20,7 +20,7 @@ can be found in the moderator utility extension).
 - `/help`
     - Returns a link to this documentation.
 - `/bugs`
-    - Returns a link to the bot's issue tracker
+    - Returns a link to the bots issue tracker
 - `/shorten-link`
     - Shortens a link using [link.jamalam.tech](https://link.jamalam.tech)
 - `/paste`
@@ -29,8 +29,18 @@ can be found in the moderator utility extension).
         - Pastes the content from a cdn.discordapp.com link.
     - `typed`
         - Pastes the content passed in the argument.
+- `/phishing-check`
+    - Checks if a link is a known phishing domain.
+- `/ping`
+    - Pong.
+- `/info` 
+    - Returns some information about a user.
 
 ### Context
 
 - `Pin` (Message)
-    - Pin the current message, if you have permission (thread owner or a moderator).
+    - Pin the message, if you have permission (thread owner or a moderator).
+- `Phishing Check` (Message)
+    - Checks if the message contains a phishing link.
+- `Info` (User)
+    - Returns some information about a user.

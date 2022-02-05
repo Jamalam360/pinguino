@@ -53,6 +53,7 @@ suspend fun main() {
             add(::TagExtension)
             add(::NotificationsExtension)
             add(::FilePasteExtension)
+            add(::PhishingExtension)
 
             help {
                 enableBundledExtension = false

@@ -18,12 +18,13 @@
 package io.github.jamalam.extensions.bot
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
+import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.TopGg
-import io.github.jamalam.util.PRODUCTION
-import io.github.jamalam.util.VERSION
-import io.github.jamalam.util.scheduler
+import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
 import kotlin.random.Random
@@ -53,6 +54,22 @@ class BotUtilityExtension : Extension() {
 
         scheduler.schedule(presenceDelay.seconds.toLong()) {
             setPresenceStatus()
+        }
+
+        ephemeralSlashCommand {
+            name = "ping"
+            description = "Ping the pong."
+
+            action {
+                respond {
+                    embed {
+                        info("Pong!")
+                        pinguino()
+                        success()
+                        now()
+                    }
+                }
+            }
         }
     }
 

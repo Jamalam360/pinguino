@@ -23,6 +23,9 @@
   - Message published.
 - Durations in logs are now more readable.
 - KordEx built-in error responses now use embeds.
+- A new phishing-detection extension.
+- Add a ping command
+- Add a user-information command (context and slash).
 
 ## Version 0.7.0
 

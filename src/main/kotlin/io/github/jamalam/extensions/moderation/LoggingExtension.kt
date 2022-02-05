@@ -208,8 +208,18 @@ class LoggingExtension : Extension() {
                         userAuthor(event.member)
                         log()
                         now()
-                        stringField("Before", event.old!!.avatar!!.url)
-                        stringField("After", event.member.avatar!!.url)
+
+                        if (event.old?.avatar?.url != null) {
+                            stringField("Before", event.old!!.avatar!!.url)
+                        } else {
+                            stringField("Before", "Failed to fetch")
+                        }
+
+                        if (event.member.avatar?.url != null) {
+                            stringField("After", event.member.avatar!!.url)
+                        } else {
+                            stringField("After", "Failed to fetch")
+                        }
                     }
                 }
 
@@ -219,8 +229,18 @@ class LoggingExtension : Extension() {
                         userAuthor(event.member)
                         log()
                         now()
-                        stringField("Before", event.old!!.roleBehaviors.joinToString("\n") { it.mention })
-                        stringField("After", event.member.roleBehaviors.joinToString("\n") { it.mention })
+
+                        if (event.old?.roleBehaviors?.isNotEmpty() == true) {
+                            stringField("Before", event.old!!.roleBehaviors.joinToString("\n,") { it.mention })
+                        } else {
+                            stringField("Before", "Empty")
+                        }
+
+                        if (event.member.roleBehaviors.isNotEmpty()) {
+                            stringField("After", event.member.roleBehaviors.joinToString("\n,") { it.mention })
+                        } else {
+                            stringField("After", "Empty")
+                        }
                     }
                 }
             }
@@ -239,7 +259,9 @@ class LoggingExtension : Extension() {
                     now()
                     stringField("Name", event.role.name)
                     stringField("Color", event.role.color.toString())
-                    stringField("Permissions", event.role.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                    stringField(
+                        "Permissions",
+                        event.role.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
                 }
             }
         }
@@ -282,8 +304,12 @@ class LoggingExtension : Extension() {
                         pinguino()
                         log()
                         now()
-                        stringField("Before", event.old!!.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
-                        stringField("After", event.role.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                        stringField(
+                            "Before",
+                            event.old!!.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
+                        stringField(
+                            "After",
+                            event.role.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
                     }
                 }
             }
@@ -302,7 +328,9 @@ class LoggingExtension : Extension() {
                     now()
                     stringField("Name", event.role!!.name)
                     stringField("Color", event.role!!.color.toString())
-                    stringField("Permissions", event.role!!.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                    stringField(
+                        "Permissions",
+                        event.role!!.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
                 }
             }
         }
@@ -318,7 +346,7 @@ class LoggingExtension : Extension() {
                     pinguino()
                     log()
                     now()
-                    stringField("Emojis", event.emojis.joinToString("\n") { it.name + " - " + it.mention })
+                    stringField("Emojis", event.emojis.joinToString("\n,") { it.name + " - " + it.mention })
                 }
             }
         }

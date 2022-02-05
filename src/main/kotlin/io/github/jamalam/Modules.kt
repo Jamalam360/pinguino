@@ -25,5 +25,6 @@ enum class Modules(val readableName: String) {
     Moderation("moderation"),
     Logging("logging"),
     Notifications("notifications"),
-    FilePaste("file-paste")
+    FilePaste("file-paste"),
+    Phishing("phishing"),
 }
