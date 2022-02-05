@@ -73,8 +73,14 @@ data class ServerPhishingConfig(
     var moderationType: ServerPhishingModerationType,
 )
 
-enum class ServerPhishingModerationType(val readableName: String) {
-    Delete("delete"),
-    Kick("kick"),
-    Ban("ban");
+enum class ServerPhishingModerationType : ChoiceEnum {
+    Delete {
+        override val readableName = "Delete"
+    },
+    Kick {
+        override val readableName = "kick"
+    },
+    Ban {
+        override val readableName = "ban"
+    };
 }

@@ -510,6 +510,7 @@ class ModuleExtension : Extension() {
         val level by enum<ServerPhishingModerationType> {
             name = "level"
             description = "The level of discipline to use for posting a phishing link"
+            typeName = "level"
         }
     }
 }
