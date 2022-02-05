@@ -30,6 +30,7 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam.database.entity.ServerConfig
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimePeriod
 
 /**
  * @author  Jamalam360
@@ -130,4 +131,34 @@ fun EmbedBuilder.success() {
 
 fun EmbedBuilder.error() {
     color = DISCORD_RED
+}
+
+fun DateTimePeriod.toPrettyString(): String {
+    var result = ""
+
+    if (this.years > 0) {
+        result += "${this.years} year${if (this.years > 1) "s" else ""} "
+    }
+
+    if (this.months > 0) {
+        result += "${this.months} month${if (this.months > 1) "s" else ""} "
+    }
+
+    if (this.days > 0) {
+        result += "${this.days} day${if (this.days > 1) "s" else ""} "
+    }
+
+    if (this.hours > 0) {
+        result += "${this.hours} hour${if (this.hours > 1) "s" else ""} "
+    }
+
+    if (this.minutes > 0) {
+        result += "${this.minutes} minute${if (this.minutes > 1) "s" else ""} "
+    }
+
+    if (this.seconds > 0) {
+        result += "${this.seconds} second${if (this.seconds > 1) "s" else ""}"
+    }
+
+    return result
 }

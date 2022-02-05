@@ -18,6 +18,7 @@
 package io.github.jamalam
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.extensions.bot.BotUtilityExtension
 import io.github.jamalam.extensions.moderation.*
 import io.github.jamalam.extensions.user.*
@@ -28,6 +29,15 @@ suspend fun main() {
         applicationCommands {
             if (!PRODUCTION) {
                 defaultGuild(TEST_SERVER_ID)
+            }
+        }
+
+        errorResponse { message, _ ->
+            embed {
+                info("Error")
+                pinguino()
+                error()
+                stringField("Message", message)
             }
         }
 

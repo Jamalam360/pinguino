@@ -21,6 +21,9 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.utils.hasRoles
+import com.kotlindiscord.kord.extensions.utils.isPublished
+import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.Color
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
@@ -34,10 +37,16 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.guild.EmojisUpdateEvent
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
+import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
+import dev.kord.core.event.message.ReactionRemoveEvent
+import dev.kord.core.event.role.RoleCreateEvent
+import dev.kord.core.event.role.RoleDeleteEvent
+import dev.kord.core.event.role.RoleUpdateEvent
 import io.github.jamalam.Modules
 import io.github.jamalam.util.*
+import java.util.*
 
 /**
  * @author  Jamalam360
@@ -112,6 +121,29 @@ class LoggingExtension : Extension() {
 
             action {
                 val msg = event.message.asMessage()
+
+                if (msg.isPublished && !event.old!!.isPublished) {
+                    msg.getGuild().getLogChannel()?.createEmbed {
+                        info("Message Published")
+                        pinguino()
+                        log()
+                        now()
+                        channelField("Channel", msg.channel.asChannel())
+                        stringField("Content", msg.content)
+                    }
+                }
+
+                if (msg.isPinned != event.old!!.isPinned) {
+                    msg.getGuild().getLogChannel()?.createEmbed {
+                        info(if (msg.isPinned) "Message Pinned" else "Message Unpinned")
+                        pinguino()
+                        log()
+                        now()
+                        channelField("Channel", msg.channel.asChannel())
+                        stringField("Content", msg.content)
+                    }
+                }
+
                 @Suppress("SENSELESS_COMPARISON")
                 if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content && msg.embeds.size == event.old!!.embeds.size) {
                     val before: String = if (event.old == null) {
@@ -125,9 +157,152 @@ class LoggingExtension : Extension() {
                         userAuthor(msg.author!!)
                         log()
                         now()
+                        channelField("Channel", msg.channel.asChannel())
                         stringField("Before", before)
                         stringField("After", msg.content)
                     }
+                }
+            }
+        }
+
+        event<ReactionRemoveEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                event.guild?.getLogChannel()?.createEmbed {
+                    info("Reaction Removed")
+                    userAuthor(event.getUser())
+                    log()
+                    now()
+                    stringField("Emoji", event.emoji.mention)
+                }
+            }
+        }
+
+        event<MemberUpdateEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                if (event.old == null) {
+                    return@action
+                }
+
+                if (event.old!!.nickname != event.member.nickname) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Member Nickname Updated")
+                        userAuthor(event.member)
+                        log()
+                        now()
+                        stringField("Before", event.old!!.username)
+                        stringField("After", event.member.username)
+                    }
+                }
+
+                if (event.old!!.avatar!!.url != event.member.avatar!!.url) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Member Avatar Updated")
+                        userAuthor(event.member)
+                        log()
+                        now()
+                        stringField("Before", event.old!!.avatar!!.url)
+                        stringField("After", event.member.avatar!!.url)
+                    }
+                }
+
+                if (!event.member.hasRoles(event.old!!.roleBehaviors) || !event.old!!.hasRoles(event.member.roleBehaviors)) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Member Roles Updated")
+                        userAuthor(event.member)
+                        log()
+                        now()
+                        stringField("Before", event.old!!.roleBehaviors.joinToString("\n") { it.mention })
+                        stringField("After", event.member.roleBehaviors.joinToString("\n") { it.mention })
+                    }
+                }
+            }
+        }
+
+        event<RoleCreateEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                event.guild.getLogChannel()?.createEmbed {
+                    info("Role Created")
+                    pinguino()
+                    log()
+                    now()
+                    stringField("Name", event.role.name)
+                    stringField("Color", event.role.color.toString())
+                    stringField("Permissions", event.role.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                }
+            }
+        }
+
+        event<RoleUpdateEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                if (event.old == null) {
+                    return@action
+                }
+
+                if (event.old!!.name != event.role.name) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Role Name Updated")
+                        pinguino()
+                        log()
+                        now()
+                        stringField("Before", event.old!!.name)
+                        stringField("After", event.role.name)
+                    }
+                }
+
+                if (event.old!!.color != event.role.color) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Role Color Updated")
+                        pinguino()
+                        log()
+                        now()
+                        stringField("Before", event.old!!.color.toString())
+                        stringField("After", event.role.color.toString())
+                    }
+                }
+
+                if (event.old!!.permissions != event.role.permissions) {
+                    event.guild.getLogChannel()?.createEmbed {
+                        info("Role Permissions Updated")
+                        pinguino()
+                        log()
+                        now()
+                        stringField("Before", event.old!!.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                        stringField("After", event.role.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
+                    }
+                }
+            }
+        }
+
+        event<RoleDeleteEvent> {
+            check {
+                isModuleEnabled(Modules.Logging)
+            }
+
+            action {
+                event.guild.getLogChannel()?.createEmbed {
+                    info("Role Deleted")
+                    pinguino()
+                    log()
+                    now()
+                    stringField("Name", event.role!!.name)
+                    stringField("Color", event.role!!.color.toString())
+                    stringField("Permissions", event.role!!.permissions.values.joinToString("\n") { it.translate(Locale.ENGLISH) })
                 }
             }
         }

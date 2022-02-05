@@ -186,7 +186,7 @@ class ModerationExtension : Extension() {
                                         userAuthor(user.asUser())
                                         now()
                                         error()
-                                        stringField("Duration", arguments.duration.toString())
+                                        stringField("Duration", arguments.duration.toPrettyString())
                                         stringField("Reason", arguments.reason)
                                     }
                                 }
@@ -233,7 +233,7 @@ class ModerationExtension : Extension() {
                                 now()
                                 log()
                                 userField("Member", member.asUser())
-                                stringField("Duration", arguments.duration.toString())
+                                stringField("Duration", arguments.duration.toPrettyString())
                                 stringField("Reason", arguments.reason)
                             }
 
@@ -243,7 +243,7 @@ class ModerationExtension : Extension() {
                                 now()
                                 log()
                                 userField("Member", member.asUser())
-                                stringField("Duration", arguments.duration.toString())
+                                stringField("Duration", arguments.duration.toPrettyString())
                                 stringField("Reason", arguments.reason)
                             }
 
