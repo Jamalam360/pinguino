@@ -88,6 +88,7 @@ fun KClass<ServerFilePasteConfig>.getDefault(): ServerFilePasteConfig {
 
 fun KClass<ServerPhishingConfig>.getDefault(): ServerPhishingConfig {
     return ServerPhishingConfig(
-        enabled = false
+        enabled = false,
+        moderationType = ServerPhishingModerationType.Delete,
     )
 }

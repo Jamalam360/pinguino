@@ -231,13 +231,13 @@ class LoggingExtension : Extension() {
                         now()
 
                         if (event.old?.roleBehaviors?.isNotEmpty() == true) {
-                            stringField("Before", event.old!!.roleBehaviors.joinToString("\n,") { it.mention })
+                            stringField("Before", event.old!!.roleBehaviors.joinToString(",\n") { it.mention })
                         } else {
                             stringField("Before", "Empty")
                         }
 
                         if (event.member.roleBehaviors.isNotEmpty()) {
-                            stringField("After", event.member.roleBehaviors.joinToString("\n,") { it.mention })
+                            stringField("After", event.member.roleBehaviors.joinToString(",\n") { it.mention })
                         } else {
                             stringField("After", "Empty")
                         }
@@ -261,7 +261,7 @@ class LoggingExtension : Extension() {
                     stringField("Color", event.role.color.toString())
                     stringField(
                         "Permissions",
-                        event.role.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
+                        event.role.permissions.values.joinToString(",\n") { it.translate(Locale.ENGLISH) })
                 }
             }
         }
@@ -306,10 +306,10 @@ class LoggingExtension : Extension() {
                         now()
                         stringField(
                             "Before",
-                            event.old!!.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
+                            event.old!!.permissions.values.joinToString(",\n") { it.translate(Locale.ENGLISH) })
                         stringField(
                             "After",
-                            event.role.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
+                            event.role.permissions.values.joinToString(",\n") { it.translate(Locale.ENGLISH) })
                     }
                 }
             }
@@ -330,7 +330,7 @@ class LoggingExtension : Extension() {
                     stringField("Color", event.role!!.color.toString())
                     stringField(
                         "Permissions",
-                        event.role!!.permissions.values.joinToString("\n,") { it.translate(Locale.ENGLISH) })
+                        event.role!!.permissions.values.joinToString(",\n") { it.translate(Locale.ENGLISH) })
                 }
             }
         }
@@ -346,7 +346,7 @@ class LoggingExtension : Extension() {
                     pinguino()
                     log()
                     now()
-                    stringField("Emojis", event.emojis.joinToString("\n,") { it.name + " - " + it.mention })
+                    stringField("Emojis", event.emojis.joinToString(",\n") { it.name + " - " + it.mention })
                 }
             }
         }

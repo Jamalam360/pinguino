@@ -17,6 +17,8 @@
 
 package io.github.jamalam.database.entity
 
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
+
 /**
  * @author  Jamalam360
  */
@@ -67,5 +69,12 @@ data class ServerFilePasteConfig(
 )
 
 data class ServerPhishingConfig(
-    var enabled: Boolean
+    var enabled: Boolean,
+    var moderationType: ServerPhishingModerationType,
 )
+
+enum class ServerPhishingModerationType(val readableName: String) {
+    Delete("delete"),
+    Kick("kick"),
+    Ban("ban");
+}

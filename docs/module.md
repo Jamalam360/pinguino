@@ -52,3 +52,10 @@ The module module is responsible for configuring the bot.
             - Disables the file-paste module.
         - `set-url`
             - Sets the hastebin URL to use.
+    - `phishing`
+        - `enable`
+            - Enables the phishing module.
+        - `disable`
+            - Disables the phishing module.
+        - `set-discipline-level`
+                - Sets the level of discipline to use - (delete, kick, ban).

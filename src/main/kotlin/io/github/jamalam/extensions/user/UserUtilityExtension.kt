@@ -397,7 +397,7 @@ class UserUtilityExtension : Extension() {
                         success()
 
                         stringField("Username", arguments.user.username)
-                        stringField("Discriminator", arguments.user.discriminator)
+                        stringField("Discriminator", "#${arguments.user.discriminator}")
                         stringField("ID", arguments.user.id.value.toString())
                         stringField("Created At", arguments.user.createdAt.toDiscord(TimestampType.Default))
 
@@ -405,7 +405,7 @@ class UserUtilityExtension : Extension() {
                             var roles = ""
 
                             arguments.user.asMember(guild!!.id).roles.map { it.mention }.collect {
-                                roles += "$it\n,"
+                                roles += "$it,\n"
                             }
 
                             if (roles.isNotBlank()) {
@@ -478,21 +478,31 @@ class UserUtilityExtension : Extension() {
             action {
                 respond {
                     embed {
-                        info("Info for ${targetUsers.first().mention}")
+                        info("Info for ${targetUsers.first().username}#${targetUsers.first().discriminator}")
                         pinguino()
                         now()
                         success()
 
                         stringField("Username", targetUsers.first().username)
-                        stringField("Discriminator", targetUsers.first().discriminator)
+
+                        if (guild != null && targetUsers.first().asMember(guild!!.id).nickname != null) {
+                            stringField("Nickname", targetUsers.first().asMember(guild!!.id).nickname!!)
+                        }
+
+                        stringField("Discriminator", "#${targetUsers.first().discriminator}")
                         stringField("ID", targetUsers.first().id.value.toString())
-                        stringField("Created At", targetUsers.first().createdAt.toDiscord(TimestampType.Default))
+                        stringField(
+                            "Created At",
+                            "${targetUsers.first().createdAt.toDiscord(TimestampType.Default)} (${
+                                targetUsers.first().createdAt.toDiscord(TimestampType.RelativeTime)
+                            })"
+                        )
 
                         if (guild != null) {
                             var roles = ""
 
                             targetUsers.first().asMember(guild!!.id).roles.map { it.mention }.collect {
-                                roles += "$it\n,"
+                                roles += "$it,\n"
                             }
 
                             if (roles.isNotBlank()) {

@@ -6,7 +6,14 @@
 
 ### Fixes
 
+- Commas now come before newlines in logs.
+- Discriminators in user-info commands are now prefixed with `#`.
+- Attempted to make the database connection more stable.
+
 ### Features
+
+- User info command's `Created At` field now show relative time as well.
+- You can now specify a moderation level for posting a phishing domain (delete, kick, ban).
 
 ## Version 0.7.1
 

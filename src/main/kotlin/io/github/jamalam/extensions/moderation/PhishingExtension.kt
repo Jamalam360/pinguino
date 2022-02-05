@@ -31,12 +31,16 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.Modules
+import io.github.jamalam.database.entity.ServerPhishingModerationType
 import io.github.jamalam.util.*
 import kotlin.time.ExperimentalTime
 
@@ -154,7 +158,7 @@ class PhishingExtension : Extension() {
         val matches = domains intersect domainCache
 
         if (matches.isNotEmpty()) {
-            message.author!!.dm {
+            message.author?.dm {
                 embed {
                     info("Phishing domain detected")
                     pinguino()
@@ -167,21 +171,97 @@ class PhishingExtension : Extension() {
                 }
             }
 
-            message.delete("Message contained a phishing domain")
+            message.delete("Message contained a phishing domain (automatic)")
+
+            when (message.getGuild().getConfig().phishingConfig.moderationType) {
+                ServerPhishingModerationType.Delete -> {
+                    // Message is always deleted
+                }
+                ServerPhishingModerationType.Kick -> {
+                    message.author?.asMember(message.getGuild().id)?.kick("Posted a phishing link (automatic)")
+
+                    message.author?.dm {
+                        embed {
+                            info("Kicked from ${message.getGuild().name}!")
+                            userAuthor(message.author!!)
+                            now()
+                            error()
+                            stringField("Reason", "Posted a phishing link (automatic)")
+                        }
+                    }
+
+                    message.getGuild().getLogChannel()?.createEmbed {
+                        info("Member Kicked")
+                        pinguino()
+                        now()
+                        log()
+                        userField("Member", message.author!!.asUser())
+                        stringField("Reason", "Posted a phishing link (automatic)")
+                    }
+
+                    message.getGuild().getPublicModLogChannel()?.createEmbed {
+                        info("Member Kicked")
+                        pinguino()
+                        now()
+                        log()
+                        userField("Member", message.author!!.asUser())
+                        stringField("Reason", "Posted a phishing link (automatic)")
+                    }
+                }
+                ServerPhishingModerationType.Ban -> {
+                    message.author?.asMember(message.getGuild().id)?.ban {
+                        reason = "Posted a phishing link (automatic)"
+                    }
+
+                    message.author?.dm {
+                        embed {
+                            info("Banned from ${message.getGuild().name}!")
+                            pinguino()
+                            now()
+                            error()
+                            stringField("Reason", "Posted a phishing link (automatic)")
+                        }
+                    }
+
+                    message.getGuild().getLogChannel()?.createEmbed {
+                        info("Member Banned")
+                        pinguino()
+                        now()
+                        log()
+                        userField("Member", message.author!!.asUser())
+                        stringField("Reason", "Posted a phishing link (automatic)")
+                    }
+
+                    message.getGuild().getPublicModLogChannel()?.createEmbed {
+                        info("Member Banned")
+                        pinguino()
+                        now()
+                        log()
+                        userField("Member", message.author!!.asUser())
+                        stringField("Reason", "Posted a phishing link (automatic)")
+                    }
+                }
+            }
+
             logDeletion(message, matches)
         }
     }
 
     private suspend fun logDeletion(message: Message, matches: Set<String>) {
-        message.getGuild().getLogChannel()?.createEmbed {
-            info("Phishing domain detected")
-            pinguino()
-            error()
-            now()
-            userField("User", message.author!!.asUser())
-            channelField("Channel", message.channel.asChannel())
-            stringField("Content", message.content)
-            stringField("Phishing Links", matches.joinToString("\n"))
+        message.getGuild().getLogChannel()?.createMessage {
+            content = message.getGuild()
+                .getRoleOrNull(Snowflake(message.getGuild().getConfig().moderationConfig.moderatorRole))?.mention
+
+            embed {
+                info("Phishing domain detected")
+                pinguino()
+                error()
+                now()
+                userField("User", message.author!!.asUser())
+                channelField("Channel", message.channel.asChannel())
+                stringField("Content", message.content)
+                stringField("Phishing Links", matches.joinToString("\n"))
+            }
         }
     }
 

@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashGroup
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
@@ -30,7 +31,9 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.Modules
 import io.github.jamalam.database.entity.ServerConfig
+import io.github.jamalam.database.entity.ServerPhishingModerationType
 import io.github.jamalam.util.*
 
 /**
@@ -431,6 +434,39 @@ class ModuleExtension : Extension() {
                 moduleDisable("Phishing") { conf ->
                     conf.phishingConfig.enabled = false
                 }
+
+                ephemeralSlashCommand(::PhishingDisciplineLevelArgs) {
+                    name = "set-discipline-level"
+                    description = "Set the level of discipline to use for posting a phishing link"
+
+                    check {
+                        isModuleEnabled(Modules.Phishing)
+                        hasModeratorRole()
+                    }
+
+                    action {
+                        val conf = guild!!.getConfig()
+                        conf.phishingConfig.moderationType = arguments.level
+                        database.config.updateConfig(guild!!.id, conf)
+
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Phishing discipline level updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Discipline level", arguments.level.readableName)
+                        }
+
+                        respond {
+                            embed {
+                                info("Phishing discipline level updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    }
+                }
             }
         }
         //endregion
@@ -467,6 +503,13 @@ class ModuleExtension : Extension() {
         val url by string {
             name = "url"
             description = "The Hastebin server to use for the file paste module. Defaults to the official Hastebin site"
+        }
+    }
+
+    class PhishingDisciplineLevelArgs : Arguments() {
+        val level by enum<ServerPhishingModerationType> {
+            name = "level"
+            description = "The level of discipline to use for posting a phishing link"
         }
     }
 }
