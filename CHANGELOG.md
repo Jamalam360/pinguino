@@ -1,5 +1,13 @@
 # Pinguino Changelog
 
+## Version 0.7.2
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.1...v0.7.2)**
+
+### Fixes
+
+### Features
+
 ## Version 0.7.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.0...v0.7.1)**
