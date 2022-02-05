@@ -19,6 +19,7 @@ package io.github.jamalam
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.database.migration.migrate
 import io.github.jamalam.extensions.bot.BotUtilityExtension
 import io.github.jamalam.extensions.moderation.*
 import io.github.jamalam.extensions.user.*
@@ -70,5 +71,6 @@ suspend fun main() {
         }
     }
 
+    migrate(database.db)
     bot.start()
 }

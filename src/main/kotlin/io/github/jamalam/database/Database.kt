@@ -27,7 +27,7 @@ import org.litote.kmongo.KMongo
  */
 
 class Database {
-    private val client = KMongo.createClient("$MONGO_SRV_URL?retryWrites=true&w=majority")
+    private val client = KMongo.createClient("$MONGO_SRV_URL?retryWrites=false&w=majority")
 
     val db: MongoDatabase = if (PRODUCTION) {
         client.getDatabase("pinguino_production_db")
