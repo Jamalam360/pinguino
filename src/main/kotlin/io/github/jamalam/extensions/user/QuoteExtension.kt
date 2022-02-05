@@ -66,6 +66,18 @@ class QuoteExtension : Extension() {
                 }
 
                 action {
+                    if (user.id == arguments.author.id) {
+                        respond {
+                            embed {
+                                info("You cannot quote yourself")
+                                pinguino()
+                                now()
+                                error()
+                            }
+                        }
+                        return@action
+                    }
+
                     if (guild!!.getConfig().quotesConfig.channel != null) {
                         sendQuote(
                             this.guild!!.asGuild(),
@@ -137,6 +149,18 @@ class QuoteExtension : Extension() {
             }
 
             action {
+                if (user.id == targetMessages.first().author!!.id) {
+                    respond {
+                        embed {
+                            info("You cannot quote yourself")
+                            pinguino()
+                            now()
+                            error()
+                        }
+                    }
+                    return@action
+                }
+
                 if (guild!!.getConfig().quotesConfig.channel != null) {
                     targetMessages.first().quote(user.asUser())
 
@@ -176,6 +200,11 @@ class QuoteExtension : Extension() {
             action {
                 if (event.emoji.name == "⭐") {
                     val msg = event.channel.getMessage(event.messageId)
+
+                    if (event.user.id == msg.author!!.id) {
+                        return@action
+                    }
+
                     msg.quote(event.user.asUser())
                 }
             }
