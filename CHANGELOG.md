@@ -6,8 +6,7 @@
 
 ### Fixes
 
-### Features
-
+- Urgent: database calls now work.
 
 ## Version 0.7.2
 
