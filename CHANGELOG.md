@@ -6,9 +6,11 @@
 
 ### Fixes
 
-- Bots being unmuted will now be logged
+- Bots being unmuted will now be logged.
 
 ### Features
+
+- You can no longer quote yourself/your own messages.
 
 ## Version 0.7.0
 
