@@ -8,6 +8,8 @@
 
 ### Features
 
+- Log levels can now be specified through the `LOG_LEVEL` environment variable (default `INFO`).
+
 ## Version 0.7.3
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.2...v0.7.3)**
