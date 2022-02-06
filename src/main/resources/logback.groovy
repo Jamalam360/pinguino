@@ -18,7 +18,7 @@
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
 def production = System.getenv().getOrDefault("PRODUCTION", "false")
-def defaultLevel = INFO
+def defaultLevel = System.getenv().getOrDefault("LOG_LEVEL", INFO)
 
 if (production == "true") {
     defaultLevel = DEBUG
