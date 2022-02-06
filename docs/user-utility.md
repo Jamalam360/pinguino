@@ -33,6 +33,8 @@ can be found in the moderator utility extension).
     - Checks if a link is a known phishing domain.
 - `/ping`
     - Pong.
+- `/uptime`
+    - Returns the uptime of Pinguino.
 - `/info` 
     - Returns some information about a user.
 

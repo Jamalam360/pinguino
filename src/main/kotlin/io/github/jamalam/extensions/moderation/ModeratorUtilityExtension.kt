@@ -232,16 +232,28 @@ class ModeratorUtilityExtension : Extension() {
                     arguments.channel!!.asChannel() as MessageChannel
                 }
 
+                guild!!.getLogChannel()?.createEmbed {
+                    info("Embed command used")
+                    userAuthor(user.asUser())
+                    now()
+                    log()
+                    channelField("Channel", channel)
+                    stringField("Delay", arguments.delay?.toPrettyString())
+                    stringField("Title", arguments.title)
+                    stringField("Description", arguments.description)
+                    stringField("Image", arguments.image)
+                    userField("Author", arguments.author)
+                }
+
                 if (arguments.delay == null) {
                     channel.createEmbed {
-                        this.title = arguments.title
-                        this.description = arguments.description
-                        this.image = arguments.image
-                        this.author = EmbedBuilder.Author()
+                        title = arguments.title
+                        description = arguments.description
+                        image = arguments.image
 
-                        if (arguments.author != null) {
-                            this.author!!.name = arguments.author!!.username
-                            this.author!!.icon = arguments.author!!.avatar!!.url
+                        author {
+                            name = arguments.author?.username
+                            icon = arguments.author?.avatar?.url
                         }
                     }
 
@@ -256,14 +268,13 @@ class ModeratorUtilityExtension : Extension() {
                 } else {
                     scheduler.schedule(arguments.delay!!.seconds.toLong()) {
                         channel.createEmbed {
-                            this.title = arguments.title
-                            this.description = arguments.description
-                            this.image = arguments.image
-                            this.author = EmbedBuilder.Author()
+                            title = arguments.title
+                            description = arguments.description
+                            image = arguments.image
 
-                            if (arguments.author != null) {
-                                this.author!!.name = arguments.author!!.username
-                                this.author!!.icon = arguments.author!!.avatar!!.url
+                            author {
+                                name = arguments.author?.username
+                                icon = arguments.author?.avatar?.url
                             }
                         }
                     }

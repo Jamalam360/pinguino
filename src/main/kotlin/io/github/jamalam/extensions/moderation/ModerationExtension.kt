@@ -105,6 +105,7 @@ class ModerationExtension : Extension() {
                                 userAuthor(member!!.asUser())
                                 now()
                                 log()
+                                stringField("Role", arguments.role.name)
                             }
 
                             respond {
@@ -135,6 +136,7 @@ class ModerationExtension : Extension() {
                                 userAuthor(member!!.asUser())
                                 now()
                                 log()
+                                stringField("Role", arguments.role.name)
                             }
 
                             respond {
@@ -697,7 +699,7 @@ class ModerationExtension : Extension() {
 
                 if (database.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
                     val msg =
-                        event.channel.createMessage("Nice thread ${author.mention}! Hold on while I get some people in here!")
+                        event.channel.createMessage("Nice thread ${author.mention}! Hold on while I get some VIPs in here!")
 
                     event.channel.withTyping {
                         delay(Duration.Companion.seconds(6))

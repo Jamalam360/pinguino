@@ -19,6 +19,7 @@
 
 package io.github.jamalam.extensions.user
 
+import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.components.components
 import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -79,6 +80,10 @@ class FilePasteExtension : Extension() {
                                 publicButton {
                                     label = "Yes"
 
+                                    check {
+                                        failIf(userFor(this@check.event)?.id != this@action.event.member?.id, "You must be the poster of the file to use this button")
+                                    }
+
                                     action {
                                         hasteBin.pasteFromCdn(conf.filePasteConfig.hastebinUrl, it.url)
                                             .let { hastebinApiResponse ->
@@ -97,7 +102,7 @@ class FilePasteExtension : Extension() {
                                                     info("File Uploaded to Hastebin")
                                                     userAuthor(member!!.asUser())
                                                     now()
-                                                    success()
+                                                    log()
                                                     url =
                                                         "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse}"
                                                 }

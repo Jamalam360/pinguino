@@ -22,6 +22,7 @@ import com.kotlindiscord.kord.extensions.DISCORD_GREEN
 import com.kotlindiscord.kord.extensions.DISCORD_RED
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.User
@@ -31,6 +32,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.jamalam.database.entity.ServerConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.toDateTimePeriod
+import kotlin.time.ExperimentalTime
 
 /**
  * @author  Jamalam360
@@ -96,24 +99,30 @@ fun EmbedBuilder.image(url: String?) {
     image = url
 }
 
-fun EmbedBuilder.userField(name: String, user: User) {
-    field {
-        this.name = name
-        this.value = user.username
+fun EmbedBuilder.userField(name: String, user: User?) {
+    if (user != null) {
+        field {
+            this.name = name
+            this.value = user.username
+        }
     }
 }
 
-fun EmbedBuilder.channelField(name: String, channel: Channel) {
-    field {
-        this.name = name
-        this.value = channel.mention
+fun EmbedBuilder.channelField(name: String, channel: Channel?) {
+    if (channel != null) {
+        field {
+            this.name = name
+            this.value = channel.mention
+        }
     }
 }
 
-fun EmbedBuilder.stringField(name: String, value: String) {
-    field {
-        this.name = name
-        this.value = value
+fun EmbedBuilder.stringField(name: String, value: String?) {
+    if (value != null) {
+        field {
+            this.name = name
+            this.value = value
+        }
     }
 }
 
@@ -137,28 +146,41 @@ fun DateTimePeriod.toPrettyString(): String {
     var result = ""
 
     if (this.years > 0) {
-        result += "${this.years} year${if (this.years > 1) "s" else ""} "
+        result += "${this.years} year${if (this.years > 1) "s" else ""}"
     }
 
     if (this.months > 0) {
-        result += "${this.months} month${if (this.months > 1) "s" else ""} "
+        result += "${if (result.isNotEmpty()) ", " else ""}${this.months} month${if (this.months > 1) "s" else ""}"
     }
 
     if (this.days > 0) {
-        result += "${this.days} day${if (this.days > 1) "s" else ""} "
+        result += "${if (result.isNotEmpty()) ", " else ""}${this.days} day${if (this.days > 1) "s" else ""}"
     }
 
     if (this.hours > 0) {
-        result += "${this.hours} hour${if (this.hours > 1) "s" else ""} "
+        result += "${if (result.isNotEmpty()) ", " else ""}${this.hours} hour${if (this.hours > 1) "s" else ""}"
     }
 
     if (this.minutes > 0) {
-        result += "${this.minutes} minute${if (this.minutes > 1) "s" else ""} "
+        result += "${if (result.isNotEmpty()) ", " else ""}${this.minutes} minute${if (this.minutes > 1) "s" else ""}"
     }
 
     if (this.seconds > 0) {
-        result += "${this.seconds} second${if (this.seconds > 1) "s" else ""}"
+        result += "${if (result.isNotEmpty()) ", " else ""}${this.seconds} second${if (this.seconds > 1) "s" else ""}"
+    }
+
+    val start = result.lastIndexOf(",")
+
+    if (start != -1) {
+        var newResult = result.substring(0, start)
+        newResult += " and "
+        newResult += result.substring(start + 2)
+        result = newResult
     }
 
     return result
 }
+
+@Suppress("unused")
+@OptIn(ExperimentalTime::class)
+fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTimePeriod()

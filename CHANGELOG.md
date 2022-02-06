@@ -1,5 +1,37 @@
 # Pinguino Changelog
 
+## Version 0.7.4
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.3...v0.7.4)**
+
+### Fixes
+
+- Hastebin upload logs now use the correct colour.
+- Increase presence-setting delay on initial startup to reduce errors.
+- Only the author of a message can upload its contents to Hastebin.
+- Improve appearance of error messages.
+- Improved the formatting of dates/times in responses.
+- Fixed an error with member update logging and message update logging.
+
+### Features
+
+- Log levels can now be specified through the `LOG_LEVEL` environment variable (default `INFO`).
+- Logs are now sent to a file (`pinguino.log`), which can be configured using the `LOG_FILE` environment variable.
+- Uses of the `/embed` command are now logged.
+- Add a `/uptime` command
+- Add new status messages:
+  - `Listening to 103.5, DawnFM`
+  - `Listening to Two Door Cinema Club`
+  - `Listening for {uptime}`
+  - `Watching the world burn`
+  - `Watching over your server`
+  - `Wathcing for scammers`
+  - `Watching TV`
+  - `Playing the piano`
+  - `Playing for {uptime}`
+- Added extra information to some logs where necessary.
+- Add `/module phishing set-moderators-exempt` to set whether phishing checks should be applied to moderators.
+
 ## Version 0.7.3
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.2...v0.7.3)**

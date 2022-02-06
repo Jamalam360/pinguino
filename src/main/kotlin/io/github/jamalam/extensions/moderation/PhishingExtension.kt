@@ -31,7 +31,6 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.channel.createMessage
@@ -67,7 +66,7 @@ class PhishingExtension : Extension() {
 
         event<MessageCreateEvent> {
             check {
-                notHasModeratorRole()
+                notExemptFromPhishing()
                 isNotBot()
                 isModuleEnabled(Modules.Phishing)
             }
@@ -79,7 +78,7 @@ class PhishingExtension : Extension() {
 
         event<MessageUpdateEvent> {
             check {
-                notHasModeratorRole()
+                notExemptFromPhishing()
                 isNotBot()
                 isModuleEnabled(Modules.Phishing)
             }
@@ -249,13 +248,10 @@ class PhishingExtension : Extension() {
 
     private suspend fun logDeletion(message: Message, matches: Set<String>) {
         message.getGuild().getLogChannel()?.createMessage {
-            content = message.getGuild()
-                .getRoleOrNull(Snowflake(message.getGuild().getConfig().moderationConfig.moderatorRole))?.mention
-
             embed {
                 info("Phishing domain detected")
                 pinguino()
-                error()
+                log()
                 now()
                 userField("User", message.author!!.asUser())
                 channelField("Channel", message.channel.asChannel())

@@ -91,12 +91,12 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
     }
 }
 
-suspend fun <T : Event> CheckContext<T>.notHasModeratorRole() {
+suspend fun <T : Event> CheckContext<T>.notExemptFromPhishing() {
     if (!passed) {
         return
     }
 
-    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.notExemptFromPhishing")
     val guild = guildFor(event)
     val member = memberFor(event)
 
@@ -109,7 +109,7 @@ suspend fun <T : Event> CheckContext<T>.notHasModeratorRole() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole))) && guild.getConfig().phishingConfig.moderatorsExempt
             ) {
                 logger.failed("Member ${member.id} has the moderator role set for this server")
                 fail("Moderators are exempt from this check")

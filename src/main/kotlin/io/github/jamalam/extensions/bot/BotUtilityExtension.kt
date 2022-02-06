@@ -43,7 +43,7 @@ class BotUtilityExtension : Extension() {
 
     override suspend fun setup() {
         // Set initial presence (without the delay there is an error)
-        scheduler.schedule(10) {
+        scheduler.schedule(30) {
             this.kord.editPresence {
                 status = PresenceStatus.Idle
                 playing("booting up!")
@@ -64,6 +64,22 @@ class BotUtilityExtension : Extension() {
                 respond {
                     embed {
                         info("Pong!")
+                        pinguino()
+                        success()
+                        now()
+                    }
+                }
+            }
+        }
+
+        ephemeralSlashCommand {
+            name = "uptime"
+            description = "Get my uptime"
+
+            action {
+                respond {
+                    embed {
+                        info("I have been awake for ${this@BotUtilityExtension.kord.getUptime().toPrettyString()}!")
                         pinguino()
                         success()
                         now()
@@ -109,13 +125,24 @@ enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
         it.editPresence {
             status = PresenceStatus.Online
 
-            val status = RandomStatus.random()
+            var status = RandomStatus.random()
+            val canBeUptime = it.getUptime().minutes > 5
+
+            while (!canBeUptime && status.message.contains("%UPTIME%")) {
+                status = RandomStatus.random()
+            }
+
+            var message = status.message
+
+            if (message.contains("%UPTIME%")) {
+                message = message.replace("%UPTIME%", it.getUptime().toPrettyString())
+            }
 
             when (status.type) {
-                StatusType.Watching -> watching(status.message)
-                StatusType.Playing -> playing(status.message)
-                StatusType.Listening -> listening(status.message)
-                StatusType.Competing -> competing(status.message)
+                StatusType.Watching -> watching(message)
+                StatusType.Playing -> playing(message)
+                StatusType.Listening -> listening(message)
+                StatusType.Competing -> competing(message)
             }
         }
     });
@@ -131,11 +158,21 @@ enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
 @Suppress("unused")
 enum class RandomStatus(val type: StatusType, val message: String) {
     ListeningForYourCommands(StatusType.Listening, "your commands"),
+    ListeningToDawnFm(StatusType.Listening, "to 103.5, DawnFM"),
+    ListeningToTdcc(StatusType.Listening, "to Two Door Cinema Club"),
+    ListeningForUptime(StatusType.Listening, "for %UPTIME%"),
     WatchingForYourCommands(StatusType.Watching, "for your commands"),
     WatchingTheFootball(StatusType.Watching, "the football"),
     WatchingYou(StatusType.Watching, "you"),
+    WatchingTheWorldBurn(StatusType.Watching, "the world burn"),
+    WatchingOverYourServer(StatusType.Watching, "over your server"),
+    WatchingForScammers(StatusType.Watching, "for scammers"),
+    WatchingTv(StatusType.Playing, "TV"),
+    WatchingForUptime(StatusType.Watching, "for %UPTIME%"),
     PlayingMinecraft(StatusType.Playing, "Minecraft :D"),
     PlayingABoardGame(StatusType.Playing, "a board game"),
+    PlayingThePiano(StatusType.Playing, "the piano"),
+    PlayingForUptime(StatusType.Playing, "for %UPTIME%"),
     CompetingInTheOlympics(StatusType.Competing, "the olympics"),
     CompetingWithOtherPenguins(StatusType.Competing, "the international penguin tournament");
 
