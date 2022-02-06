@@ -90,3 +90,6 @@ bin/
 
 # Env vars - don't commit this!
 .env
+
+# Logs
+pinguino.log

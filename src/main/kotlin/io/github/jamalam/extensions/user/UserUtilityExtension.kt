@@ -79,6 +79,7 @@ class UserUtilityExtension : Extension() {
                         pinguino()
                         log()
                         now()
+                        channelField("Channel", event.channel)
                     }
                 }
             }

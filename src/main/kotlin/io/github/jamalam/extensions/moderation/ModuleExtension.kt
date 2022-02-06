@@ -467,6 +467,34 @@ class ModuleExtension : Extension() {
                         }
                     }
                 }
+
+                ephemeralSubCommand(::SingleBooleanArgs) {
+                    name = "set-moderators-exempt"
+                    description = "Set whether moderators should be exempt from phishing checks"
+
+                    action {
+                        val conf = guild!!.getConfig()
+                        conf.phishingConfig.moderatorsExempt = arguments.boolean
+                        database.config.updateConfig(guild!!.id, conf)
+
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Moderators exempt from phishing updated")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Exempt", if(arguments.boolean) "True" else "False")
+                        }
+
+                        respond {
+                            embed {
+                                info("Moderators exempt from phishing updated")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    }
+                }
             }
         }
         //endregion

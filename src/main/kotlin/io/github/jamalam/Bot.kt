@@ -26,6 +26,8 @@ import io.github.jamalam.extensions.user.*
 import io.github.jamalam.util.*
 
 suspend fun main() {
+    BOOT_TIME // init this field
+
     val bot = ExtensibleBot(TOKEN) {
         applicationCommands {
             if (!PRODUCTION) {
@@ -35,7 +37,7 @@ suspend fun main() {
 
         errorResponse { message, _ ->
             embed {
-                info("Error")
+                title = "Error"
                 pinguino()
                 error()
                 stringField("Message", message)

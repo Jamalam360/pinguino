@@ -17,14 +17,20 @@
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
-def production = System.getenv().getOrDefault("PRODUCTION", "false")
-def defaultLevel = System.getenv().getOrDefault("LOG_LEVEL", INFO)
+def logFile = System.getenv().getOrDefault("LOG_FILE", "pinguino.log")
+def defaultLevelString = System.getenv().getOrDefault("LOG_LEVEL", "INFO")
 
-if (production == "true") {
-    defaultLevel = DEBUG
+def defaultLevel = INFO
 
-    // Silence warning about missing native PRNG on Windows
-    logger("io.ktor.util.random", ERROR)
+switch (defaultLevelString) {
+    case "INFO":
+        defaultLevel = INFO
+        break
+    case "DEBUG":
+        defaultLevel = DEBUG
+        break
+    case "TRACE":
+        defaultLevel = TRACE
 }
 
 appender("CONSOLE", ConsoleAppender) {
@@ -35,4 +41,14 @@ appender("CONSOLE", ConsoleAppender) {
     target = ConsoleTarget.SystemErr
 }
 
-root(defaultLevel, ["CONSOLE"])
+appender("FILE", FileAppender) {
+    encoder(PatternLayoutEncoder) {
+        pattern = "%d{yyyy-MM-dd HH:mm:ss:SSS Z} | %5level | %40.40logger{40} | %msg%n"
+    }
+
+    file = logFile
+    append = true
+    immediateFlush = true
+}
+
+root(defaultLevel, ["CONSOLE", "FILE"])

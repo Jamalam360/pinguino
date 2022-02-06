@@ -17,6 +17,8 @@
 
 package io.github.jamalam.util
 
+import kotlinx.datetime.Clock
+
 /**
  * @author  Jamalam360
  */
@@ -27,3 +29,4 @@ const val PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh
 
 const val VERSION = "v0.7.4"
 const val DBL_URL = "https://top.gg/api/bots/896758540784500797/stats"
+val BOOT_TIME = Clock.System.now()

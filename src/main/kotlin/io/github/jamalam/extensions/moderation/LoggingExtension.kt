@@ -122,7 +122,7 @@ class LoggingExtension : Extension() {
             action {
                 val msg = event.message.asMessage()
 
-                if (msg.isPublished && !event.old!!.isPublished) {
+                if (msg.isPublished != event.old?.isPublished) {
                     msg.getGuild().getLogChannel()?.createEmbed {
                         info("Message Published")
                         pinguino()
@@ -133,7 +133,7 @@ class LoggingExtension : Extension() {
                     }
                 }
 
-                if (msg.isPinned != event.old!!.isPinned) {
+                if (msg.isPinned != event.old?.isPinned) {
                     msg.getGuild().getLogChannel()?.createEmbed {
                         info(if (msg.isPinned) "Message Pinned" else "Message Unpinned")
                         pinguino()
@@ -202,7 +202,7 @@ class LoggingExtension : Extension() {
                     }
                 }
 
-                if (event.old!!.avatar!!.url != event.member.avatar!!.url) {
+                if (event.old!!.avatar?.url != event.member.avatar?.url) {
                     event.guild.getLogChannel()?.createEmbed {
                         info("Member Avatar Updated")
                         userAuthor(event.member)

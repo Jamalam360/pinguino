@@ -1,6 +1,6 @@
 # Module Module
 
-The module module is responsible for configuring the bot.
+The module module (hehe) is responsible for configuring the bot.
 
 ## Commands
 
@@ -58,4 +58,6 @@ The module module is responsible for configuring the bot.
         - `disable`
             - Disables the phishing module.
         - `set-discipline-level`
-                - Sets the level of discipline to use - (delete, kick, ban).
+            - Sets the level of discipline to use - (delete, kick, ban).
+        - `set-moderators-exempt`
+            - Sets whether messages from moderators should be checked for phishing links.

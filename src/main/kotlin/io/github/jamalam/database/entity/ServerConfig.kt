@@ -70,6 +70,7 @@ data class ServerFilePasteConfig(
 
 data class ServerPhishingConfig(
     var enabled: Boolean,
+    var moderatorsExempt: Boolean,
     var moderationType: ServerPhishingModerationType,
 )
 
