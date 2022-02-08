@@ -43,7 +43,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.HastebinApi
-import io.github.jamalam.api.LinkApi
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -55,7 +54,6 @@ class UserUtilityExtension : Extension() {
     override val name: String = "user-utility"
 
     private val hasteBin = HastebinApi()
-    private val link = LinkApi()
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
@@ -330,25 +328,6 @@ class UserUtilityExtension : Extension() {
                             "[Link](https://github.com/JamCoreDiscord/Pinguino/blob/release/docs/README.md)"
                         )
                         stringField("Support", "[Link](https://discord.jamalam.tech)")
-                    }
-                }
-            }
-        }
-
-        ephemeralSlashCommand(::SingleLinkArgs) {
-            name = "shorten-link"
-            description = "Shorten a link"
-
-            action {
-                link.shorten(arguments.link).let {
-                    respond {
-                        embed {
-                            info("Shortened Link")
-                            pinguino()
-                            now()
-                            success()
-                            url = it
-                        }
                     }
                 }
             }

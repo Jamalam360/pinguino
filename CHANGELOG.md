@@ -1,5 +1,17 @@
 # Pinguino Changelog
 
+## Version 0.7.6
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.5...v0.7.6)**
+
+### Fixes
+
+- Remove `/shorten-link` as it used a broken API.
+
+### Features
+
+
+
 ## Version 0.7.5
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.4...v0.7.5)**

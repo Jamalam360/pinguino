@@ -42,7 +42,7 @@ suspend fun main() {
                 pinguino()
                 error()
                 footer {
-                    text = "Report bugs at [GitHub](https://github.com/JamCoreDiscord/Pinguino/issues)"
+                    text = "Found a bug? Report it using `/help`"
                 }
             }
         }
