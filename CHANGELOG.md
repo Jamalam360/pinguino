@@ -7,6 +7,7 @@
 ### Fixes
 
 - Fix building on GitHub Actions by adding Kord snapshot repository.
+- Fix `Playing TV` status to be `Watching TV`.
 
 ### Features
 

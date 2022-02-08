@@ -167,7 +167,7 @@ enum class RandomStatus(val type: StatusType, val message: String) {
     WatchingTheWorldBurn(StatusType.Watching, "the world burn"),
     WatchingOverYourServer(StatusType.Watching, "over your server"),
     WatchingForScammers(StatusType.Watching, "for scammers"),
-    WatchingTv(StatusType.Playing, "TV"),
+    WatchingTv(StatusType.Watching, "TV"),
     WatchingForUptime(StatusType.Watching, "for %UPTIME%"),
     PlayingMinecraft(StatusType.Playing, "Minecraft :D"),
     PlayingABoardGame(StatusType.Playing, "a board game"),
