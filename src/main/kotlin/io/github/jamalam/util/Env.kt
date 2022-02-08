@@ -43,3 +43,5 @@ val TOKEN = if (PRODUCTION) {
 val DBL_TOKEN = env("DBL_TOKEN")
 val SENTRY_URL = env("SENTRY_URL")
 val MONGO_SRV_URL = env("MONGO_SRV_URL")
+val ADMIN_ID = Snowflake(env("ADMIN_ID"))
+val ADMIN_SERVER_ID = Snowflake(env("ADMIN_SERVER_ID"))

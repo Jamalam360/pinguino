@@ -17,6 +17,7 @@
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
+def production = System.getenv().getOrDefault("PRODUCTION", "false")
 def logFile = System.getenv().getOrDefault("LOG_FILE", "pinguino.log")
 def defaultLevelString = System.getenv().getOrDefault("LOG_LEVEL", "INFO")
 
@@ -47,7 +48,7 @@ appender("FILE", FileAppender) {
     }
 
     file = logFile
-    append = true
+    append = production == "true"
     immediateFlush = true
 }
 

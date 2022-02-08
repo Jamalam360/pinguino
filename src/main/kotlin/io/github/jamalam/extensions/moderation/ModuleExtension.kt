@@ -435,7 +435,7 @@ class ModuleExtension : Extension() {
                     conf.phishingConfig.enabled = false
                 }
 
-                ephemeralSlashCommand(::PhishingDisciplineLevelArgs) {
+                ephemeralSubCommand(::PhishingDisciplineLevelArgs) {
                     name = "set-discipline-level"
                     description = "Set the level of discipline to use for posting a phishing link"
 

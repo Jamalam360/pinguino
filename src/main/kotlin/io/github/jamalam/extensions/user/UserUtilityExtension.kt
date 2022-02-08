@@ -115,6 +115,22 @@ class UserUtilityExtension : Extension() {
         }
 
         ephemeralSlashCommand {
+            name = "uptime"
+            description = "Get my uptime"
+
+            action {
+                respond {
+                    embed {
+                        info("I have been awake for ${this@UserUtilityExtension.kord.getUptime().toPrettyString()}!")
+                        pinguino()
+                        success()
+                        now()
+                    }
+                }
+            }
+        }
+
+        ephemeralSlashCommand {
             name = "thread"
             description = "Commands to manage threads"
 

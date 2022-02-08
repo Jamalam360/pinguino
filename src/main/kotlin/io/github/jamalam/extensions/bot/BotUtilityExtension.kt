@@ -17,9 +17,12 @@
 
 package io.github.jamalam.extensions.bot
 
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
 import dev.kord.rest.builder.message.create.embed
@@ -40,10 +43,11 @@ class BotUtilityExtension : Extension() {
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
     private val dblDelay = DateTimePeriod(minutes = 30) //Every 10 minutes
     private val topGg = TopGg()
+    private var presenceTask: Task? = null
 
     override suspend fun setup() {
         // Set initial presence (without the delay there is an error)
-        scheduler.schedule(30) {
+        presenceTask = scheduler.schedule(30) {
             this.kord.editPresence {
                 status = PresenceStatus.Idle
                 playing("booting up!")
@@ -73,16 +77,33 @@ class BotUtilityExtension : Extension() {
         }
 
         ephemeralSlashCommand {
-            name = "uptime"
-            description = "Get my uptime"
+            name = "admin"
+            description = "Admin commands for Pinguino"
 
-            action {
-                respond {
-                    embed {
-                        info("I have been awake for ${this@BotUtilityExtension.kord.getUptime().toPrettyString()}!")
-                        pinguino()
-                        success()
-                        now()
+            guild(ADMIN_SERVER_ID)
+
+            check {
+                allowUser(ADMIN_ID)
+            }
+
+            group("status") {
+                description = "Commands to manage the status of Pinguino"
+
+                ephemeralSubCommand {
+                    name = "cycle"
+                    description = "Cycle the status of Pinguino"
+
+                    action {
+                        setPresenceStatus()
+
+                        respond {
+                            embed {
+                                info("Cycled status")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
                     }
                 }
             }
@@ -91,7 +112,8 @@ class BotUtilityExtension : Extension() {
 
     private suspend fun setPresenceStatus() {
         BotStatus.random().setPresenceStatus(this.kord)
-        scheduler.schedule(seconds = presenceDelay.seconds.toLong()) {
+        presenceTask?.cancel()
+        presenceTask = scheduler.schedule(seconds = presenceDelay.seconds.toLong()) {
             setPresenceStatus()
         }
     }

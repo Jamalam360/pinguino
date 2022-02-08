@@ -8,8 +8,13 @@
 
 - Fix building on GitHub Actions by adding Kord snapshot repository.
 - Fix `Playing TV` status to be `Watching TV`.
+- Move `/uptime` to `UserUtilityExtension`.
 
 ### Features
+
+- Only append to log file in production.
+- Add GitHub issue link to error response.
+- Add admin commands controlled by the `ADMIN_SERVER_ID` and `ADMIN_ID` environment variables.
 
 ## Version 0.7.4
 

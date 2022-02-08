@@ -38,9 +38,12 @@ suspend fun main() {
         errorResponse { message, _ ->
             embed {
                 title = "Error"
+                description = message
                 pinguino()
                 error()
-                stringField("Message", message)
+                footer {
+                    text = "Report bugs at [GitHub](https://github.com/JamCoreDiscord/Pinguino/issues)"
+                }
             }
         }
 
