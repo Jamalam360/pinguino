@@ -9,6 +9,7 @@
 - Fix building on GitHub Actions by adding Kord snapshot repository.
 - Fix `Playing TV` status to be `Watching TV`.
 - Move `/uptime` to `UserUtilityExtension`.
+- Fix `/module phishing set-discipline-level` not appearing.
 
 ### Features
 
