@@ -80,7 +80,7 @@ class BotUtilityExtension : Extension() {
             name = "admin"
             description = "Admin commands for Pinguino"
 
-            guild(ADMIN_SERVER_ID)
+            guild(if (PRODUCTION) ADMIN_SERVER_ID else TEST_SERVER_ID)
 
             check {
                 allowUser(ADMIN_ID)

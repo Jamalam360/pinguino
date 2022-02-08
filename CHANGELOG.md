@@ -7,10 +7,12 @@
 ### Fixes
 
 - Remove `/shorten-link` as it used a broken API.
+- Fix issue link in error response (broken hyperlink).
+- Fixed error with admin commands when running in dev.
 
 ### Features
 
-
+- Log files are now saved in `/logs/` and have a date/time based name.
 
 ## Version 0.7.5
 

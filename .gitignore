@@ -93,3 +93,4 @@ bin/
 
 # Logs
 pinguino.log
+logs/
