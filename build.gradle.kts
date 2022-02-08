@@ -17,6 +17,11 @@ version = "0.7.5"
 
 repositories {
     maven {
+        name = "Kord Snapshots"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+
+    maven {
         name = "Kotlin Discord"
         url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
     }

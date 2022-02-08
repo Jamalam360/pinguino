@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- Fix building on GitHub Actions by adding Kord snapshot repository.
+
 ### Features
 
 ## Version 0.7.4
