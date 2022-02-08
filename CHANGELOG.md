@@ -9,6 +9,7 @@
 - Remove `/shorten-link` as it used a broken API.
 - Fix issue link in error response (broken hyperlink).
 - Fixed error with admin commands when running in dev.
+- Fixed an issue when specifying a duration longer t 30 days in mute commands.
 
 ### Features
 

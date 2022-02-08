@@ -180,6 +180,15 @@ class ModerationExtension : Extension() {
                                     error()
                                 }
                             }
+                        } else if (arguments.duration.seconds / 60 / 60 / 24 > 30) {
+                            respond {
+                                embed {
+                                    info("Duration cannot be longer than 30 days")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
+                            }
                         } else {
                             if (!member.isBot) {
                                 member.dm {
