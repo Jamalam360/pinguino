@@ -3,6 +3,8 @@
 
 <p align="center">Pinguino is a <i>multipurpose</i> discord bot built using <i><a href="https://kotlinlang.org/">Kotlin</a></i> and <i><a href="https://kordex.kotlindiscord.com/">Kordex</a></i></p>
 
+<h2 align="center"><a href="https://discord.com/oauth2/authorize?client_id=896758540784500797&permissions=292057803846&scope=applications.commands%20bot">Add Me!</a></h2>
+
 <p align="center"><img src="https://user-images.githubusercontent.com/56727311/136711100-33c45895-51dd-4c3e-9937-c02aebae18dc.jpg" /></p>
 
 <p align="center">Pinguino provides moderation, fun and utility commands and features that are helpful to <i>any</i> discord server</p>
