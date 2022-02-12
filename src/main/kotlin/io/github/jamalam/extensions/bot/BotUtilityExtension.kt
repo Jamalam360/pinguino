@@ -57,7 +57,7 @@ class BotUtilityExtension : Extension() {
             setDBLStats()
         }
 
-        scheduler.schedule(presenceDelay.seconds.toLong()) {
+        scheduler.schedule(presenceDelay.toSeconds()) {
             setPresenceStatus()
         }
 
@@ -134,7 +134,7 @@ class BotUtilityExtension : Extension() {
     private suspend fun setPresenceStatus() {
         BotStatus.random().setPresenceStatus(this.kord)
         presenceTask?.cancel()
-        presenceTask = scheduler.schedule(seconds = presenceDelay.seconds.toLong()) {
+        presenceTask = scheduler.schedule(presenceDelay.toSeconds()) {
             setPresenceStatus()
         }
     }
@@ -143,7 +143,7 @@ class BotUtilityExtension : Extension() {
         if (config.production()) {
             topGg.sendServerCount(kord.guilds.count())
 
-            scheduler.schedule(seconds = dblDelay.seconds.toLong()) {
+            scheduler.schedule(dblDelay.toSeconds()) {
                 setDBLStats()
             }
         }

@@ -208,7 +208,7 @@ fun DateTimePeriod.toPrettyString(): String {
 }
 
 fun DateTimePeriod.toSeconds(): Long {
-    return (years * 31536000L) + (months * 2678400L) + (days * 86400L) + (hours * 3600) + (minutes * 60) + seconds + (nanoseconds / )
+    return (years * 31536000L) + (months * 2678400L) + (days * 86400L) + (hours * 3600) + (minutes * 60) + seconds
 }
 
 @Suppress("unused")

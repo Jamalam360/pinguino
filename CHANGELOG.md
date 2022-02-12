@@ -12,6 +12,7 @@
 - Fixed an issue when specifying a duration longer than 30 days in mute commands.
 - Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
 - Clean up Gitignore.
+- Increase DBL posting delay to stop rate limit.
 
 ### Features
 
