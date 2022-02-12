@@ -13,6 +13,7 @@
 - Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
 - Clean up Gitignore.
 - Increase DBL posting delay to stop rate limit.
+- Fix typos in some presence statuses
 
 ### Features
 

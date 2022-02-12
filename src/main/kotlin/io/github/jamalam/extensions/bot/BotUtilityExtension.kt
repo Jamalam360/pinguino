@@ -201,9 +201,8 @@ enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
 @Suppress("unused")
 enum class RandomStatus(val type: StatusType, val message: String) {
     ListeningForYourCommands(StatusType.Listening, "your commands"),
-    ListeningToDawnFm(StatusType.Listening, "to 103.5, DawnFM"),
-    ListeningToTdcc(StatusType.Listening, "to Two Door Cinema Club"),
-    ListeningForUptime(StatusType.Listening, "for %UPTIME%"),
+    ListeningToDawnFm(StatusType.Listening, "103.5, DawnFM"),
+    ListeningToTdcc(StatusType.Listening, "Two Door Cinema Club"),
     WatchingForYourCommands(StatusType.Watching, "for your commands"),
     WatchingTheFootball(StatusType.Watching, "the football"),
     WatchingYou(StatusType.Watching, "you"),
