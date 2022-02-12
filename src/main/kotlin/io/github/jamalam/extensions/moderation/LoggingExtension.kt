@@ -176,6 +176,7 @@ class LoggingExtension : Extension() {
                     userAuthor(event.getUser())
                     log()
                     now()
+                    message(event.message.asMessage(), true)
                     stringField("Emoji", event.emoji.mention)
                 }
             }
@@ -361,7 +362,7 @@ class LoggingExtension : Extension() {
         colour: Color = DISCORD_BLURPLE,
         imageUrl: String = ""
     ): Message? {
-        val conf = database.config.getConfig(guild.id)
+        val conf = database.serverConfig.getConfig(guild.id)
 
         if (conf.loggingConfig.enabled && conf.loggingConfig.channel != null) {
             val channel = guild.getChannel(Snowflake(conf.loggingConfig.channel!!))

@@ -164,7 +164,7 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                database.config.deleteConfig(guild!!.id)
+                database.serverConfig.deleteConfig(guild!!.id)
 
                 guild!!.getLogChannel()?.createEmbed {
                     info("Config deleted")
@@ -194,7 +194,7 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                database.config.deleteConfig(guild!!.id)
+                database.serverConfig.deleteConfig(guild!!.id)
 
                 guild!!.getLogChannel()?.createEmbed {
                     info("Goodbye.")

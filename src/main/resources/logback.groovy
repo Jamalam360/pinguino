@@ -16,11 +16,9 @@
  */
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget
+import java.text.SimpleDateFormat
 
-def production = System.getenv().getOrDefault("PRODUCTION", "false")
-def logFile = System.getenv().getOrDefault("LOG_FILE", "pinguino.log")
 def defaultLevelString = System.getenv().getOrDefault("LOG_LEVEL", "INFO")
-
 def defaultLevel = INFO
 
 switch (defaultLevelString) {
@@ -47,8 +45,11 @@ appender("FILE", FileAppender) {
         pattern = "%d{yyyy-MM-dd HH:mm:ss:SSS Z} | %5level | %40.40logger{40} | %msg%n"
     }
 
-    file = logFile
-    append = production == "true"
+    def date = new Date()
+    def dateFormat = new SimpleDateFormat("HH-mm-ss-SSSS_dd-MM-yyyy")
+
+    file = "./logs/pinguino-" + dateFormat.format(date) + ".log"
+    append = false
     immediateFlush = true
 }
 

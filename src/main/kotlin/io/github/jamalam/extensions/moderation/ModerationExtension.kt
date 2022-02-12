@@ -55,6 +55,7 @@ import kotlin.time.ExperimentalTime
  * @author Jamalam360
  */
 
+@Suppress("DuplicatedCode")
 @OptIn(KordPreview::class, ExperimentalTime::class)
 class ModerationExtension : Extension() {
     override val name: String = "moderation"
@@ -85,7 +86,7 @@ class ModerationExtension : Extension() {
                     description = "Add a role to the thread auto-join list"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = database.serverConfig.getConfig(guild!!.id)
 
                         if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value.toLong())) {
                             respond {
@@ -98,7 +99,7 @@ class ModerationExtension : Extension() {
                             }
                         } else {
                             conf.moderationConfig.threadAutoJoinRoles.add(arguments.role.id.value.toLong())
-                            database.config.updateConfig(guild!!.id, conf)
+                            database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild?.getLogChannel()?.createEmbed {
                                 info("Role added to thread auto-join list")
@@ -125,11 +126,11 @@ class ModerationExtension : Extension() {
                     description = "Remove a role from the thread auto-join list"
 
                     action {
-                        val conf = database.config.getConfig(guild!!.id)
+                        val conf = database.serverConfig.getConfig(guild!!.id)
 
                         if (conf.moderationConfig.threadAutoJoinRoles.contains(arguments.role.id.value.toLong())) {
                             conf.moderationConfig.threadAutoJoinRoles.remove(arguments.role.id.value.toLong())
-                            database.config.updateConfig(guild!!.id, conf)
+                            database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild?.getLogChannel()?.createEmbed {
                                 info("Role removed from the thread auto-join list")
@@ -175,6 +176,15 @@ class ModerationExtension : Extension() {
                             respond {
                                 embed {
                                     info("Cannot find that member")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
+                            }
+                        } else if (arguments.duration.seconds / 60 / 60 / 24 > 30) {
+                            respond {
+                                embed {
+                                    info("Duration cannot be longer than 30 days")
                                     pinguino()
                                     now()
                                     error()
@@ -697,7 +707,7 @@ class ModerationExtension : Extension() {
                     event.channel.owner
                 }
 
-                if (database.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
+                if (database.serverConfig.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles.isNotEmpty()) {
                     val msg =
                         event.channel.createMessage("Nice thread ${author.mention}! Hold on while I get some VIPs in here!")
 
@@ -706,7 +716,8 @@ class ModerationExtension : Extension() {
                     }
 
                     var mentions = ""
-                    val roles = database.config.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
+                    val roles =
+                        database.serverConfig.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
 
                     for (id in roles) {
                         mentions += "${event.channel.guild.getRole(Snowflake(id)).mention}, "

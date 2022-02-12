@@ -15,26 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.jamalam.api
+package io.github.jamalam.config
 
-import io.github.jamalam.util.client
-import io.ktor.client.request.*
-import io.ktor.http.*
-import kotlinx.serialization.Serializable
-
-/**
- * @author  Jamalam360
- */
-class LinkApi {
-    suspend fun shorten(url: String): String {
-        client.put<LinkAPIResponse>("https://link.jamalam.tech/api/link") {
-            contentType(ContentType.Application.Json)
-            body = "{\"link\": \"$url\"}"
-        }.let {
-            return it.link
-        }
-    }
-
-    @Serializable
-    data class LinkAPIResponse(val link: String)
+class InvalidConfigException(message: String) : Exception(message) {
 }

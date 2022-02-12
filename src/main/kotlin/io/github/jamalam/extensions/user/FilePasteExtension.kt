@@ -58,7 +58,7 @@ class FilePasteExtension : Extension() {
                     return@action
                 }
 
-                val conf: ServerConfig = database.config.getConfig(event.member!!.guildId)
+                val conf: ServerConfig = database.serverConfig.getConfig(event.member!!.guildId)
 
                 event.message.attachments.forEach {
                     if (!it.isImage && (it.url.endsWith(".txt") || it.url.endsWith(".log"))) {

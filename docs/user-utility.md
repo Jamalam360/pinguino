@@ -21,8 +21,6 @@ can be found in the moderator utility extension).
     - Returns a link to this documentation.
 - `/bugs`
     - Returns a link to the bots issue tracker
-- `/shorten-link`
-    - Shortens a link using [link.jamalam.tech](https://link.jamalam.tech)
 - `/paste`
     - Pastes content to Hastebin
     - `url`

@@ -43,7 +43,7 @@ suspend fun <T : Event> CheckContext<T>.isModuleEnabled(module: Modules) {
         logger.nullGuild(event)
         fail()
     } else {
-        if (database.config.isModuleEnabled(guild.id, module)) {
+        if (database.serverConfig.isModuleEnabled(guild.id, module)) {
             logger.passed()
             pass()
         } else {
@@ -71,7 +71,7 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                    .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole)))
             ) {
                 logger.passed()
                 pass()
@@ -109,7 +109,7 @@ suspend fun <T : Event> CheckContext<T>.notExemptFromPhishing() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole))) && guild.getConfig().phishingConfig.moderatorsExempt
+                    .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole))) && guild.getConfig().phishingConfig.moderatorsExempt
             ) {
                 logger.failed("Member ${member.id} has the moderator role set for this server")
                 fail("Moderators are exempt from this check")
@@ -129,7 +129,7 @@ suspend fun <T : Event> CheckContext<T>.ownsThread() {
         return
     }
 
-    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.ownsThread")
     val guild = guildFor(event)
     val member = memberFor(event)
     val thread = threadFor(event)
@@ -151,5 +151,22 @@ suspend fun <T : Event> CheckContext<T>.ownsThread() {
             logger.passed()
             pass()
         }
+    }
+}
+
+suspend fun <T : Event> CheckContext<T>.notInDm() {
+    if (!passed) {
+        return
+    }
+
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.notInDm")
+    val guild = guildFor(event)
+
+    if (guild == null) {
+        logger.failed("Event not associated with a guild")
+        fail("You must be in a guild to execute this command")
+    } else {
+        logger.passed()
+        pass()
     }
 }

@@ -15,16 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DuplicatedCode")
+
 package io.github.jamalam.util
 
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.DISCORD_GREEN
 import com.kotlindiscord.kord.extensions.DISCORD_RED
+import com.kotlindiscord.kord.extensions.utils.getJumpUrl
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.MessageChannel
@@ -33,6 +37,7 @@ import io.github.jamalam.database.entity.ServerConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.toDateTimePeriod
+import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
 /**
@@ -40,7 +45,7 @@ import kotlin.time.ExperimentalTime
  */
 
 suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
-    val conf = database.config.getConfig(this.id)
+    val conf = database.serverConfig.getConfig(this.id)
 
     if (conf.loggingConfig.enabled && conf.loggingConfig.channel != null) {
         val channel = this.getChannel(Snowflake(conf.loggingConfig.channel!!))
@@ -67,7 +72,7 @@ suspend fun GuildBehavior.getPublicModLogChannel(): MessageChannel? {
     return null
 }
 
-fun GuildBehavior.getConfig(): ServerConfig = database.config.getConfig(this.id)
+fun GuildBehavior.getConfig(): ServerConfig = database.serverConfig.getConfig(this.id)
 
 fun ThreadChannelBehavior.save(save: Boolean = true) {
     if (save) {
@@ -103,7 +108,7 @@ fun EmbedBuilder.userField(name: String, user: User?) {
     if (user != null) {
         field {
             this.name = name
-            this.value = user.username
+            this.value = "${user.id.value} / ${user.username}"
         }
     }
 }
@@ -112,7 +117,7 @@ fun EmbedBuilder.channelField(name: String, channel: Channel?) {
     if (channel != null) {
         field {
             this.name = name
-            this.value = channel.mention
+            this.value = "${channel.id.value} / ${channel.mention}"
         }
     }
 }
@@ -123,6 +128,28 @@ fun EmbedBuilder.stringField(name: String, value: String?) {
             this.name = name
             this.value = value
         }
+    }
+}
+
+fun EmbedBuilder.messageLinkField(name: String, value: Message?) {
+    if (value != null) {
+        field {
+            this.name = name
+            this.value = "`${value.id}` / [Jump Link](${value.getJumpUrl()})"
+        }
+    }
+}
+
+suspend fun EmbedBuilder.message(value: Message?, authorAsField: Boolean = false) {
+    if (value != null) {
+        if (authorAsField) {
+            userField("Message Author", value.author)
+        } else {
+            userAuthor(value.author!!)
+        }
+        stringField("Message Content", value.content.ifEmpty { "Empty" })
+        messageLinkField("Message Information", value)
+        channelField("Channel", value.channel.asChannel())
     }
 }
 
@@ -181,6 +208,16 @@ fun DateTimePeriod.toPrettyString(): String {
     return result
 }
 
+fun DateTimePeriod.toSeconds(): Long {
+    return (years * 31536000L) + (months * 2678400L) + (days * 86400L) + (hours * 3600) + (minutes * 60) + seconds
+}
+
 @Suppress("unused")
 @OptIn(ExperimentalTime::class)
 fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTimePeriod()
+
+
+fun Random.Default.nextHex(): String {
+    val hexDigits = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
+    return hexDigits[nextInt(0, hexDigits.size)]
+}

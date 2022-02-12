@@ -17,7 +17,7 @@
 
 package io.github.jamalam.api
 
-import io.github.jamalam.util.DBL_TOKEN
+import io.github.jamalam.config.config
 import io.github.jamalam.util.DBL_URL
 import io.github.jamalam.util.client
 import io.ktor.client.request.*
@@ -33,7 +33,7 @@ class TopGg {
     suspend fun sendServerCount(count: Int) {
         client.post<HttpResponse>(DBL_URL) {
             contentType(ContentType.Application.Json)
-            header("Authorization", DBL_TOKEN)
+            header("Authorization", config.auth.dblToken!!)
             body = DBLStatisticBody(count)
         }
     }

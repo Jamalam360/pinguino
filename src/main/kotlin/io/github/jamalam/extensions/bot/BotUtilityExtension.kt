@@ -27,6 +27,7 @@ import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.TopGg
+import io.github.jamalam.config.config
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
@@ -41,7 +42,7 @@ class BotUtilityExtension : Extension() {
     override val name = "utility"
 
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
-    private val dblDelay = DateTimePeriod(minutes = 30) //Every 10 minutes
+    private val dblDelay = DateTimePeriod(hours = 6) // every 6 hours
     private val topGg = TopGg()
     private var presenceTask: Task? = null
 
@@ -56,7 +57,7 @@ class BotUtilityExtension : Extension() {
             setDBLStats()
         }
 
-        scheduler.schedule(presenceDelay.seconds.toLong()) {
+        scheduler.schedule(presenceDelay.toSeconds()) {
             setPresenceStatus()
         }
 
@@ -80,10 +81,10 @@ class BotUtilityExtension : Extension() {
             name = "admin"
             description = "Admin commands for Pinguino"
 
-            guild(ADMIN_SERVER_ID)
+            guild((if (config.production()) config.production!!.adminServerId else config.development!!.serverId)!!)
 
             check {
-                allowUser(ADMIN_ID)
+                allowUser((if (config.production()) config.production!!.adminId else config.development!!.adminId)!!)
             }
 
             group("status") {
@@ -107,22 +108,42 @@ class BotUtilityExtension : Extension() {
                     }
                 }
             }
+
+            group("server") {
+                description = "Commands to manage the servers Pinguino is o"
+
+                ephemeralSubCommand {
+                    name = "count"
+                    description = "Return the number of servers Pinguino is in"
+
+                    action {
+                        respond {
+                            embed {
+                                info("Pinguino is in ${this@BotUtilityExtension.kord.guilds.count()} servers")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     private suspend fun setPresenceStatus() {
         BotStatus.random().setPresenceStatus(this.kord)
         presenceTask?.cancel()
-        presenceTask = scheduler.schedule(seconds = presenceDelay.seconds.toLong()) {
+        presenceTask = scheduler.schedule(presenceDelay.toSeconds()) {
             setPresenceStatus()
         }
     }
 
     private suspend fun setDBLStats() {
-        if (PRODUCTION) {
+        if (config.production()) {
             topGg.sendServerCount(kord.guilds.count())
 
-            scheduler.schedule(seconds = dblDelay.seconds.toLong()) {
+            scheduler.schedule(dblDelay.toSeconds()) {
                 setDBLStats()
             }
         }
@@ -180,9 +201,8 @@ enum class BotStatus(val setPresenceStatus: suspend (kord: Kord) -> Unit) {
 @Suppress("unused")
 enum class RandomStatus(val type: StatusType, val message: String) {
     ListeningForYourCommands(StatusType.Listening, "your commands"),
-    ListeningToDawnFm(StatusType.Listening, "to 103.5, DawnFM"),
-    ListeningToTdcc(StatusType.Listening, "to Two Door Cinema Club"),
-    ListeningForUptime(StatusType.Listening, "for %UPTIME%"),
+    ListeningToDawnFm(StatusType.Listening, "103.5, DawnFM"),
+    ListeningToTdcc(StatusType.Listening, "Two Door Cinema Club"),
     WatchingForYourCommands(StatusType.Watching, "for your commands"),
     WatchingTheFootball(StatusType.Watching, "the football"),
     WatchingYou(StatusType.Watching, "you"),

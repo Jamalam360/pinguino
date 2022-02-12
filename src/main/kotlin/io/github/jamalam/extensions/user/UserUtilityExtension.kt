@@ -43,7 +43,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.HastebinApi
-import io.github.jamalam.api.LinkApi
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -55,7 +54,6 @@ class UserUtilityExtension : Extension() {
     override val name: String = "user-utility"
 
     private val hasteBin = HastebinApi()
-    private val link = LinkApi()
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
@@ -145,7 +143,7 @@ class UserUtilityExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.serverConfig.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
                     ) {
@@ -241,7 +239,7 @@ class UserUtilityExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.serverConfig.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
                         val before = channel.name
@@ -335,25 +333,6 @@ class UserUtilityExtension : Extension() {
             }
         }
 
-        ephemeralSlashCommand(::SingleLinkArgs) {
-            name = "shorten-link"
-            description = "Shorten a link"
-
-            action {
-                link.shorten(arguments.link).let {
-                    respond {
-                        embed {
-                            info("Shortened Link")
-                            pinguino()
-                            now()
-                            success()
-                            url = it
-                        }
-                    }
-                }
-            }
-        }
-
         ephemeralSlashCommand {
             name = "paste"
             description = "Upload a file to hastebin"
@@ -408,7 +387,7 @@ class UserUtilityExtension : Extension() {
             action {
                 respond {
                     embed {
-                        info("Info for ${arguments.user.mention}")
+                        info("Info for ${arguments.user.username}#${arguments.user.discriminator}")
                         pinguino()
                         now()
                         success()
@@ -457,7 +436,7 @@ class UserUtilityExtension : Extension() {
 
                     try {
                         if (member.asMember().roles.toList()
-                                .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                                .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole)))
                         ) {
                             return@failIf true
                         }

@@ -1,5 +1,32 @@
 # Pinguino Changelog
 
+## Version 0.7.6
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.5...v0.7.6)**
+
+### Fixes
+
+- Remove `/shorten-link` as it used a broken API.
+- Fix issue link in error response (broken hyperlink).
+- Fixed error with admin commands when running in dev.
+- Fixed an issue when specifying a duration longer than 30 days in mute commands.
+- Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
+- Clean up Gitignore.
+- Increase DBL posting delay to stop rate limit.
+- Fix typos in some presence statuses.
+- Fix incorrect log title when creating tag (`deleted` instead of `created`).
+- Fix incorrect `/user-info` response.
+
+### Features
+
+- Add message content and link to reaction removed logging.
+- Add an `/admin server count` admin command.
+- Log files are now saved in `/logs/` and have a date/time based name.
+- Config files no longer use `.env`, the bot is configured using a `config.yml` file for better UX.
+- Add autocomplete to `/tag use` and `/tag delete`.
+- Add tag requester username to `/tag use` response.
+- Add `/fun color`.
+
 ## Version 0.7.5
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.4...v0.7.5)**

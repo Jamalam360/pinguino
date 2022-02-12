@@ -15,33 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.jamalam.util
+package io.github.jamalam.config
 
-import com.kotlindiscord.kord.extensions.utils.env
-import dev.kord.common.entity.Snowflake
-
-/**
- * @author  Jamalam360
- */
-
-val PRODUCTION = env("PRODUCTION").toBoolean()
-
-val TEST_SERVER_ID = if (PRODUCTION) {
-    Snowflake(0)
-} else {
-    Snowflake(
-        env("TEST_SERVER_ID").toLong()
-    )
-}
-
-val TOKEN = if (PRODUCTION) {
-    env("TOKEN")
-} else {
-    env("TEST_BOT_TOKEN")
-}
-
-val DBL_TOKEN = env("DBL_TOKEN")
-val SENTRY_URL = env("SENTRY_URL")
-val MONGO_SRV_URL = env("MONGO_SRV_URL")
-val ADMIN_ID = Snowflake(env("ADMIN_ID"))
-val ADMIN_SERVER_ID = Snowflake(env("ADMIN_SERVER_ID"))
+val config = BotConfig.parse("./config.yml")

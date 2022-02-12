@@ -59,7 +59,7 @@ class ModuleExtension : Extension() {
             action {
                 val config = guild!!.getConfig()
                 lambda(config)
-                database.config.updateConfig(guild!!.id, config)
+                database.serverConfig.updateConfig(guild!!.id, config)
 
                 logModuleEnabled(moduleName, user, guild!!)
 
@@ -83,7 +83,7 @@ class ModuleExtension : Extension() {
             action {
                 val config = guild!!.getConfig()
                 lambda(config)
-                database.config.updateConfig(guild!!.id, config)
+                database.serverConfig.updateConfig(guild!!.id, config)
 
                 logModuleDisabled(moduleName, user, guild!!)
 
@@ -128,7 +128,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.quotesConfig.channel = arguments.channel.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Quotes channel updated")
@@ -168,7 +168,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.loggingConfig.channel = arguments.channel.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Logging channel updated")
@@ -208,7 +208,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.moderationConfig.moderatorRole = arguments.role.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Moderator role updated")
@@ -236,7 +236,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.moderationConfig.autoSaveThreads = arguments.boolean
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Auto-save-threads updated")
@@ -264,7 +264,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.moderationConfig.publicModLogChannel = arguments.channel.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Public mod-log channel updated")
@@ -304,7 +304,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.notificationsConfig.greetingChannel = arguments.channel.id.value.toLong()
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Greetings channel updated")
@@ -332,7 +332,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.notificationsConfig.greetingMessage = arguments.string
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Greeting message updated")
@@ -360,7 +360,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.notificationsConfig.farewellMessage = arguments.string
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Farewell message updated")
@@ -402,7 +402,7 @@ class ModuleExtension : Extension() {
 
                         val conf = guild!!.getConfig()
                         conf.filePasteConfig.hastebinUrl = url
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Hastebin URL updated")
@@ -447,7 +447,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.phishingConfig.moderationType = arguments.level
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Phishing discipline level updated")
@@ -475,7 +475,7 @@ class ModuleExtension : Extension() {
                     action {
                         val conf = guild!!.getConfig()
                         conf.phishingConfig.moderatorsExempt = arguments.boolean
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Moderators exempt from phishing updated")

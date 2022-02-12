@@ -17,7 +17,6 @@
 
 package io.github.jamalam.extensions.user
 
-import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
@@ -25,6 +24,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.rest.builder.message.create.embed
@@ -48,7 +48,7 @@ class TagExtension : Extension() {
                 description = "Use a tag"
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
                         respond {
@@ -57,6 +57,10 @@ class TagExtension : Extension() {
                                 pinguino()
                                 now()
                                 success()
+
+                                footer {
+                                    text = "Tag ${arguments.name.lowercase()} requested by ${user.asUser().username}"
+                                }
                             }
                         }
                     } else {
@@ -77,7 +81,7 @@ class TagExtension : Extension() {
                 description = "List all available tags"
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
                     var response = ""
 
                     if (conf.tagsConfig.tags.isEmpty()) {
@@ -109,7 +113,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags.size < 50) {
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
@@ -123,10 +127,10 @@ class TagExtension : Extension() {
                             }
                         } else {
                             conf.tagsConfig.tags[arguments.name.lowercase()] = arguments.content
-                            database.config.updateConfig(guild!!.id, conf)
+                            database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild!!.getLogChannel()?.createEmbed {
-                                info("Tag deleted")
+                                info("Tag created")
                                 userAuthor(user.asUser())
                                 now()
                                 log()
@@ -165,7 +169,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
                         respond {
@@ -178,7 +182,7 @@ class TagExtension : Extension() {
                         }
                     } else {
                         conf.tagsConfig.tags.remove(arguments.name.lowercase())
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Tag deleted")
@@ -206,6 +210,19 @@ class TagExtension : Extension() {
         val name by string {
             name = "name"
             description = "The name of the tag"
+
+            autoComplete {
+                if (data.guildId.value != null) {
+                    val conf = database.serverConfig.getConfig(data.guildId.value!!)
+                    val map = mutableMapOf<String, String>()
+
+                    conf.tagsConfig.tags.forEach {
+                        map[it.key] = it.key
+                    }
+
+                    suggestStringMap(map)
+                }
+            }
         }
     }
 

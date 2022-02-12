@@ -31,3 +31,5 @@ The fun module provides commands for entertainment.
         - Returns a random quote from Donald Trump.
     - `dad-joke`
         - Returns a random dad joke.
+    - `color`
+        - Returns a random color.
