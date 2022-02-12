@@ -387,7 +387,7 @@ class UserUtilityExtension : Extension() {
             action {
                 respond {
                     embed {
-                        info("Info for ${arguments.user.mention}")
+                        info("Info for ${arguments.user.username}#${arguments.user.discriminator}")
                         pinguino()
                         now()
                         success()

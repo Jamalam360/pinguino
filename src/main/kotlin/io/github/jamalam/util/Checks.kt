@@ -129,7 +129,7 @@ suspend fun <T : Event> CheckContext<T>.ownsThread() {
         return
     }
 
-    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.hasModeratorRole")
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.ownsThread")
     val guild = guildFor(event)
     val member = memberFor(event)
     val thread = threadFor(event)
@@ -151,5 +151,22 @@ suspend fun <T : Event> CheckContext<T>.ownsThread() {
             logger.passed()
             pass()
         }
+    }
+}
+
+suspend fun <T : Event> CheckContext<T>.notInDm() {
+    if (!passed) {
+        return
+    }
+
+    val logger = KotlinLogging.logger("io.github.jamalam360.util.Checks.notInDm")
+    val guild = guildFor(event)
+
+    if (guild == null) {
+        logger.failed("Event not associated with a guild")
+        fail("You must be in a guild to execute this command")
+    } else {
+        logger.passed()
+        pass()
     }
 }

@@ -15,6 +15,7 @@
 - Increase DBL posting delay to stop rate limit.
 - Fix typos in some presence statuses.
 - Fix incorrect log title when creating tag (`deleted` instead of `created`).
+- Fix incorrect `/user-info` response.
 
 ### Features
 

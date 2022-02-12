@@ -716,7 +716,8 @@ class ModerationExtension : Extension() {
                     }
 
                     var mentions = ""
-                    val roles = database.serverConfig.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
+                    val roles =
+                        database.serverConfig.getConfig(event.channel.guildId).moderationConfig.threadAutoJoinRoles
 
                     for (id in roles) {
                         mentions += "${event.channel.guild.getRole(Snowflake(id)).mention}, "
