@@ -19,6 +19,7 @@ package io.github.jamalam
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.config.config
 import io.github.jamalam.database.migration.migrate
 import io.github.jamalam.extensions.bot.BotUtilityExtension
 import io.github.jamalam.extensions.moderation.*
@@ -27,11 +28,13 @@ import io.github.jamalam.util.*
 
 suspend fun main() {
     BOOT_TIME // init this field
+    config.validate()
+    migrate(database.db)
 
-    val bot = ExtensibleBot(TOKEN) {
+    val bot = ExtensibleBot(config.token()) {
         applicationCommands {
-            if (!PRODUCTION) {
-                defaultGuild(TEST_SERVER_ID)
+            if (!config.production()) {
+                defaultGuild(config.development?.serverId)
             }
         }
 
@@ -65,10 +68,10 @@ suspend fun main() {
                 enableBundledExtension = false
             }
 
-            if (PRODUCTION) {
+            if (config.production() && config.auth.sentryUrl != null) {
                 sentry {
                     enable = true
-                    dsn = SENTRY_URL
+                    dsn = config.auth.sentryUrl
                     environment = "Production"
                     release = VERSION
                 }
@@ -76,6 +79,5 @@ suspend fun main() {
         }
     }
 
-    migrate(database.db)
     bot.start()
 }

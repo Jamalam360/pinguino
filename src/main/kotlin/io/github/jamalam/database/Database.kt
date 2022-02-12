@@ -18,8 +18,7 @@
 package io.github.jamalam.database
 
 import com.mongodb.client.MongoDatabase
-import io.github.jamalam.util.MONGO_SRV_URL
-import io.github.jamalam.util.PRODUCTION
+import io.github.jamalam.config.config
 import org.litote.kmongo.KMongo
 
 /**
@@ -27,14 +26,14 @@ import org.litote.kmongo.KMongo
  */
 
 class Database {
-    private val client = KMongo.createClient("$MONGO_SRV_URL?retryWrites=false&w=majority")
+    private val client = KMongo.createClient("${config.auth.mongoSrvUrl}?retryWrites=false&w=majority")
 
-    val db: MongoDatabase = if (PRODUCTION) {
+    val db: MongoDatabase = if (config.production()) {
         client.getDatabase("pinguino_production_db")
     } else {
         client.getDatabase("pinguino_testing_db")
     }
 
-    val config = ConfigCollection(db)
+    val serverConfig = ConfigCollection(db)
     val savedThreads = SavedThreadCollection(db)
 }

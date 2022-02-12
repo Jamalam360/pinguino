@@ -63,7 +63,7 @@ class NotificationsExtension : Extension() {
     }
 
     private suspend fun sendGreeting(guild: Guild, user: User) {
-        val conf = database.config.getConfig(guild.id)
+        val conf = database.serverConfig.getConfig(guild.id)
 
         if (conf.notificationsConfig.greetingChannel != null) {
             val channel = guild.getChannel(Snowflake(conf.notificationsConfig.greetingChannel!!))
@@ -82,7 +82,7 @@ class NotificationsExtension : Extension() {
     }
 
     private suspend fun sendFarewell(guild: Guild, user: User) {
-        val conf = database.config.getConfig(guild.id)
+        val conf = database.serverConfig.getConfig(guild.id)
 
         if (conf.notificationsConfig.greetingChannel != null) {
             val channel = guild.getChannel(Snowflake(conf.notificationsConfig.greetingChannel!!))

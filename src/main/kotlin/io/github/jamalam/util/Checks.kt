@@ -43,7 +43,7 @@ suspend fun <T : Event> CheckContext<T>.isModuleEnabled(module: Modules) {
         logger.nullGuild(event)
         fail()
     } else {
-        if (database.config.isModuleEnabled(guild.id, module)) {
+        if (database.serverConfig.isModuleEnabled(guild.id, module)) {
             logger.passed()
             pass()
         } else {
@@ -71,7 +71,7 @@ suspend fun <T : Event> CheckContext<T>.hasModeratorRole() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                    .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole)))
             ) {
                 logger.passed()
                 pass()
@@ -109,7 +109,7 @@ suspend fun <T : Event> CheckContext<T>.notExemptFromPhishing() {
     } else {
         try {
             if (member.asMember().roles.toList()
-                    .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole))) && guild.getConfig().phishingConfig.moderatorsExempt
+                    .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole))) && guild.getConfig().phishingConfig.moderatorsExempt
             ) {
                 logger.failed("Member ${member.id} has the moderator role set for this server")
                 fail("Moderators are exempt from this check")

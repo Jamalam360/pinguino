@@ -143,7 +143,7 @@ class UserUtilityExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.serverConfig.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id
                     ) {
@@ -239,7 +239,7 @@ class UserUtilityExtension : Extension() {
                 action {
                     val channel = channel.asChannel() as ThreadChannel
                     val roles = user.asMember(guild!!.id).roles.toList()
-                    val modRole = Snowflake(database.config.getConfig(guild!!.id).moderationConfig.moderatorRole)
+                    val modRole = Snowflake(database.serverConfig.getConfig(guild!!.id).moderationConfig.moderatorRole)
 
                     if (roles.contains(guild!!.getRoleOrNull(modRole)) || channel.ownerId == user.id) {
                         val before = channel.name
@@ -436,7 +436,7 @@ class UserUtilityExtension : Extension() {
 
                     try {
                         if (member.asMember().roles.toList()
-                                .contains(guild.getRole(Snowflake(database.config.getConfig(guild.id).moderationConfig.moderatorRole)))
+                                .contains(guild.getRole(Snowflake(database.serverConfig.getConfig(guild.id).moderationConfig.moderatorRole)))
                         ) {
                             return@failIf true
                         }

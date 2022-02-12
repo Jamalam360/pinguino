@@ -228,7 +228,7 @@ class QuoteExtension : Extension() {
         quoter: User,
         commandChannel: ChannelBehavior
     ) {
-        val conf = database.config.getConfig(guild.id)
+        val conf = database.serverConfig.getConfig(guild.id)
 
         if (conf.quotesConfig.channel != null) {
             val channel = guild.getChannel(Snowflake(conf.quotesConfig.channel!!))
@@ -263,7 +263,7 @@ class QuoteExtension : Extension() {
 
     private suspend fun Message.quote(quoter: User) {
         val guild = getGuild()
-        val conf = database.config.getConfig(guild.id)
+        val conf = database.serverConfig.getConfig(guild.id)
         val author2ElectricBoogaloo = this.author!!
 
         if (conf.quotesConfig.channel != null) {

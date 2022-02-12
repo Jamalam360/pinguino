@@ -9,11 +9,16 @@
 - Remove `/shorten-link` as it used a broken API.
 - Fix issue link in error response (broken hyperlink).
 - Fixed error with admin commands when running in dev.
-- Fixed an issue when specifying a duration longer t 30 days in mute commands.
+- Fixed an issue when specifying a duration longer than 30 days in mute commands.
+- Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
+- Clean up Gitignore.
 
 ### Features
 
+- Add message content and link to reaction removed logging.
+- Add an `/admin server count` admin command.
 - Log files are now saved in `/logs/` and have a date/time based name.
+- Config files no longer use `.env`, the bot is configured using a `config.yml` file for better UX.
 
 ## Version 0.7.5
 

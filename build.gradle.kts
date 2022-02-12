@@ -30,11 +30,13 @@ repositories {
 dependencies {
     detektPlugins(libs.detekt)
 
-    implementation(libs.kord.extensions)
-    implementation(libs.kord.phishing)
+    implementation(libs.kordex)
+    implementation(libs.kordex.extra.common)
+    implementation(libs.kordex.extra.phishing)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kx.ser)
     implementation(libs.kmongo)
+    implementation(libs.kaml)
 
     // Logging dependencies
     implementation(libs.groovy)

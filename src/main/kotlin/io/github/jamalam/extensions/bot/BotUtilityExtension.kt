@@ -27,6 +27,7 @@ import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.TopGg
+import io.github.jamalam.config.config
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
@@ -80,10 +81,10 @@ class BotUtilityExtension : Extension() {
             name = "admin"
             description = "Admin commands for Pinguino"
 
-            guild(if (PRODUCTION) ADMIN_SERVER_ID else TEST_SERVER_ID)
+            guild((if (config.production()) config.production!!.adminServerId else config.development!!.serverId)!!)
 
             check {
-                allowUser(ADMIN_ID)
+                allowUser((if (config.production()) config.production!!.adminId else config.development!!.adminId)!!)
             }
 
             group("status") {
@@ -107,6 +108,26 @@ class BotUtilityExtension : Extension() {
                     }
                 }
             }
+
+            group("server") {
+                description = "Commands to manage the servers Pinguino is o"
+
+                ephemeralSubCommand {
+                    name = "count"
+                    description = "Return the number of servers Pinguino is in"
+
+                    action {
+                        respond {
+                            embed {
+                                info("Pinguino is in ${this@BotUtilityExtension.kord.guilds.count()} servers")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -119,7 +140,7 @@ class BotUtilityExtension : Extension() {
     }
 
     private suspend fun setDBLStats() {
-        if (PRODUCTION) {
+        if (config.production()) {
             topGg.sendServerCount(kord.guilds.count())
 
             scheduler.schedule(seconds = dblDelay.seconds.toLong()) {

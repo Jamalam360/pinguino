@@ -17,7 +17,6 @@
 
 package io.github.jamalam.extensions.user
 
-import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
@@ -48,7 +47,7 @@ class TagExtension : Extension() {
                 description = "Use a tag"
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
                         respond {
@@ -77,7 +76,7 @@ class TagExtension : Extension() {
                 description = "List all available tags"
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
                     var response = ""
 
                     if (conf.tagsConfig.tags.isEmpty()) {
@@ -109,7 +108,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags.size < 50) {
                         if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
@@ -123,7 +122,7 @@ class TagExtension : Extension() {
                             }
                         } else {
                             conf.tagsConfig.tags[arguments.name.lowercase()] = arguments.content
-                            database.config.updateConfig(guild!!.id, conf)
+                            database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild!!.getLogChannel()?.createEmbed {
                                 info("Tag deleted")
@@ -165,7 +164,7 @@ class TagExtension : Extension() {
                 }
 
                 action {
-                    val conf = database.config.getConfig(guild!!.id)
+                    val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
                         respond {
@@ -178,7 +177,7 @@ class TagExtension : Extension() {
                         }
                     } else {
                         conf.tagsConfig.tags.remove(arguments.name.lowercase())
-                        database.config.updateConfig(guild!!.id, conf)
+                        database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
                             info("Tag deleted")
