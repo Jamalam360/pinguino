@@ -42,7 +42,7 @@ class BotUtilityExtension : Extension() {
     override val name = "utility"
 
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
-    private val dblDelay = DateTimePeriod(minutes = 30) //Every 10 minutes
+    private val dblDelay = DateTimePeriod(hours = 6) // every 6 hours
     private val topGg = TopGg()
     private var presenceTask: Task? = null
 

@@ -207,6 +207,10 @@ fun DateTimePeriod.toPrettyString(): String {
     return result
 }
 
+fun DateTimePeriod.toSeconds(): Long {
+    return (years * 31536000L) + (months * 2678400L) + (days * 86400L) + (hours * 3600) + (minutes * 60) + seconds + (nanoseconds / )
+}
+
 @Suppress("unused")
 @OptIn(ExperimentalTime::class)
 fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTimePeriod()
