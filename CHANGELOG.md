@@ -24,6 +24,7 @@
 - Config files no longer use `.env`, the bot is configured using a `config.yml` file for better UX.
 - Add autocomplete to `/tag use` and `/tag delete`.
 - Add tag requester username to `/tag use` response.
+- Add `/fun color`.
 
 ## Version 0.7.5
 

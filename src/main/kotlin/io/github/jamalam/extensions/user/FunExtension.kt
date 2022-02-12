@@ -24,16 +24,14 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.common.Color
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
 import io.github.jamalam.api.*
-import io.github.jamalam.util.info
-import io.github.jamalam.util.now
-import io.github.jamalam.util.pinguino
-import io.github.jamalam.util.success
+import io.github.jamalam.util.*
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -302,6 +300,43 @@ class FunExtension : Extension() {
                             pinguino()
                             success()
                             now()
+                        }
+                    }
+                }
+            }
+
+            publicSubCommand {
+                name = "color"
+                description = "Get a random color!"
+
+                action {
+                    var hexString = ""
+
+                    for (i in 1..6) {
+                        hexString += Random.Default.nextHex()
+                    }
+
+                    respond {
+                        embed {
+                            info("Hmm, let me have a look...")
+                            pinguino()
+                            success()
+                            now()
+                        }
+                    }
+
+                    channel.withTyping {
+                        delay(Duration.seconds(3))
+                    }
+
+                    interactionResponse.edit {
+                        embed {
+                            info("${user.asUser().username}, I found you this color!")
+                            pinguino()
+                            now()
+
+                            stringField("Hex Value", "`${hexString}`")
+                            color = Color(Integer.parseInt(hexString, 16))
                         }
                     }
                 }

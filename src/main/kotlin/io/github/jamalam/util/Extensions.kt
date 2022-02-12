@@ -37,6 +37,7 @@ import io.github.jamalam.database.entity.ServerConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.toDateTimePeriod
+import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
 /**
@@ -214,3 +215,9 @@ fun DateTimePeriod.toSeconds(): Long {
 @Suppress("unused")
 @OptIn(ExperimentalTime::class)
 fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTimePeriod()
+
+
+fun Random.Default.nextHex(): String {
+    val hexDigits = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
+    return hexDigits[nextInt(0, hexDigits.size)]
+}
