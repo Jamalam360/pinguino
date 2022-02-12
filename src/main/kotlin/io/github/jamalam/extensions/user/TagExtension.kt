@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.rest.builder.message.create.embed
@@ -56,6 +57,10 @@ class TagExtension : Extension() {
                                 pinguino()
                                 now()
                                 success()
+
+                                footer {
+                                    text = "Tag ${arguments.name.lowercase()} requested by ${user.asUser().username}"
+                                }
                             }
                         }
                     } else {
@@ -125,7 +130,7 @@ class TagExtension : Extension() {
                             database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild!!.getLogChannel()?.createEmbed {
-                                info("Tag deleted")
+                                info("Tag created")
                                 userAuthor(user.asUser())
                                 now()
                                 log()
@@ -205,6 +210,19 @@ class TagExtension : Extension() {
         val name by string {
             name = "name"
             description = "The name of the tag"
+
+            autoComplete {
+                if (data.guildId.value != null) {
+                    val conf = database.serverConfig.getConfig(data.guildId.value!!)
+                    val map = mutableMapOf<String, String>()
+
+                    conf.tagsConfig.tags.forEach {
+                        map[it.key] = it.key
+                    }
+
+                    suggestStringMap(map)
+                }
+            }
         }
     }
 

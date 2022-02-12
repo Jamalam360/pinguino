@@ -13,7 +13,8 @@
 - Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
 - Clean up Gitignore.
 - Increase DBL posting delay to stop rate limit.
-- Fix typos in some presence statuses
+- Fix typos in some presence statuses.
+- Fix incorrect log title when creating tag (`deleted` instead of `created`).
 
 ### Features
 
@@ -21,6 +22,8 @@
 - Add an `/admin server count` admin command.
 - Log files are now saved in `/logs/` and have a date/time based name.
 - Config files no longer use `.env`, the bot is configured using a `config.yml` file for better UX.
+- Add autocomplete to `/tag use` and `/tag delete`.
+- Add tag requester username to `/tag use` response.
 
 ## Version 0.7.5
 
