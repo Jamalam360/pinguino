@@ -18,7 +18,7 @@ The fun module provides commands for entertainment.
     - `eight-ball`
         - Returns an answer to the given question.
     - `xkcd`
-        - Returns an XKCD comic (todays if the index is not specified).
+        - Returns an XKCD comic (today's if the index is not specified).
     - `kanye`
         - Kanye as a service.
     - `age`

@@ -7,7 +7,7 @@ Most modules are configured using the `/module` command, so reading that documen
 
 It is organised into files based on how the commands are organised in the codebase.
 
-Links to all of the documentation files can be found below.
+Links to all the documentation files can be found below.
 
 - [Module](module.md)
     - The `/module` command is responsible for configuring the entire bot, it is recommended that you read this section.

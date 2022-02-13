@@ -1,6 +1,6 @@
 # Tag Module
 
-The tag modules let's you set up custom tags (you may hear them called 'tricks' by other bots).
+The tag modules lets you set up custom tags (you may hear them called 'tricks' by other bots).
 
 For example:
 
@@ -19,5 +19,7 @@ For example:
         - Returns a list of all available tags.
     - `create`
         - Creates a new tag with the given name (if you are a moderator).
+    - `edit`
+        - Edits the tag with the given name (if you are a moderator).    
     - `delete`
         - Deletes the tag with the given name (if you are a moderator).

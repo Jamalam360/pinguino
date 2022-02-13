@@ -91,10 +91,6 @@ class PhishingExtension : Extension() {
         ephemeralMessageCommand {
             name = "Phishing Check"
 
-            check {
-                isModuleEnabled(Modules.Phishing)
-            }
-
             action {
                 for (message in targetMessages) {
                     val domains = parseDomains(message.content.lowercase())
@@ -125,10 +121,6 @@ class PhishingExtension : Extension() {
         ephemeralSlashCommand(::DomainArgs) {
             name = "phishing-check"
             description = "Check whether a given domain is a known phishing domain."
-
-            check {
-                isModuleEnabled(Modules.Phishing)
-            }
 
             action {
                 respond {
@@ -280,7 +272,7 @@ class PhishingExtension : Extension() {
 
     @Suppress("MagicNumber")
     internal suspend fun updateDomains() {
-        api.getRecentDomains(15 * 60 + 30).forEach {
+        api.getRecentDomains((15 * 60 + 30).toLong()).forEach {
             when (it.type) {
                 DomainChangeType.Add -> domainCache.addAll(it.domains)
                 DomainChangeType.Delete -> domainCache.removeAll(it.domains)

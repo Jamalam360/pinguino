@@ -53,6 +53,7 @@ data class ServerModerationConfig(
 )
 
 data class ServerTagsConfig(
+    var enabled: Boolean,
     var tags: MutableMap<String, String>
 )
 

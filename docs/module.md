@@ -7,6 +7,11 @@ The module module (hehe) is responsible for configuring the bot.
 ### Slash
 
 - `/module`
+    - `tags`
+      - `enable`
+        - Enables the tags module.
+      - `disable`
+        - Disables the tags module.
     - `quotes`
         - `enable`
             - Enables the quotes module.
@@ -40,12 +45,12 @@ The module module (hehe) is responsible for configuring the bot.
         - `set-channel`
             - Sets the channel to post greetings to.
         - `set-greeting`
-            - Sets the greeting message. Use `$user` to subsitute in the user's name.
+            - Sets the greeting message. Use `$user` to substitute in the user's name.
         - `set-farewell`
-            - Sets the farewell message. Use `$user` to subsitute in the user's name.
+            - Sets the farewell message. Use `$user` to substitute in the user's name.
     - `file-paste`
         - The file paste module can automatically upload files to hastebin when they are posted in the channel, for
-          easier viewing on mobile. This is helpful for devloper communities who have users posting logs often.
+          easier viewing on mobile. This is helpful for developer communities who have users posting logs often.
         - `enable`
             - Enables the file-paste module.
         - `disable`

@@ -103,6 +103,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.
         val config = getConfig(id)
 
         return when (module) {
+            Modules.Tags -> config.tagsConfig.enabled
             Modules.Quotes -> config.quotesConfig.enabled
             Modules.Moderation -> config.moderationConfig.enabled
             Modules.Logging -> config.loggingConfig.enabled

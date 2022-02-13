@@ -28,6 +28,7 @@ import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.Modules
 import io.github.jamalam.util.*
 
 /**
@@ -43,6 +44,11 @@ class TagExtension : Extension() {
             name = "tag"
             description = "Manage or use tags saved on this server"
 
+            check {
+                isModuleEnabled(Modules.Tags)
+                notInDm()
+            }
+
             publicSubCommand(::TagNameArgs) {
                 name = "use"
                 description = "Use a tag"
@@ -50,16 +56,16 @@ class TagExtension : Extension() {
                 action {
                     val conf = database.serverConfig.getConfig(guild!!.id)
 
-                    if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
+                    if (conf.tagsConfig.tags[arguments.name] != null) {
                         respond {
                             embed {
-                                info(conf.tagsConfig.tags[arguments.name.lowercase()]!!)
+                                description = conf.tagsConfig.tags[arguments.name]!!
                                 pinguino()
                                 now()
                                 success()
 
                                 footer {
-                                    text = "Tag ${arguments.name.lowercase()} requested by ${user.asUser().username}"
+                                    text = "Tag ${arguments.name} requested by ${user.asUser().username}"
                                 }
                             }
                         }
@@ -116,7 +122,7 @@ class TagExtension : Extension() {
                     val conf = database.serverConfig.getConfig(guild!!.id)
 
                     if (conf.tagsConfig.tags.size < 50) {
-                        if (conf.tagsConfig.tags[arguments.name.lowercase()] != null) {
+                        if (conf.tagsConfig.tags[arguments.name] != null) {
                             respond {
                                 embed {
                                     info("There is already a tag with that name")
@@ -125,8 +131,17 @@ class TagExtension : Extension() {
                                     error()
                                 }
                             }
+                        } else if (arguments.content.length > 2000) {
+                            respond {
+                                embed {
+                                    info("Tag content must be under 2000 characters long")
+                                    pinguino()
+                                    now()
+                                    error()
+                                }
+                            }
                         } else {
-                            conf.tagsConfig.tags[arguments.name.lowercase()] = arguments.content
+                            conf.tagsConfig.tags[arguments.name] = arguments.content
                             database.serverConfig.updateConfig(guild!!.id, conf)
 
                             guild!!.getLogChannel()?.createEmbed {
@@ -160,6 +175,62 @@ class TagExtension : Extension() {
                 }
             }
 
+            ephemeralSubCommand(::TagEditArgs) {
+                name = "edit"
+                description = "Edit a tag, if you are a moderator"
+
+                check {
+                    hasModeratorRole()
+                }
+
+                action {
+                    val conf = database.serverConfig.getConfig(guild!!.id)
+
+                    if (conf.tagsConfig.tags[arguments.name] == null) {
+                        respond {
+                            embed {
+                                info("There is not a tag with that name")
+                                pinguino()
+                                now()
+                                error()
+                            }
+                        }
+                    } else if (arguments.content.length > 2000) {
+                        respond {
+                            embed {
+                                info("Tag content must be under 2000 characters long")
+                                pinguino()
+                                now()
+                                error()
+                            }
+                        }
+                    } else {
+                        val contentBefore = conf.tagsConfig.tags[arguments.name]
+                        conf.tagsConfig.tags[arguments.name] = arguments.content
+                        database.serverConfig.updateConfig(guild!!.id, conf)
+
+                        guild!!.getLogChannel()?.createEmbed {
+                            info("Tag edited")
+                            userAuthor(user.asUser())
+                            now()
+                            log()
+                            stringField("Tag Name", arguments.name)
+                            stringField("Tag Content (Before)", contentBefore)
+                            stringField("Tag Content (After)", arguments.content)
+                        }
+
+                        respond {
+                            embed {
+                                info("Tag created")
+                                pinguino()
+                                now()
+                                success()
+                            }
+                        }
+                    }
+                }
+            }
+
             ephemeralSubCommand(::TagNameArgs) {
                 name = "delete"
                 description = "Delete a tag, if you are a moderator"
@@ -171,7 +242,7 @@ class TagExtension : Extension() {
                 action {
                     val conf = database.serverConfig.getConfig(guild!!.id)
 
-                    if (conf.tagsConfig.tags[arguments.name.lowercase()] == null) {
+                    if (conf.tagsConfig.tags[arguments.name] == null) {
                         respond {
                             embed {
                                 info("There is not a tag with that name")
@@ -181,7 +252,8 @@ class TagExtension : Extension() {
                             }
                         }
                     } else {
-                        conf.tagsConfig.tags.remove(arguments.name.lowercase())
+                        val content = conf.tagsConfig.tags[arguments.name]
+                        conf.tagsConfig.tags.remove(arguments.name)
                         database.serverConfig.updateConfig(guild!!.id, conf)
 
                         guild!!.getLogChannel()?.createEmbed {
@@ -190,6 +262,7 @@ class TagExtension : Extension() {
                             now()
                             log()
                             stringField("Tag Name", arguments.name)
+                            stringField("Tag Content", content)
                         }
 
                         respond {
@@ -206,7 +279,7 @@ class TagExtension : Extension() {
         }
     }
 
-    inner class TagNameArgs : Arguments() {
+    open inner class TagNameArgs : Arguments() {
         val name by string {
             name = "name"
             description = "The name of the tag"
@@ -231,6 +304,13 @@ class TagExtension : Extension() {
             name = "name"
             description = "The name of the tag"
         }
+        val content by string {
+            name = "content"
+            description = "The content of the tag"
+        }
+    }
+
+    inner class TagEditArgs : TagNameArgs() {
         val content by string {
             name = "content"
             description = "The content of the tag"

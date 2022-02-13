@@ -132,6 +132,10 @@ class UserUtilityExtension : Extension() {
             name = "thread"
             description = "Commands to manage threads"
 
+            check {
+                notInDm()
+            }
+
             ephemeralSubCommand(::ThreadArchiveArgs) {
                 name = "archive"
                 description = "Archive the thread you are in, if you have permission"
@@ -289,7 +293,7 @@ class UserUtilityExtension : Extension() {
                 }
 
                 action {
-                    (channel as ThreadChannel).save(arguments.save)
+                    (channel.asChannel() as ThreadChannel).save(arguments.save)
 
                     guild!!.getLogChannel()?.createEmbed {
                         info("Thread save status updated")
@@ -336,8 +340,6 @@ class UserUtilityExtension : Extension() {
         ephemeralSlashCommand {
             name = "paste"
             description = "Upload a file to hastebin"
-
-            //TODO: Better descriptions
 
             ephemeralSubCommand(::SingleLinkArgs) {
                 name = "url"
@@ -425,6 +427,7 @@ class UserUtilityExtension : Extension() {
 
             check {
                 isInThread()
+                notInDm()
                 failIf("You don't have permission to pin messages in this channel") {
                     val guild = guildFor(event)
                     val member = memberFor(event)

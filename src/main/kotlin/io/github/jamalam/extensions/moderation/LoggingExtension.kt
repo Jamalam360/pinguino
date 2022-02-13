@@ -122,17 +122,6 @@ class LoggingExtension : Extension() {
             action {
                 val msg = event.message.asMessage()
 
-                if (msg.isPublished != event.old?.isPublished) {
-                    msg.getGuild().getLogChannel()?.createEmbed {
-                        info("Message Published")
-                        pinguino()
-                        log()
-                        now()
-                        channelField("Channel", msg.channel.asChannel())
-                        stringField("Content", msg.content)
-                    }
-                }
-
                 if (msg.isPinned != event.old?.isPinned) {
                     msg.getGuild().getLogChannel()?.createEmbed {
                         info(if (msg.isPinned) "Message Pinned" else "Message Unpinned")

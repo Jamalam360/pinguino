@@ -58,13 +58,14 @@ class QuoteExtension : Extension() {
             name = quoteText
             description = "Record a quote!"
 
+            check {
+                isModuleEnabled(Modules.Quotes)
+                notInDm()
+            }
+
             ephemeralSubCommand(::QuoteArgsMention) {
                 name = "user"
                 description = "Uses a user mention as the author"
-
-                check {
-                    isModuleEnabled(Modules.Quotes)
-                }
 
                 action {
                     if (user.id == arguments.author.id) {
@@ -114,10 +115,6 @@ class QuoteExtension : Extension() {
                 name = "non-user"
                 description = "Uses any person as the author"
 
-                check {
-                    isModuleEnabled(Modules.Quotes)
-                }
-
                 action {
                     if (guild!!.getConfig().quotesConfig.channel != null) {
                         sendQuote(
@@ -155,6 +152,7 @@ class QuoteExtension : Extension() {
 
             check {
                 isModuleEnabled(Modules.Quotes)
+                notInDm()
             }
 
             action {
@@ -198,6 +196,7 @@ class QuoteExtension : Extension() {
         event<ReactionAddEvent> {
             check {
                 isModuleEnabled(Modules.Quotes)
+                notInDm()
 
                 event.message.asMessage().reactions.filter { it.emoji.name == "⭐" }.let {
                     if (it.isNotEmpty() && it[0].count > 1) {

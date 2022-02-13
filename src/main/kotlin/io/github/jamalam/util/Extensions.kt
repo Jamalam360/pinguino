@@ -108,7 +108,7 @@ fun EmbedBuilder.userField(name: String, user: User?) {
     if (user != null) {
         field {
             this.name = name
-            this.value = "${user.id.value} / ${user.username}"
+            this.value = "`${user.id.value}` / ${user.username}"
         }
     }
 }
@@ -117,7 +117,7 @@ fun EmbedBuilder.channelField(name: String, channel: Channel?) {
     if (channel != null) {
         field {
             this.name = name
-            this.value = "${channel.id.value} / ${channel.mention}"
+            this.value = "`${channel.id.value}` / ${channel.mention}"
         }
     }
 }

@@ -76,6 +76,7 @@ class ModerationExtension : Extension() {
             check {
                 hasModeratorRole()
                 isModuleEnabled(Modules.Moderation)
+                notInDm()
             }
 
             group("thread-auto-join") {

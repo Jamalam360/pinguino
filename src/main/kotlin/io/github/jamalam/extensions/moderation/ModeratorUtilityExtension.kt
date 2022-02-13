@@ -24,10 +24,14 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.ReactionEmoji
+import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.util.*
@@ -44,12 +48,13 @@ class ModeratorUtilityExtension : Extension() {
             description = "Schedule a message to be sent"
 
             check {
+                notInDm()
                 hasModeratorRole()
             }
 
             action {
                 scheduler.schedule(arguments.delay.seconds.toLong()) {
-                    (arguments.channel.asChannel() as MessageChannel).createMessage(arguments.message)
+                    (arguments.channel.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) as MessageChannel).createMessage(arguments.message)
                 }
 
                 guild?.getLogChannel()?.createEmbed {
@@ -77,15 +82,12 @@ class ModeratorUtilityExtension : Extension() {
             description = "Echo a message to a channel, or the current channel is no channel is specified"
 
             check {
+                notInDm()
                 hasModeratorRole()
             }
 
             action {
-                val channel: MessageChannel = if (arguments.channel == null) {
-                    channel.asChannel()
-                } else {
-                    arguments.channel!!.asChannel() as MessageChannel
-                }
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
 
                 channel.createMessage(arguments.message)
 
@@ -114,15 +116,12 @@ class ModeratorUtilityExtension : Extension() {
             description = "Ask a yes/no question!"
 
             check {
+                notInDm()
                 hasModeratorRole()
             }
 
             action {
-                val channel: MessageChannel = if (arguments.channel == null) {
-                    channel.asChannel()
-                } else {
-                    arguments.channel!!.asChannel() as MessageChannel
-                }
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
 
                 val message = channel.createEmbed {
                     this.title = arguments.string
@@ -159,19 +158,21 @@ class ModeratorUtilityExtension : Extension() {
             description = "Delete this servers config from the Pinguino database"
 
             check {
+                notInDm()
                 hasModeratorRole()
                 hasPermission(Permission.Administrator)
             }
 
             action {
-                database.serverConfig.deleteConfig(guild!!.id)
-
                 guild!!.getLogChannel()?.createEmbed {
                     info("Config deleted")
+                    description = guild!!.getRole(Snowflake(guild!!.getConfig().moderationConfig.moderatorRole)).mention
                     userAuthor(user.asUser())
                     now()
                     error()
                 }
+
+                database.serverConfig.deleteConfig(guild!!.id)
 
                 respond {
                     embed {
@@ -189,19 +190,20 @@ class ModeratorUtilityExtension : Extension() {
             description = "Make Pinguino leave the server :("
 
             check {
+                notInDm()
                 hasModeratorRole()
                 hasPermission(Permission.Administrator)
             }
 
             action {
-                database.serverConfig.deleteConfig(guild!!.id)
-
                 guild!!.getLogChannel()?.createEmbed {
                     info("Goodbye.")
                     userAuthor(user.asUser())
                     now()
                     error()
                 }
+
+                database.serverConfig.deleteConfig(guild!!.id)
 
                 respond {
                     embed {
@@ -222,15 +224,12 @@ class ModeratorUtilityExtension : Extension() {
             description = "Post a customised embed"
 
             check {
+                notInDm()
                 hasModeratorRole()
             }
 
             action {
-                val channel: MessageChannel = if (arguments.channel == null) {
-                    channel.asChannel()
-                } else {
-                    arguments.channel!!.asChannel() as MessageChannel
-                }
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
 
                 guild!!.getLogChannel()?.createEmbed {
                     info("Embed command used")
@@ -300,6 +299,7 @@ class ModeratorUtilityExtension : Extension() {
         val channel by optionalChannel {
             name = "channel"
             description = "The channel to send the message to, or the current one if unspecified"
+            requireChannelType(ChannelType.GuildText)
         }
     }
 
@@ -311,6 +311,7 @@ class ModeratorUtilityExtension : Extension() {
         val channel by optionalChannel {
             name = "channel"
             description = "The channel to send the message to, or the current one if unspecified"
+            requireChannelType(ChannelType.GuildText)
         }
     }
 
@@ -318,6 +319,7 @@ class ModeratorUtilityExtension : Extension() {
         val channel by optionalChannel {
             name = "channel"
             description = "The channel to send the message to, or the current one if unspecified"
+            requireChannelType(ChannelType.GuildText)
         }
         val delay by optionalDuration {
             name = "delay"
@@ -345,6 +347,7 @@ class ModeratorUtilityExtension : Extension() {
         val channel by channel {
             name = "channel"
             description = "The channel to send the message to"
+            requireChannelType(ChannelType.GuildText)
         }
         val delay by duration {
             name = "duration"

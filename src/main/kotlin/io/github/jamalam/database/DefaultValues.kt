@@ -66,6 +66,7 @@ fun KClass<ServerModerationConfig>.getDefault(): ServerModerationConfig {
 
 fun KClass<ServerTagsConfig>.getDefault(): ServerTagsConfig {
     return ServerTagsConfig(
+        true,
         HashMap()
     )
 }

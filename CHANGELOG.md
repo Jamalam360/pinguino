@@ -6,7 +6,22 @@
 
 ### Fixes
 
+- Removed publishing logging as it was acting up (the event Discord was emitting was strange).
+- Add code tags to all IDs in logging.
+- Remove `.lowercase()` from tag calls.
+- Logging for `/delete-config` and `/leave` now works.
+- Fix commands that take optional channel arguments error-ing out.
+- Spell check the documentation.
+- Fixed an issue with `/thread save`.
+
 ### Features
+
+- Limit tags to 2000 characters in size.
+- Improve formatting for `/tag use`.
+- Add `/tag edit` command.
+- Add tag content to tag deleted logs.
+- Check some commands are not executed in DMs.
+- Add `/module tags enable` and `/module tags disable`.
 
 ## Version 0.7.6
 

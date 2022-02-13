@@ -44,6 +44,7 @@ import io.github.jamalam.util.*
 class ModuleExtension : Extension() {
     override val name: String = "modules"
 
+    private val tagsModule: String = "the Tags module"
     private val quotesModule: String = "the Quotes module"
     private val loggingModule: String = "the Logging module"
     private val moderationModule: String = "the Moderation module"
@@ -107,7 +108,20 @@ class ModuleExtension : Extension() {
             description = "Alter the settings of a specific module"
 
             check {
+                notInDm()
                 hasModeratorRole()
+            }
+
+            group("tags") {
+                description = "Alter the settings of $tagsModule"
+
+                moduleEnable("Tags") { conf ->
+                    conf.tagsConfig.enabled = true
+                }
+
+                moduleDisable("Tags") { conf ->
+                    conf.tagsConfig.enabled = false
+                }
             }
 
             group("quotes") {
