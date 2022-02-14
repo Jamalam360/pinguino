@@ -2,7 +2,7 @@
 
 ## Version 0.7.8
 
-**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.7...v0.7.8)
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.7...v0.7.8)**
 
 ### Fixes
 
