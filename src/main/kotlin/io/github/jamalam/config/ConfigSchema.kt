@@ -96,7 +96,11 @@ data class ProductionConfig(
     @SerialName("admin_id")
     val adminId: Snowflake? = null,
     @SerialName("admin_server_id")
-    val adminServerId: Snowflake? = null
+    val adminServerId: Snowflake? = null,
+    @SerialName("database_backup")
+    val databaseBackup: Boolean? = true,
+    @SerialName("database_backup_directory")
+    val databaseBackupDirectory: String? = "./backups"
 )
 
 @Serializable

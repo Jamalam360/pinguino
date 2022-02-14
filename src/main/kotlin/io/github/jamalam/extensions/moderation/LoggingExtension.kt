@@ -29,6 +29,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.MessageType
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
@@ -220,16 +221,32 @@ class LoggingExtension : Extension() {
                         log()
                         now()
 
-                        if (event.old?.roleBehaviors?.isNotEmpty() == true) {
-                            stringField("Before", event.old!!.roleBehaviors.joinToString(",\n") { it.mention })
+                        if (event.old?.roleBehaviors?.isEmpty() == true || event.member.roleBehaviors.isEmpty()) {
+                            stringField("Added", "Failed to fetch roles")
+                            stringField("Removed", "Failed to fetch roles")
                         } else {
-                            stringField("Before", "Empty")
-                        }
+                            val added = mutableListOf<RoleBehavior>()
+                            val removed = mutableListOf<RoleBehavior>()
 
-                        if (event.member.roleBehaviors.isNotEmpty()) {
-                            stringField("After", event.member.roleBehaviors.joinToString(",\n") { it.mention })
-                        } else {
-                            stringField("After", "Empty")
+                            event.old!!.roleBehaviors.forEach {
+                                if (it !in event.member.roleBehaviors) {
+                                    removed.add(it)
+                                }
+                            }
+
+                            event.member.roleBehaviors.forEach {
+                                if (it !in event.old!!.roleBehaviors) {
+                                    added.add(it)
+                                }
+                            }
+
+                            if (added.isNotEmpty()) {
+                                stringField("Added", added.joinToString(",\n") { it.mention })
+                            }
+
+                            if (removed.isNotEmpty()) {
+                                stringField("Removed", removed.joinToString(",\n") { it.mention })
+                            }
                         }
                     }
                 }

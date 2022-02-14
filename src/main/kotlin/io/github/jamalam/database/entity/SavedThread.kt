@@ -17,7 +17,10 @@
 
 package io.github.jamalam.database.entity
 
+import kotlinx.serialization.Serializable
+
 /**
  * @author  Jamalam360
  */
+@Serializable
 data class SavedThread(val id: Long)

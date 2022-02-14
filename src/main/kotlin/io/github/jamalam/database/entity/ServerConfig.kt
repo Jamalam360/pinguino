@@ -18,11 +18,13 @@
 package io.github.jamalam.database.entity
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
+import kotlinx.serialization.Serializable
 
 /**
  * @author  Jamalam360
  */
 
+@Serializable
 data class ServerConfig(
     var id: Long,
     var quotesConfig: ServerQuotesConfig,
@@ -34,16 +36,19 @@ data class ServerConfig(
     var phishingConfig: ServerPhishingConfig,
 )
 
+@Serializable
 data class ServerQuotesConfig(
     var enabled: Boolean,
     var channel: Long?
 )
 
+@Serializable
 data class ServerLoggingConfig(
     var enabled: Boolean,
     var channel: Long?
 )
 
+@Serializable
 data class ServerModerationConfig(
     var enabled: Boolean,
     var moderatorRole: Long,
@@ -52,11 +57,13 @@ data class ServerModerationConfig(
     var publicModLogChannel: Long?
 )
 
+@Serializable
 data class ServerTagsConfig(
     var enabled: Boolean,
     var tags: MutableMap<String, String>
 )
 
+@Serializable
 data class ServerNotificationsConfig(
     var enabled: Boolean,
     var greetingChannel: Long?,
@@ -64,11 +71,13 @@ data class ServerNotificationsConfig(
     var farewellMessage: String?
 )
 
+@Serializable
 data class ServerFilePasteConfig(
     var enabled: Boolean,
     var hastebinUrl: String
 )
 
+@Serializable
 data class ServerPhishingConfig(
     var enabled: Boolean,
     var moderatorsExempt: Boolean,

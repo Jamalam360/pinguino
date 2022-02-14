@@ -10,6 +10,8 @@
 
 ### Features
 
+- **Database backups**.
+- Split roles updated logs into added/removed for easier reading.
 - Add more supported file extensions to the File Paste Module.
 
 ## Version 0.7.7

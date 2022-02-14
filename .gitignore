@@ -3,6 +3,7 @@
 !gradle/**/*
 .gradle
 build/
+backup/
 bin/
 logs/
 .env
