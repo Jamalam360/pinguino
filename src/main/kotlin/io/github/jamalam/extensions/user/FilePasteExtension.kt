@@ -61,7 +61,10 @@ class FilePasteExtension : Extension() {
                 val conf: ServerConfig = database.serverConfig.getConfig(event.member!!.guildId)
 
                 event.message.attachments.forEach {
-                    if (!it.isImage && (it.url.endsWith(".txt") || it.url.endsWith(".log"))) {
+                    if (!it.isImage && (it.url.endsWith(".txt") || it.url.endsWith(".log") ||
+                                it.url.endsWith(".md") || it.url.endsWith(".html") ||
+                                it.url.endsWith(".css"))
+                    ) {
                         event.message.channel.createMessage {
                             allowedMentions {
                                 repliedUser = true
@@ -81,7 +84,10 @@ class FilePasteExtension : Extension() {
                                     label = "Yes"
 
                                     check {
-                                        failIf(userFor(this@check.event)?.id != this@action.event.member?.id, "You must be the poster of the file to use this button")
+                                        failIf(
+                                            userFor(this@check.event)?.id != this@action.event.member?.id,
+                                            "You must be the poster of the file to use this button"
+                                        )
                                     }
 
                                     action {

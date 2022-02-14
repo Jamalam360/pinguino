@@ -8,6 +8,8 @@
 
 ### Features
 
+- Add more supported file extensions to the File Paste Module.
+
 ## Version 0.7.7
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.6...v0.7.7)**
