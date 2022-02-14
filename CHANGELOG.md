@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- Use kord `1.5.2-RC1` rather than `SNAPSHOT` for more stability.
+
 ### Features
 
 - Add more supported file extensions to the File Paste Module.
