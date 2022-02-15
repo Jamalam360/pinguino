@@ -23,4 +23,6 @@ import com.mongodb.client.MongoCollection
  * @author  Jamalam360
  */
 
-open class DatabaseCollection<T>(val collection: MongoCollection<T>)
+open class DatabaseCollection<K, V>(val collection: MongoCollection<V>) {
+    val cache = mutableMapOf<K, V>()
+}

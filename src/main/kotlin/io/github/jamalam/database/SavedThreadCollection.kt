@@ -28,16 +28,30 @@ import org.litote.kmongo.getCollection
  * @author  Jamalam360
  */
 @Suppress("RemoveExplicitTypeArguments")
-class SavedThreadCollection(db: MongoDatabase) : DatabaseCollection<SavedThread>(db.getCollection<SavedThread>()) {
+class SavedThreadCollection(db: MongoDatabase) :
+    DatabaseCollection<Snowflake, SavedThread>(db.getCollection<SavedThread>()) {
     fun setSave(thread: Snowflake, save: Boolean = true) {
-        val has = collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+        val has: Boolean = if (cache.containsKey(thread)) {
+            true
+        } else {
+            collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+        }
 
         if (has && !save) {
             collection.deleteOne(SavedThread::id eq thread.value.toLong())
+
+            if (cache.containsKey(thread)) {
+                cache.remove(thread)
+            }
         } else if (!has && save) {
-            collection.insertOne(SavedThread(thread.value.toLong()))
+            val savedThread = SavedThread(thread.value.toLong())
+            collection.insertOne(savedThread)
+            cache[thread] = savedThread
         }
     }
 
-    fun shouldSave(thread: Snowflake): Boolean = collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+    fun shouldSave(thread: Snowflake): Boolean {
+        if (cache.containsKey(thread)) return true
+        return collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+    }
 }

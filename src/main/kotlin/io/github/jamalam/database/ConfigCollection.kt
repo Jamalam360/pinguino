@@ -29,76 +29,50 @@ import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import org.litote.kmongo.updateOne
 
-/**
- *  Represents the collections of config documents in the DB.
- *  @author  Jamalam360
- */
 @Suppress("RemoveExplicitTypeArguments")
-class ConfigCollection(db: MongoDatabase) : DatabaseCollection<ServerConfig>(db.getCollection<ServerConfig>()) {
-    private val configCache: HashMap<Long, ServerConfig> = HashMap<Long, ServerConfig>()
-
-    /**
-     *  Gets a config from the DB, using the cached value if possible. If a cached value is not available, it will be cached for next time.
-     *  If a config has not yet been created, a default one will be instantiated and saved to the DB and cache.
-     *
-     *  @param id the id of the server
-     *  @return the fetched config
-     */
+class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, ServerConfig>(db.getCollection<ServerConfig>()) {
     fun getConfig(id: Snowflake): ServerConfig {
         val conf: ServerConfig
 
         if (!hasConfig(id)) {
             conf = ServerConfig::class.getDefault(id)
             collection.insertOne(conf)
-            configCache[id.value.toLong()] = conf
+            cache[id] = conf
         } else {
-            if (!configCache.containsKey(id.value.toLong())) {
+            if (!cache.containsKey(id)) {
                 conf = collection.findOne(ServerConfig::id eq id.value.toLong())!!
-                configCache[id.value.toLong()] = conf
+                cache[id] = conf
             } else {
-                conf = configCache[id.value.toLong()]!!
+                conf = cache[id]!!
             }
         }
 
         return conf
     }
 
-    /**
-     *  Updates a config inside the DB and cache, any unmodified values will stay the same.
-     *
-     *  @param id the id of the server
-     *  @param updated the updated config object
-     */
     fun updateConfig(id: Snowflake, updated: ServerConfig) {
         collection.updateOne(ServerConfig::id eq id.value.toLong(), updated)
-        configCache[id.value.toLong()] = updated
+        cache[id] = updated
     }
 
     fun deleteConfig(id: Snowflake) {
         collection.deleteOne(ServerConfig::id eq id.value.toLong())
+        cache.remove(id)
     }
 
-    /**
-     *  Checks whether the DB holds a config for a specific server, and if the config is incomplete/incompatible
-     *  with the current schema, migrates it and returns the migrated config.
-     *  @param id the id of the server
-     *  @return whether the DB has the config
-     */
     private fun hasConfig(id: Snowflake): Boolean {
-        return try {
-            collection.findOne(ServerConfig::id eq id.value.toLong()) != null
+        try {
+            if (cache.containsKey(id)) return true
+
+            return collection.findOne(ServerConfig::id eq id.value.toLong()) != null
         } catch (e: MissingKotlinParameterException) {
             migrate(database.db)
             hasConfig(id)
         }
+
+        return false
     }
 
-    /**
-     * Checks whether a module is enabled on a server.
-     * @param id the id of the server
-     * @param module the module to check
-     * @return whether the module is enabled
-     */
     fun isModuleEnabled(id: Snowflake, module: Modules): Boolean {
         val config = getConfig(id)
 
