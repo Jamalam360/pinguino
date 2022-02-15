@@ -1,5 +1,13 @@
 # Pinguino Changelog
 
+## Version 0.8.0
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.8...v0.8.0)**
+
+### Fixes
+
+- Remove `database.backup()` in favour of searching for a solution disconnected from the bot.
+
 ## Version 0.7.8
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.7...v0.7.8)**

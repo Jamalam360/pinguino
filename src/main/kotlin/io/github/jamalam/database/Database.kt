@@ -49,48 +49,4 @@ class Database {
 
     val serverConfig = ConfigCollection(db)
     val savedThreads = SavedThreadCollection(db)
-
-    fun backup() {
-        if (config.production() && config.production!!.databaseBackup == true) {
-            logger.info("Starting database backup")
-
-            val date = Date()
-            val dateFormat = SimpleDateFormat("HH-mm-ss-SSSS_dd-MM-yyyy")
-            val directory = config.production.databaseBackupDirectory!! + "/" + dateFormat.format(date)
-            File(directory).mkdirs()
-
-
-            logger.info("server_config has ${serverConfig.collection.countDocuments()} documents to backup")
-            val documentsConfig = mutableListOf<ServerConfig>()
-            serverConfig.collection.find().forEach { document ->
-                documentsConfig.add(document)
-            }
-
-            val f1 = File("$directory/server_config.json")
-            f1.createNewFile()
-            f1.writeText(Json.encodeToString(ServerConfigCollectionBackup(documentsConfig)))
-
-            logger.info("saved_thread has ${serverConfig.collection.countDocuments()} documents to backup")
-            val documentsThread = mutableListOf<SavedThread>()
-            savedThreads.collection.find().forEach { document ->
-                documentsThread.add(document)
-            }
-
-            val f2 = File("$directory/saved_thread.json")
-            f2.createNewFile()
-            f2.writeText(Json.encodeToString(SavedThreadCollectionBackup(documentsThread)))
-
-            logger.info("Finished backup at ${dateFormat.format(date)}")
-        }
-    }
-
-    @Serializable
-    data class ServerConfigCollectionBackup(
-        val documents: List<ServerConfig>
-    )
-
-    @Serializable
-    data class SavedThreadCollectionBackup(
-        val documents: List<SavedThread>
-    )
 }

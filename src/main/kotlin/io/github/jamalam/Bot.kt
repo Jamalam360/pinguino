@@ -79,7 +79,5 @@ suspend fun main() {
         }
     }
 
-    database.backup()
-
     bot.start()
 }
