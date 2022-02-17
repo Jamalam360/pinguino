@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.jamalam.database
+package io.github.jamalam.database.collection
 
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake

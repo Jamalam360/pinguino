@@ -15,13 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.jamalam.database
+package io.github.jamalam.database.collection
 
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam.Modules
 import io.github.jamalam.database.entity.ServerConfig
+import io.github.jamalam.database.getDefault
 import io.github.jamalam.database.migration.migrate
 import io.github.jamalam.util.database
 import org.litote.kmongo.eq

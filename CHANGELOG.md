@@ -11,6 +11,7 @@
 ### Features
 
 - Improve database caching.
+- Add a bot announcement system.
 
 ## Version 0.7.8
 

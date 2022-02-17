@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.config.config
 import io.github.jamalam.database.migration.migrate
+import io.github.jamalam.extensions.bot.AnnouncementExtension
 import io.github.jamalam.extensions.bot.BotUtilityExtension
 import io.github.jamalam.extensions.moderation.*
 import io.github.jamalam.extensions.user.*
@@ -51,18 +52,19 @@ suspend fun main() {
         }
 
         extensions {
-            add(::QuoteExtension)
+            add(::AnnouncementExtension)
             add(::BotUtilityExtension)
-            add(::ModuleExtension)
+            add(::FilePasteExtension)
+            add(::FunExtension)
             add(::LoggingExtension)
             add(::ModerationExtension)
             add(::ModeratorUtilityExtension)
-            add(::UserUtilityExtension)
-            add(::FunExtension)
-            add(::TagExtension)
+            add(::ModuleExtension)
             add(::NotificationsExtension)
-            add(::FilePasteExtension)
             add(::PhishingExtension)
+            add(::QuoteExtension)
+            add(::TagExtension)
+            add(::UserUtilityExtension)
 
             help {
                 enableBundledExtension = false

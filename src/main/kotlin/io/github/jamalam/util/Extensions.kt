@@ -27,12 +27,14 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.database.entity.ServerConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
@@ -220,4 +222,35 @@ fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTi
 fun Random.Default.nextHex(): String {
     val hexDigits = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
     return hexDigits[nextInt(0, hexDigits.size)]
+}
+
+suspend fun Message.forward(channel: MessageChannel) {
+    channel.createMessage {
+        content = this@forward.content
+
+        this@forward.embeds.forEach { forwardEmbed ->
+            embed {
+                title = forwardEmbed.title
+                description = forwardEmbed.description
+                color = forwardEmbed.color
+                timestamp = forwardEmbed.timestamp
+
+                if (forwardEmbed.author != null) {
+                    author {
+                        name = forwardEmbed.author!!.name
+                        icon = forwardEmbed.author!!.iconUrl
+                        url = forwardEmbed.author!!.url
+                    }
+                }
+
+                forwardEmbed.fields.forEach { forwardField ->
+                    field {
+                        name = forwardField.name
+                        value = forwardField.value
+                        inline = forwardField.inline
+                    }
+                }
+            }
+        }
+    }
 }

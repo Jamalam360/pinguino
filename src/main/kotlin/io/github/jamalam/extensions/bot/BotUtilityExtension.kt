@@ -110,7 +110,7 @@ class BotUtilityExtension : Extension() {
             }
 
             group("server") {
-                description = "Commands to manage the servers Pinguino is o"
+                description = "Commands to manage the servers Pinguino is in"
 
                 ephemeralSubCommand {
                     name = "count"
@@ -120,6 +120,29 @@ class BotUtilityExtension : Extension() {
                         respond {
                             embed {
                                 info("Pinguino is in ${this@BotUtilityExtension.kord.guilds.count()} servers")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+            }
+
+            group("announcements") {
+                description = "Commands to manage bot announcements"
+
+                ephemeralSubCommand {
+                    name = "count"
+                    description = "Return the number of not announcement subscribers"
+
+                    action {
+                        respond {
+                            embed {
+                                info(
+                                    "Pinguino has ${database.announcementSubscribers.getSubscribers().size}" +
+                                            " announcement subscribers"
+                                )
                                 pinguino()
                                 success()
                                 now()

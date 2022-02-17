@@ -19,16 +19,11 @@ package io.github.jamalam.database
 
 import com.mongodb.client.MongoDatabase
 import io.github.jamalam.config.config
-import io.github.jamalam.database.entity.SavedThread
-import io.github.jamalam.database.entity.ServerConfig
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import io.github.jamalam.database.collection.AnnouncementSubscriberCollection
+import io.github.jamalam.database.collection.ConfigCollection
+import io.github.jamalam.database.collection.SavedThreadCollection
 import mu.KotlinLogging
 import org.litote.kmongo.KMongo
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.time.ExperimentalTime
 
 /**
@@ -38,7 +33,11 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class Database {
-    private val client = KMongo.createClient("${config.auth.mongoSrvUrl}?retryWrites=false&w=majority")
+    private val client = KMongo.createClient(
+        if (config.auth.mongoSrvUrl.contains("localhost"))
+            config.auth.mongoSrvUrl
+        else "${config.auth.mongoSrvUrl}?retryWrites=false&w=majority"
+    )
     private val logger = KotlinLogging.logger { }
 
     val db: MongoDatabase = if (config.production()) {
@@ -49,4 +48,5 @@ class Database {
 
     val serverConfig = ConfigCollection(db)
     val savedThreads = SavedThreadCollection(db)
+    val announcementSubscribers = AnnouncementSubscriberCollection(db)
 }
