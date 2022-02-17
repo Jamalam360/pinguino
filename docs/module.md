@@ -7,6 +7,15 @@ The module module (hehe) is responsible for configuring the bot.
 ### Slash
 
 - `/module`
+    - `role` 
+      - `enable`
+        - Enables the role module.
+      - `disable`
+        - Disables the role module.
+      - `add-role`
+        - Add a role to the list of roles that users can add to themselves.
+      - `remove-role`
+        - Remove a role from the list of roles that users can add to themselves.
     - `tags`
       - `enable`
         - Enables the tags module.

@@ -12,6 +12,8 @@
 
 - Improve database caching.
 - Add a bot announcement system.
+- Add the role module, which provides 'reaction role'-like functionality using slash commands rather than 
+  reactions.
 
 ## Version 0.7.8
 

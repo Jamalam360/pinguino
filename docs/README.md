@@ -11,8 +11,10 @@ Links to all the documentation files can be found below.
 
 - [Module](module.md)
     - The `/module` command is responsible for configuring the entire bot, it is recommended that you read this section.
-- [Moderation](moderation.md)
+- [Announcements](announcements.md)
 - [Fun](fun.md)
+- [Moderation](moderation.md)
 - [Quote](quote.md)
+- [Role](role.md)
 - [Tag](tag.md)
 - [User Utility](user-utility.md)
