@@ -78,6 +78,7 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, Server
         val config = getConfig(id)
 
         return when (module) {
+            Modules.Role -> config.roleConfig.enabled
             Modules.Tags -> config.tagsConfig.enabled
             Modules.Quotes -> config.quotesConfig.enabled
             Modules.Moderation -> config.moderationConfig.enabled

@@ -21,6 +21,7 @@ package io.github.jamalam
  * @author  Jamalam360
  */
 enum class Modules(val readableName: String) {
+    Role("role"),
     Tags("tags"),
     Quotes("quotes"),
     Moderation("moderation"),

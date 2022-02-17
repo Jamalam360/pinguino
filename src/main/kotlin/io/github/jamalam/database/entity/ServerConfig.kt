@@ -18,6 +18,7 @@
 package io.github.jamalam.database.entity
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
+import dev.kord.common.entity.Snowflake
 import kotlinx.serialization.Serializable
 
 /**
@@ -34,6 +35,7 @@ data class ServerConfig(
     var notificationsConfig: ServerNotificationsConfig,
     var filePasteConfig: ServerFilePasteConfig,
     var phishingConfig: ServerPhishingConfig,
+    var roleConfig: ServerRoleConfig
 )
 
 @Serializable
@@ -82,6 +84,12 @@ data class ServerPhishingConfig(
     var enabled: Boolean,
     var moderatorsExempt: Boolean,
     var moderationType: ServerPhishingModerationType,
+)
+
+@Serializable
+data class ServerRoleConfig(
+    var enabled: Boolean,
+    var roles: MutableMap<String, Long>
 )
 
 enum class ServerPhishingModerationType : ChoiceEnum {

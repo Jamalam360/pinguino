@@ -79,5 +79,12 @@ fun migrate(db: MongoDatabase) {
                 ServerConfig::phishingConfig, ServerPhishingConfig::class.getDefault()
             )
         )
+
+        updateMany(
+            ServerConfig::roleConfig exists false,
+            setValue(
+                ServerConfig::roleConfig, ServerRoleConfig::class.getDefault()
+            )
+        )
     }
 }

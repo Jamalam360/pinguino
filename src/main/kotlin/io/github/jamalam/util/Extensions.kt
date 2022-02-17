@@ -30,6 +30,7 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.Role
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.MessageChannel
@@ -120,6 +121,15 @@ fun EmbedBuilder.channelField(name: String, channel: Channel?) {
         field {
             this.name = name
             this.value = "`${channel.id.value}` / ${channel.mention}"
+        }
+    }
+}
+
+fun EmbedBuilder.roleField(name: String, role: Role?) {
+    if (role != null) {
+        field {
+            this.name = name
+            this.value = "`${role.id.value}` / ${role.mention}"
         }
     }
 }

@@ -37,6 +37,7 @@ fun KClass<ServerConfig>.getDefault(id: Snowflake): ServerConfig {
         ServerNotificationsConfig::class.getDefault(),
         ServerFilePasteConfig::class.getDefault(),
         ServerPhishingConfig::class.getDefault(),
+        ServerRoleConfig::class.getDefault(),
     )
 }
 
@@ -92,5 +93,12 @@ fun KClass<ServerPhishingConfig>.getDefault(): ServerPhishingConfig {
         enabled = false,
         moderatorsExempt = true,
         moderationType = ServerPhishingModerationType.Delete,
+    )
+}
+
+fun KClass<ServerRoleConfig>.getDefault(): ServerRoleConfig {
+    return ServerRoleConfig(
+        enabled = false,
+        roles = mutableMapOf(),
     )
 }

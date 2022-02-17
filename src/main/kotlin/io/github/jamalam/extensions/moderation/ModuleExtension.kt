@@ -22,11 +22,17 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashGroup
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.role
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.getTopRole
+import com.kotlindiscord.kord.extensions.utils.selfMember
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createEmbed
@@ -44,6 +50,7 @@ import io.github.jamalam.util.*
 class ModuleExtension : Extension() {
     override val name: String = "modules"
 
+    private val roleModule: String = "the Roles module"
     private val tagsModule: String = "the Tags module"
     private val quotesModule: String = "the Quotes module"
     private val loggingModule: String = "the Logging module"
@@ -102,7 +109,6 @@ class ModuleExtension : Extension() {
 
     @Suppress("DuplicatedCode")
     override suspend fun setup() {
-        //region Slash Commands
         ephemeralSlashCommand {
             name = "module"
             description = "Alter the settings of a specific module"
@@ -110,6 +116,118 @@ class ModuleExtension : Extension() {
             check {
                 notInDm()
                 hasModeratorRole()
+            }
+
+            group("role") {
+                description = "Alter the settings of $roleModule"
+
+                moduleEnable("Roles") { conf ->
+                    conf.roleConfig.enabled = true
+                }
+
+                moduleDisable("Roles") { conf ->
+                    conf.roleConfig.enabled = false
+                }
+
+                ephemeralSubCommand(::AddRoleArgs) {
+                    name = "add-role"
+                    description = "Add a role to the list of roles that a user can apply to themselves using `/role`"
+
+                    action {
+                        val name = arguments.name ?: arguments.role.name
+                        val conf = guild!!.getConfig()
+
+                        if (conf.roleConfig.roles.containsKey(name)) {
+                            respond {
+                                embed {
+                                    info("A role is already added with that name")
+                                    error()
+                                    pinguino()
+                                    now()
+                                }
+                            }
+                        } else {
+                            if (guild!!.selfMember().getTopRole()?.rawPosition != null && arguments.role.rawPosition >=
+                                guild!!.selfMember().getTopRole()?.rawPosition!!
+                            ) {
+                                respond {
+                                    embed {
+                                        info("That role is higher than my top role, so I can't add it to users")
+                                        error()
+                                        pinguino()
+                                        now()
+                                    }
+                                }
+                            } else {
+                                conf.roleConfig.roles[name] = arguments.role.id.value.toLong()
+                                database.serverConfig.updateConfig(guild!!.id, conf)
+
+                                guild!!.getLogChannel()?.createEmbed {
+                                    info("Role added to `/role` roles")
+                                    userAuthor(user.asUser())
+                                    now()
+                                    log()
+                                    roleField("Role", arguments.role)
+                                }
+
+                                respond {
+                                    embed {
+                                        info("Role added to `/role` roles")
+                                        pinguino()
+                                        now()
+                                        success()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::RemoveRoleArgs) {
+                    name = "remove-role"
+                    description =
+                        "Remove a role from the list of roles that a user can apply to themselves using `/role`"
+
+                    action {
+                        val conf = guild!!.getConfig()
+
+                        if (!conf.roleConfig.roles.containsKey(arguments.name)) {
+                            respond {
+                                embed {
+                                    info("The list does not contain a role with that name")
+                                    error()
+                                    pinguino()
+                                    now()
+                                }
+                            }
+                        } else {
+                            val role = conf.roleConfig.roles.remove(arguments.name)
+                            database.serverConfig.updateConfig(guild!!.id, conf)
+
+                            guild!!.getLogChannel()?.createEmbed {
+                                info("Role removed from `/role` roles")
+                                userAuthor(user.asUser())
+                                now()
+                                log()
+
+                                if (role != null) {
+                                    roleField("Role", guild!!.getRoleOrNull(Snowflake(role)))
+                                } else {
+                                    stringField("Role Name", arguments.name)
+                                }
+                            }
+
+                            respond {
+                                embed {
+                                    info("Role removed from `/role` roles")
+                                    pinguino()
+                                    now()
+                                    success()
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             group("tags") {
@@ -496,7 +614,7 @@ class ModuleExtension : Extension() {
                             userAuthor(user.asUser())
                             now()
                             log()
-                            stringField("Exempt", if(arguments.boolean) "True" else "False")
+                            stringField("Exempt", if (arguments.boolean) "True" else "False")
                         }
 
                         respond {
@@ -511,7 +629,6 @@ class ModuleExtension : Extension() {
                 }
             }
         }
-        //endregion
     }
 
     private suspend fun logModuleEnabled(module: String, responsibleMod: UserBehavior, guild: GuildBehavior) {
@@ -553,6 +670,37 @@ class ModuleExtension : Extension() {
             name = "level"
             description = "The level of discipline to use for posting a phishing link"
             typeName = "level"
+        }
+    }
+
+    class AddRoleArgs : Arguments() {
+        val role by role {
+            name = "role"
+            description = "The role to allow users to apply to themselves"
+        }
+        val name by optionalString {
+            name = "name"
+            description = "The name to use for the `/role add` command, or the roles name if specified"
+        }
+    }
+
+    class RemoveRoleArgs : Arguments() {
+        val name by string {
+            name = "name"
+            description = "The name of the role to remove"
+
+            autoComplete {
+                if (data.guildId.value != null) {
+                    val conf = database.serverConfig.getConfig(data.guildId.value!!)
+                    val map = mutableMapOf<String, String>()
+
+                    conf.roleConfig.roles.forEach {
+                        map[it.key] = it.key
+                    }
+
+                    suggestStringMap(map)
+                }
+            }
         }
     }
 }

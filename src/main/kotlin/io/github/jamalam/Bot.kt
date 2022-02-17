@@ -63,6 +63,7 @@ suspend fun main() {
             add(::NotificationsExtension)
             add(::PhishingExtension)
             add(::QuoteExtension)
+            add(::RoleExtension)
             add(::TagExtension)
             add(::UserUtilityExtension)
 
