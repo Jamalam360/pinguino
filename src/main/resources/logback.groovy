@@ -46,7 +46,7 @@ appender("FILE", FileAppender) {
     }
 
     def date = new Date()
-    def dateFormat = new SimpleDateFormat("HH-mm-ss-SSSS_dd-MM-yyyy")
+    def dateFormat = new SimpleDateFormat("HH-mm-ss-SSSS-dd-MM-yyyy")
 
     file = "./logs/pinguino-" + dateFormat.format(date) + ".log"
     append = false

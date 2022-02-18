@@ -7,6 +7,7 @@
 ### Fixes
 
 - It looks like the `Announce` message command was lost along the git history at some point? It's now been added back.
+- Make log file name compatible with Linux.
 
 ## Version 0.8.0
 
