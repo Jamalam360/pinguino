@@ -22,14 +22,17 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSub
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalChannel
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ephemeralMessageCommand
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.config.config
 import io.github.jamalam.util.*
 
 class AnnouncementExtension : Extension() {
@@ -202,6 +205,26 @@ class AnnouncementExtension : Extension() {
                                 now()
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        ephemeralMessageCommand {
+            name = "Announce"
+
+            guild((if (config.production()) config.production!!.adminServerId else config.development!!.serverId)!!)
+
+            check {
+                allowUser((if (config.production()) config.production!!.adminId else config.development!!.adminId)!!)
+            }
+
+            action {
+                database.announcementSubscribers.getSubscribers().forEach { subscriberId ->
+                    val channel = this@AnnouncementExtension.kord.getChannel(subscriberId)
+
+                    if (channel is MessageChannel) {
+                        targetMessages.first().forward(channel)
                     }
                 }
             }

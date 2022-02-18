@@ -1,5 +1,13 @@
 # Pinguino Changelog
 
+## Version 0.8.1
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.0...v0.8.1)**
+
+### Fixes
+
+- It looks like the `Announce` message command was lost along the git history at some point? It's now been added back.
+
 ## Version 0.8.0
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.7.8...v0.8.0)**
