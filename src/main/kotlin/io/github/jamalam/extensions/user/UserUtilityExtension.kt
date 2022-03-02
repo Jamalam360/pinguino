@@ -406,6 +406,8 @@ class UserUtilityExtension : Extension() {
                                 roles += "$it,\n"
                             }
 
+                            roles = roles.substring(0, roles.length - 2)
+
                             if (roles.isNotBlank()) {
                                 stringField(
                                     "Roles",
@@ -503,6 +505,8 @@ class UserUtilityExtension : Extension() {
                             targetUsers.first().asMember(guild!!.id).roles.map { it.mention }.collect {
                                 roles += "$it,\n"
                             }
+
+                            roles = roles.substring(0, roles.length - 2)
 
                             if (roles.isNotBlank()) {
                                 stringField(

@@ -231,6 +231,9 @@ class AnnouncementExtension : Extension() {
                 respond {
                     embed {
                         info("Successfully announced message to ${database.announcementSubscribers.getSubscribers().size} subscribers")
+                        pinguino()
+                        success()
+                        now()
                     }
                 }
             }
