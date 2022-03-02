@@ -1,5 +1,16 @@
 # Pinguino Changelog
 
+## Version 0.8.2
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.1...v0.8.2)**
+
+### Fixes
+
+
+### Features
+
+- Add response to `Announce` message command.
+
 ## Version 0.8.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.0...v0.8.1)**

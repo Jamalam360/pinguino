@@ -227,6 +227,12 @@ class AnnouncementExtension : Extension() {
                         targetMessages.first().forward(channel)
                     }
                 }
+
+                respond {
+                    embed {
+                        info("Successfully announced message to ${database.announcementSubscribers.getSubscribers().size} subscribers")
+                    }
+                }
             }
         }
     }
