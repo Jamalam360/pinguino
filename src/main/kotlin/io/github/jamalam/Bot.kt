@@ -25,6 +25,7 @@ import io.github.jamalam.extensions.bot.AnnouncementExtension
 import io.github.jamalam.extensions.bot.BotUtilityExtension
 import io.github.jamalam.extensions.moderation.*
 import io.github.jamalam.extensions.user.*
+import io.github.jamalam.util.*
 
 suspend fun main() {
     BOOT_TIME // init this field
@@ -44,6 +45,7 @@ suspend fun main() {
                 description = message
                 pinguino()
                 error()
+                now()
                 footer {
                     text = "Found a bug? Report it using `/help`"
                 }

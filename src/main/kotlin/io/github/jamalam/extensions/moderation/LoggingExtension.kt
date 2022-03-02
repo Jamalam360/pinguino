@@ -34,7 +34,6 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.event.guild.EmojisUpdateEvent
 import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.guild.MemberLeaveEvent
 import dev.kord.core.event.guild.MemberUpdateEvent
@@ -346,22 +345,6 @@ class LoggingExtension : Extension() {
                     stringField(
                         "Permissions",
                         event.role!!.permissions.values.joinToString(",\n") { it.translate(Locale.ENGLISH) })
-                }
-            }
-        }
-
-        event<EmojisUpdateEvent> {
-            check {
-                isModuleEnabled(Modules.Logging)
-            }
-
-            action {
-                event.guild.getLogChannel()?.createEmbed {
-                    info("Emojis Updated")
-                    pinguino()
-                    log()
-                    now()
-                    stringField("Emojis", event.emojis.joinToString(",\n") { it.name + " - " + it.mention })
                 }
             }
         }

@@ -22,7 +22,6 @@ import io.github.jamalam.config.config
 import io.github.jamalam.database.collection.AnnouncementSubscriberCollection
 import io.github.jamalam.database.collection.ConfigCollection
 import io.github.jamalam.database.collection.SavedThreadCollection
-import mu.KotlinLogging
 import org.litote.kmongo.KMongo
 import kotlin.time.ExperimentalTime
 
@@ -37,7 +36,6 @@ class Database {
             config.auth.mongoSrvUrl
         } else "${config.auth.mongoSrvUrl}?retryWrites=false&w=majority"
     )
-    private val logger = KotlinLogging.logger { }
 
     val db: MongoDatabase = if (config.production()) {
         client.getDatabase("pinguino_production_db")

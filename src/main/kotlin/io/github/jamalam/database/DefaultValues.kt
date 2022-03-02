@@ -20,6 +20,7 @@
 package io.github.jamalam.database
 
 import dev.kord.common.entity.Snowflake
+import io.github.jamalam.database.entity.*
 import kotlin.reflect.KClass
 
 /**
