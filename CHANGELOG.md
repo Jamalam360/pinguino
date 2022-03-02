@@ -16,6 +16,7 @@
 - Append `latest-` before latest log name.
 - Add `/admin log *` commands to upload logs to Discord.
 - Add more control over bot statuses using admin commands.
+- Improve message deleted logs.
 
 ## Version 0.8.1
 

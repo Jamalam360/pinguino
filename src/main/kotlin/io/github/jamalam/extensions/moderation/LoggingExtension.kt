@@ -104,8 +104,10 @@ class LoggingExtension : Extension() {
                     now()
 
                     if (event.message!!.content.isNotBlank()) {
-                        stringField("Content", event.message!!.content)
+                        stringField("Message Content", event.message!!.content)
                     }
+
+                    channelField("Channel", event.message!!.channel.asChannel())
 
                     if (event.message!!.attachments.isNotEmpty()) {
                         stringField("Attachments", event.message!!.attachments.joinToString("\n") { it.url })
