@@ -30,7 +30,7 @@ import io.github.jamalam.Modules
 import io.github.jamalam.util.*
 
 class RoleExtension : Extension() {
-    override val name = "phishing"
+    override val name = "role"
 
     override suspend fun setup() {
         ephemeralSlashCommand {
