@@ -362,6 +362,12 @@ class FunExtension : Extension() {
         val name by string {
             name = "name"
             description = "The name of the person you want to predict the age of"
+
+            validate {
+                failIf("The argument must not be a user mention") {
+                    value.contains("@")
+                }
+            }
         }
     }
 }

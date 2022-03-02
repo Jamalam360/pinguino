@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- Fixed an issue where `/fun age` failed if you used a user mention.
 
 ### Features
 
