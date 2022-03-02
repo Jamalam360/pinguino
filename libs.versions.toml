@@ -1,5 +1,5 @@
 [versions]
-detekt = "1.19.0"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+detekt = "1.20.0-RC1"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 kotlin = "1.5.30"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 
 groovy = "3.0.8"

@@ -25,11 +25,10 @@ import kotlinx.serialization.Serializable
  * @author  Jamalam360
  */
 class BoredApi {
-    suspend fun getActivity(): String {
-        return lenientClient.get<BoredApiResponse>("https://www.boredapi.com/api/activity/").activity
-    }
+    suspend fun getActivity(): String =
+        lenientClient.get<BoredApiResponse>("https://www.boredapi.com/api/activity/").activity
 
-    @Serializable
+@Serializable
     data class BoredApiResponse(
         val activity: String,
         val type: String,

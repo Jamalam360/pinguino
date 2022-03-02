@@ -22,7 +22,6 @@ import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.hasRoles
-import com.kotlindiscord.kord.extensions.utils.isPublished
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.Color
 import dev.kord.common.annotation.KordPreview
@@ -137,7 +136,14 @@ class LoggingExtension : Extension() {
                 }
 
                 @Suppress("SENSELESS_COMPARISON")
-                if (msg != null && msg.type != MessageType.ChannelPinnedMessage && msg.content != null && msg.author != null && msg.content != event.old!!.content && msg.embeds.size == event.old!!.embeds.size) {
+                if (
+                    msg != null &&
+                    msg.type != MessageType.ChannelPinnedMessage &&
+                    msg.content != null &&
+                    msg.author != null &&
+                    msg.content != event.old!!.content &&
+                    msg.embeds.size == event.old!!.embeds.size
+                ) {
                     val before: String = if (event.old == null) {
                         "**Failed to fetch previous message. Pinguino may have been offline when it was sent.**"
                     } else {

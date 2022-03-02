@@ -214,7 +214,6 @@ class ModeratorUtilityExtension : Extension() {
                     }
                 }
 
-
                 guild!!.leave()
             }
         }

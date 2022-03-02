@@ -25,9 +25,8 @@ import kotlinx.serialization.Serializable
  * @author  Jamalam360
  */
 class DonaldApi {
-    suspend fun getBasedOpinionsYesThisNameIsSarcastic(): String {
-        return lenientClient.get<DonaldApiResponse>("https://www.tronalddump.io/random/quote").value
-    }
+    suspend fun getBasedOpinionsYesThisNameIsSarcastic(): String =
+        lenientClient.get<DonaldApiResponse>("https://www.tronalddump.io/random/quote").value
 
     @Serializable
     data class DonaldApiResponse(val value: String)

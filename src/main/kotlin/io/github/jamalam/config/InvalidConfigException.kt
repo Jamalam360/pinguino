@@ -17,5 +17,4 @@
 
 package io.github.jamalam.config
 
-class InvalidConfigException(message: String) : Exception(message) {
-}
+class InvalidConfigException(message: String) : Exception(message)

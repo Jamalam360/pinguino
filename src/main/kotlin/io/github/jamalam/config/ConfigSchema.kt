@@ -31,13 +31,6 @@ data class BotConfig(
     val production: ProductionConfig? = null,
     val development: DevelopmentConfig? = null
 ) {
-    companion object {
-        fun parse(filePath: String): BotConfig {
-            val config = File(filePath).readText(Charset.defaultCharset())
-            return Yaml.default.decodeFromString(serializer(), config)
-        }
-    }
-
     fun validate() {
         if (environment != "production" && environment != "development") {
             throw InvalidConfigException("parameter 'environment' must be equal to either 'production' or 'development'")
@@ -72,8 +65,13 @@ data class BotConfig(
         }
     }
 
-    fun production(): Boolean {
-        return environment == "production"
+    fun production(): Boolean = environment == "production"
+
+    companion object {
+        fun parse(filePath: String): BotConfig {
+            val config = File(filePath).readText(Charset.defaultCharset())
+            return Yaml.default.decodeFromString(serializer(), config)
+        }
     }
 }
 

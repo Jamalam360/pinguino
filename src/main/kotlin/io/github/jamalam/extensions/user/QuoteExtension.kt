@@ -192,7 +192,7 @@ class QuoteExtension : Extension() {
             }
         }
 
-        //TODO: This is deprecated, for removal when discord adds message command support to mobile
+        // TODO: This is deprecated, for removal when discord adds message command support to mobile
         event<ReactionAddEvent> {
             check {
                 isModuleEnabled(Modules.Quotes)

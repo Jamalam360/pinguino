@@ -354,7 +354,7 @@ class UserUtilityExtension : Extension() {
                                 now()
                                 success()
                                 url =
-                                    "https://www.toptal.com/developers/hastebin/${it}"
+                                    "https://www.toptal.com/developers/hastebin/$it"
                             }
                         }
                     }
@@ -374,7 +374,7 @@ class UserUtilityExtension : Extension() {
                                 now()
                                 success()
                                 url =
-                                    "https://www.toptal.com/developers/hastebin/${it}"
+                                    "https://www.toptal.com/developers/hastebin/$it"
                             }
                         }
                     }

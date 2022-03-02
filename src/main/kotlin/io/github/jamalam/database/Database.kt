@@ -30,13 +30,12 @@ import kotlin.time.ExperimentalTime
  * @author  Jamalam360
  */
 
-
 @OptIn(ExperimentalTime::class)
 class Database {
     private val client = KMongo.createClient(
-        if (config.auth.mongoSrvUrl.contains("localhost"))
+        if (config.auth.mongoSrvUrl.contains("localhost")) {
             config.auth.mongoSrvUrl
-        else "${config.auth.mongoSrvUrl}?retryWrites=false&w=majority"
+        } else "${config.auth.mongoSrvUrl}?retryWrites=false&w=majority"
     )
     private val logger = KotlinLogging.logger { }
 

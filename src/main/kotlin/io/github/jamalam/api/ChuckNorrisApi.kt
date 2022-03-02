@@ -26,9 +26,8 @@ import kotlinx.serialization.Serializable
  * @author  Jamalam360
  */
 class ChuckNorrisApi {
-    suspend fun getExcellentChuckNorrisBasedJoke(): String {
-        return lenientClient.get<ChuckNorrisApiResponse>("https://api.chucknorris.io/jokes/random").value
-    }
+    suspend fun getExcellentChuckNorrisBasedJoke(): String =
+        lenientClient.get<ChuckNorrisApiResponse>("https://api.chucknorris.io/jokes/random").value
 
     @Serializable
     data class ChuckNorrisApiResponse(

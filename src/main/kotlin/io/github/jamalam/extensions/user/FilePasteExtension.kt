@@ -100,7 +100,7 @@ class FilePasteExtension : Extension() {
                                                         pinguino()
                                                         success()
                                                         url =
-                                                            "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse}"
+                                                            "${conf.filePasteConfig.hastebinUrl}$hastebinApiResponse"
                                                     }
                                                 }
 
@@ -110,7 +110,7 @@ class FilePasteExtension : Extension() {
                                                     now()
                                                     log()
                                                     url =
-                                                        "${conf.filePasteConfig.hastebinUrl}${hastebinApiResponse}"
+                                                        "${conf.filePasteConfig.hastebinUrl}$hastebinApiResponse"
                                                 }
                                             }
                                     }

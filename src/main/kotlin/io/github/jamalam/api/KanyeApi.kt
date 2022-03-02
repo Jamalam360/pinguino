@@ -25,9 +25,7 @@ import kotlinx.serialization.Serializable
  * @author  Jamalam360
  */
 class KanyeApi {
-    suspend fun getQuote(): String {
-        return lenientClient.get<KanyeApiResponse>("https://api.kanye.rest/").quote
-    }
+    suspend fun getQuote(): String = lenientClient.get<KanyeApiResponse>("https://api.kanye.rest/").quote
 
     @Serializable
     data class KanyeApiResponse(val quote: String)

@@ -312,6 +312,7 @@ class FunExtension : Extension() {
                 action {
                     var hexString = ""
 
+                    @Suppress("unused")
                     for (i in 1..6) {
                         hexString += Random.Default.nextHex()
                     }
@@ -335,7 +336,7 @@ class FunExtension : Extension() {
                             pinguino()
                             now()
 
-                            stringField("Hex Value", "`${hexString}`")
+                            stringField("Hex Value", "`$hexString`")
                             color = Color(Integer.parseInt(hexString, 16))
                         }
                     }
@@ -371,4 +372,3 @@ class FunExtension : Extension() {
         }
     }
 }
-

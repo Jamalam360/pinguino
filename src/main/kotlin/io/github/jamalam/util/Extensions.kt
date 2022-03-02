@@ -221,13 +221,13 @@ fun DateTimePeriod.toPrettyString(): String {
 }
 
 fun DateTimePeriod.toSeconds(): Long {
+    @Suppress("UnnecessaryParentheses", "UnderscoresInNumericLiterals")
     return (years * 31536000L) + (months * 2678400L) + (days * 86400L) + (hours * 3600) + (minutes * 60) + seconds
 }
 
 @Suppress("unused")
 @OptIn(ExperimentalTime::class)
 fun Kord.getUptime(): DateTimePeriod = (Clock.System.now() - BOOT_TIME).toDateTimePeriod()
-
 
 fun Random.Default.nextHex(): String {
     val hexDigits = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")

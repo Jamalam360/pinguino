@@ -18,7 +18,6 @@
 package io.github.jamalam.database.entity
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
-import dev.kord.common.entity.Snowflake
 import kotlinx.serialization.Serializable
 
 /**

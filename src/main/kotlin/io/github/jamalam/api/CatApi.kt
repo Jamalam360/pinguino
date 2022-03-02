@@ -25,11 +25,8 @@ import kotlinx.serialization.Serializable
  * @author  Jamalam360
  */
 class CatApi {
-    suspend fun getRandomCat(): String {
-        return lenientClient.get<CatApiResponse>("https://aws.random.cat/meow").file
-    }
+    suspend fun getRandomCat(): String = lenientClient.get<CatApiResponse>("https://aws.random.cat/meow").file
 
     @Serializable
     data class CatApiResponse(val file: String)
-
 }

@@ -46,6 +46,7 @@ dependencies {
 
 application {
     // This is deprecated, but the Shadow plugin requires it
+    @Suppress("DEPRECATION")
     mainClassName = "io.github.jamalam.BotKt"
 }
 
@@ -66,11 +67,11 @@ tasks.build {
     }
 }
 
-tasks.detekt {
-    onlyIf {
-        false
-    }
-}
+//tasks.detekt {
+//    onlyIf {
+//        false
+//    }
+//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "16"

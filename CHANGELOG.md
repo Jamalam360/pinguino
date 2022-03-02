@@ -10,6 +10,7 @@
 - Removed trailing comma from user info commands.
 - Fixed issue where phishing features wouldn't register.
 - Attempt fix for `MongoSocketRead` and `MongoSocketWrite` exceptions.
+- Detekt bug fixed - Detekt now works again!
 
 ### Features
 
