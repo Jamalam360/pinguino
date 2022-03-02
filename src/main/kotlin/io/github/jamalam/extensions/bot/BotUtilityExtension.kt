@@ -19,18 +19,23 @@ package io.github.jamalam.extensions.bot
 
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.components.components
+import com.kotlindiscord.kord.extensions.components.ephemeralSelectMenu
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
+import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.api.HastebinApi
 import io.github.jamalam.api.TopGg
 import io.github.jamalam.config.config
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.count
 import kotlinx.datetime.DateTimePeriod
+import java.io.File
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
@@ -44,6 +49,8 @@ class BotUtilityExtension : Extension() {
     private val presenceDelay = DateTimePeriod(minutes = 2, seconds = 30) //Every 2.5 minutes
     private val dblDelay = DateTimePeriod(hours = 6) // every 6 hours
     private val topGg = TopGg()
+    private val hastebin = HastebinApi()
+    private val logDirectory = File("./logs")
     private var presenceTask: Task? = null
 
     override suspend fun setup() {
@@ -146,6 +153,116 @@ class BotUtilityExtension : Extension() {
                                 pinguino()
                                 success()
                                 now()
+                            }
+                        }
+                    }
+                }
+            }
+
+            group("logs") {
+                description = "Commands to get log files"
+
+                ephemeralSubCommand {
+                    name = "upload"
+                    description = "Upload the log file as an attachment"
+
+                    action {
+                        logDirectory.listFiles()
+
+                        respond {
+                            embed {
+                                info("Select desired log file")
+                                pinguino()
+                                success()
+                                now()
+                            }
+
+                            components {
+                                ephemeralSelectMenu {
+                                    maximumChoices = 1
+
+                                    logDirectory.listFiles().forEach {
+                                        options.add(SelectOptionBuilder(it.nameWithoutExtension, it.name))
+                                    }
+
+                                    options.forEach {
+                                        if (it.label.contains("latest")) {
+                                            val itIndex = options.indexOf(it)
+                                            val atZero = options[0]
+
+                                            options[0] = it
+                                            options[itIndex] = atZero
+                                        }
+                                    }
+
+                                    action {
+                                        respond {
+                                            embed {
+                                                info("Here is the log file")
+                                                success()
+                                                pinguino()
+                                                now()
+                                            }
+
+                                            addFile(File("${logDirectory.path}/${selected[0]}").toPath())
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand {
+                    name = "hastebin"
+                    description = "Upload the log file to Hastebin"
+
+                    action {
+                        logDirectory.listFiles()
+
+                        respond {
+                            embed {
+                                info("Select desired log file")
+                                pinguino()
+                                success()
+                                now()
+                            }
+
+                            components {
+                                ephemeralSelectMenu {
+                                    maximumChoices = 1
+
+                                    logDirectory.listFiles().forEach {
+                                        options.add(SelectOptionBuilder(it.nameWithoutExtension, it.name))
+                                    }
+
+                                    options.forEach {
+                                        if (it.label.contains("latest")) {
+                                            val itIndex = options.indexOf(it)
+                                            val atZero = options[0]
+
+                                            options[0] = it
+                                            options[itIndex] = atZero
+                                        }
+                                    }
+
+                                    action {
+                                        respond {
+                                            embed {
+                                                info("Here is the log file")
+                                                success()
+                                                pinguino()
+                                                now()
+
+                                                val file = File("${logDirectory.path}/${selected[0]}")
+                                                url = "https://www.toptal.com/developers/hastebin/${hastebin.paste(
+                                                    "https://www.toptal.com/developers/hastebin/",
+                                                    file.readText()
+                                                )}"
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

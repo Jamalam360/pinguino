@@ -12,6 +12,7 @@
 
 - Add response to `Announce` message command.
 - Append `latest-` before latest log name.
+- Add `/admin log *` commands to upload logs to Discord.
 
 ## Version 0.8.1
 
