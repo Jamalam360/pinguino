@@ -24,16 +24,16 @@ processors:
 console-reports:
   active: true
   exclude:
-    - 'ProjectStatisticsReport'
-    - 'NotificationReport'
-    - 'FileBasedFindingsReport'
+      - 'ProjectStatisticsReport'
+      - 'NotificationReport'
+      - 'FileBasedFindingsReport'
 
 output-reports:
   active: true
   exclude:
-    # - 'HtmlOutputReport'
-    - 'TxtOutputReport'
-    # - 'XmlOutputReport'
+     - 'HtmlOutputReport'
+     - 'SarifOutputReport'
+     - 'XmlOutputReport'
 
 comments:
   active: true
