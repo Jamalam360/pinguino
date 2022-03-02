@@ -15,16 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package io.github.jamalam.extensions.bot
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.components.components
 import com.kotlindiscord.kord.extensions.components.ephemeralSelectMenu
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
 import dev.kord.rest.builder.component.SelectOptionBuilder
@@ -107,6 +114,67 @@ class BotUtilityExtension : Extension() {
                         respond {
                             embed {
                                 info("Cycled status")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand {
+                    name = "start"
+                    description = "Start the status cycling"
+
+                    action {
+                        setPresenceStatus()
+
+                        respond {
+                            embed {
+                                info("Started cycling status")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand {
+                    name = "stop"
+                    description = "Stop the status cycling"
+
+                    action {
+                        presenceTask?.cancel()
+
+                        respond {
+                            embed {
+                                info("Stopped cycling status")
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+                    }
+                }
+
+                ephemeralSubCommand(::SetStatusArgs) {
+                    name = "set"
+                    description = "Set the status"
+
+                    action {
+                        this@BotUtilityExtension.kord.editPresence {
+                            when (arguments.type) {
+                                StatusTypeArg.Playing -> playing(arguments.message)
+                                StatusTypeArg.Listening -> listening(arguments.message)
+                                StatusTypeArg.Competing -> competing(arguments.message)
+                                StatusTypeArg.Watching -> watching(arguments.message)
+                            }
+                        }
+
+                        respond {
+                            embed {
+                                info("Set the bot status")
                                 pinguino()
                                 success()
                                 now()
@@ -255,10 +323,12 @@ class BotUtilityExtension : Extension() {
                                                 now()
 
                                                 val file = File("${logDirectory.path}/${selected[0]}")
-                                                url = "https://www.toptal.com/developers/hastebin/${hastebin.paste(
-                                                    "https://www.toptal.com/developers/hastebin/",
-                                                    file.readText()
-                                                )}"
+                                                url = "https://www.toptal.com/developers/hastebin/${
+                                                    hastebin.paste(
+                                                        "https://www.toptal.com/developers/hastebin/",
+                                                        file.readText()
+                                                    )
+                                                }"
                                             }
                                         }
                                     }
@@ -288,6 +358,36 @@ class BotUtilityExtension : Extension() {
             }
         }
     }
+
+    inner class SetStatusArgs : Arguments() {
+        val type by enum<StatusTypeArg> {
+            name = "type"
+            typeName = "type"
+            description = "The type of status to set"
+
+            autoComplete {
+                suggestStringMap(
+                    mapOf(
+                        Pair("Playing", "Playing"),
+                        Pair("Listening", "Listening"),
+                        Pair("Competing", "Competing"),
+                        Pair("Watching", "Watching")
+                    )
+                )
+            }
+        }
+        val message by string {
+            name = "message"
+            description = "The message to set"
+        }
+    }
+}
+
+enum class StatusTypeArg(override val readableName: String) : ChoiceEnum {
+    Playing("Playing"),
+    Listening("Listening"),
+    Competing("Competing"),
+    Watching("Watching");
 }
 
 @Suppress("unused")
