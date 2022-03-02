@@ -50,7 +50,11 @@ import kotlin.time.ExperimentalTime
 suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
     val conf = database.serverConfig.getConfig(this.id)
 
-    if (conf.loggingConfig.enabled && conf.loggingConfig.channel != null) {
+    if (
+        conf.loggingConfig.enabled &&
+        conf.loggingConfig.channel != null &&
+        conf.loggingConfig.channel  != 0L
+    ) {
         val channel = this.getChannel(Snowflake(conf.loggingConfig.channel!!))
 
         if (channel.type == ChannelType.GuildText) {
@@ -64,7 +68,11 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
 suspend fun GuildBehavior.getPublicModLogChannel(): MessageChannel? {
     val conf = this.getConfig()
 
-    if (conf.moderationConfig.enabled && conf.moderationConfig.publicModLogChannel != null) {
+    if (
+        conf.moderationConfig.enabled &&
+        conf.moderationConfig.publicModLogChannel != null &&
+        conf.moderationConfig.publicModLogChannel != 0L
+    ) {
         val channel = this.getChannel(Snowflake(conf.moderationConfig.publicModLogChannel!!))
 
         if (channel.type == ChannelType.GuildText) {
