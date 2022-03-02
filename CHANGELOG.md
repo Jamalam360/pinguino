@@ -22,6 +22,17 @@
 - Add more control over bot statuses using admin commands.
 - Improve message deleted logs.
 
+### Notes
+
+Here's some statistics about the code base as of V0.8.2, because why not:
+
+Kotlin Files: 47
+Blank Kotlin Lines: 929
+Comment Kotlin Lines: 873
+Code Kotlin Lines: 5416
+
+That's more code than I thought!
+
 ## Version 0.8.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.0...v0.8.1)**
