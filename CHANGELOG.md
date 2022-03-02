@@ -11,6 +11,7 @@
 - Fixed issue where phishing features wouldn't register.
 - Attempt fix for `MongoSocketRead` and `MongoSocketWrite` exceptions.
 - Detekt bug fixed - Detekt now works again!
+- Following on from that...fix _all_ Detekt issues that built up while it wasn't running.
 
 ### Features
 
