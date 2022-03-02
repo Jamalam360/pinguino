@@ -17,6 +17,7 @@
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 import java.text.SimpleDateFormat
+import groovy.io.FileType
 
 def defaultLevelString = System.getenv().getOrDefault("LOG_LEVEL", "INFO")
 def defaultLevel = INFO
@@ -30,6 +31,12 @@ switch (defaultLevelString) {
         break
     case "TRACE":
         defaultLevel = TRACE
+}
+
+new File("./logs").eachFileRecurse(FileType.FILES) { file ->
+    if (file.name.contains("latest")) {
+        file.renameTo("./logs/" + file.name.substring("latest-".length()))
+    }
 }
 
 appender("CONSOLE", ConsoleAppender) {
@@ -48,7 +55,7 @@ appender("FILE", FileAppender) {
     def date = new Date()
     def dateFormat = new SimpleDateFormat("HH-mm-ss-SSSS-dd-MM-yyyy")
 
-    file = "./logs/pinguino-" + dateFormat.format(date) + ".log"
+    file = "./logs/latest-pinguino-" + dateFormat.format(date) + ".log"
     append = false
     immediateFlush = true
 }

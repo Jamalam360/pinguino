@@ -11,6 +11,7 @@
 ### Features
 
 - Add response to `Announce` message command.
+- Append `latest-` before latest log name.
 
 ## Version 0.8.1
 
