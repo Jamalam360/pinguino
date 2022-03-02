@@ -24,6 +24,7 @@ import io.github.jamalam.Modules
 import io.github.jamalam.database.entity.ServerConfig
 import io.github.jamalam.database.getDefault
 import io.github.jamalam.database.migration.migrate
+import io.github.jamalam.database.tryOperationUntilSuccess
 import io.github.jamalam.util.database
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
@@ -37,11 +38,11 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, Server
 
         if (!hasConfig(id)) {
             conf = ServerConfig::class.getDefault(id)
-            collection.insertOne(conf)
+            tryOperationUntilSuccess { collection.insertOne(conf) }
             cache[id] = conf
         } else {
             if (!cache.containsKey(id)) {
-                conf = collection.findOne(ServerConfig::id eq id.value.toLong())!!
+                conf = tryOperationUntilSuccess { collection.findOne(ServerConfig::id eq id.value.toLong())!! }
                 cache[id] = conf
             } else {
                 conf = cache[id]!!
@@ -52,12 +53,12 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, Server
     }
 
     fun updateConfig(id: Snowflake, updated: ServerConfig) {
-        collection.updateOne(ServerConfig::id eq id.value.toLong(), updated)
+        tryOperationUntilSuccess { collection.updateOne(ServerConfig::id eq id.value.toLong(), updated) }
         cache[id] = updated
     }
 
     fun deleteConfig(id: Snowflake) {
-        collection.deleteOne(ServerConfig::id eq id.value.toLong())
+        tryOperationUntilSuccess { collection.deleteOne(ServerConfig::id eq id.value.toLong()) }
         cache.remove(id)
     }
 
@@ -65,9 +66,9 @@ class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, Server
         try {
             if (cache.containsKey(id)) return true
 
-            return collection.findOne(ServerConfig::id eq id.value.toLong()) != null
+            return tryOperationUntilSuccess { collection.findOne(ServerConfig::id eq id.value.toLong()) != null }
         } catch (e: MissingKotlinParameterException) {
-            migrate(database.db)
+            tryOperationUntilSuccess { migrate(database.db) }
             hasConfig(id)
         }
 

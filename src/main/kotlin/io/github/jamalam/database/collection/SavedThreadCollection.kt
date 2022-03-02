@@ -20,6 +20,7 @@ package io.github.jamalam.database.collection
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam.database.entity.SavedThread
+import io.github.jamalam.database.tryOperationUntilSuccess
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
@@ -34,24 +35,24 @@ class SavedThreadCollection(db: MongoDatabase) :
         val has: Boolean = if (cache.containsKey(thread)) {
             true
         } else {
-            collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+            tryOperationUntilSuccess { collection.findOne(SavedThread::id eq thread.value.toLong()) != null }
         }
 
         if (has && !save) {
-            collection.deleteOne(SavedThread::id eq thread.value.toLong())
+            tryOperationUntilSuccess { collection.deleteOne(SavedThread::id eq thread.value.toLong()) }
 
             if (cache.containsKey(thread)) {
                 cache.remove(thread)
             }
         } else if (!has && save) {
             val savedThread = SavedThread(thread.value.toLong())
-            collection.insertOne(savedThread)
+            tryOperationUntilSuccess { collection.insertOne(savedThread) }
             cache[thread] = savedThread
         }
     }
 
     fun shouldSave(thread: Snowflake): Boolean {
         if (cache.containsKey(thread)) return true
-        return collection.findOne(SavedThread::id eq thread.value.toLong()) != null
+        return tryOperationUntilSuccess { collection.findOne(SavedThread::id eq thread.value.toLong()) != null }
     }
 }

@@ -20,6 +20,7 @@ package io.github.jamalam.database.collection
 import com.mongodb.client.MongoDatabase
 import dev.kord.common.entity.Snowflake
 import io.github.jamalam.database.entity.AnnouncementSubscriber
+import io.github.jamalam.database.tryOperationUntilSuccess
 import org.litote.kmongo.eq
 import org.litote.kmongo.getCollection
 
@@ -32,18 +33,18 @@ class AnnouncementSubscriberCollection(db: MongoDatabase) :
 
     fun addSubscriber(channelId: Snowflake) {
         val subscriber = AnnouncementSubscriber(channelId.value.toLong())
-        collection.insertOne(subscriber)
+        tryOperationUntilSuccess { collection.insertOne(subscriber) }
         cache[channelId] = subscriber
     }
 
     fun removeSubscriber(channelId: Snowflake) {
-        collection.deleteOne(AnnouncementSubscriber::channel eq channelId.value.toLong())
+        tryOperationUntilSuccess { collection.deleteOne(AnnouncementSubscriber::channel eq channelId.value.toLong()) }
         cache.remove(channelId)
     }
 
     fun getSubscribers(): List<Snowflake> {
         val subscribers = mutableListOf<Snowflake>()
-        collection.find().forEach { subscribers.add(Snowflake(it.channel)) }
+        tryOperationUntilSuccess { collection.find().forEach { subscribers.add(Snowflake(it.channel)) } }
         return subscribers
     }
 }
