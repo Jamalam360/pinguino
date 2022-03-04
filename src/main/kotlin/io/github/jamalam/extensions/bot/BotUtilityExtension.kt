@@ -61,6 +61,9 @@ class BotUtilityExtension : Extension() {
     private var presenceTask: Task? = null
 
     override suspend fun setup() {
+        // Get the latest Pinguino PFP
+        PINGUINO_PFP = kord.getUser(kord.selfId)?.avatar?.url ?: PINGUINO_PFP
+
         // Set initial presence (without the delay there is an error)
         presenceTask = scheduler.schedule(30) {
             this.kord.editPresence {

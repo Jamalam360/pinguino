@@ -1,5 +1,15 @@
 # Pinguino Changelog
 
+## Version 0.8.3
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.2...v0.9.0)**
+
+### Fixes
+
+### Features
+
+- Dynamically fetch Pinguino's profile picture so that it's always up-to-date when used in responses.
+
 ## Version 0.8.2
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.1...v0.8.2)**
@@ -12,7 +22,7 @@
 - Attempt fix for `MongoSocketRead` and `MongoSocketWrite` exceptions.
 - Detekt bug fixed - Detekt now works again!
 - Following on from that...fix _all_ Detekt issues that built up while it wasn't running.
-- Issue when  no public mod log channel set and using ban commands.
+- Issue when no public mod log channel set and using ban commands.
 
 ### Features
 
@@ -26,10 +36,7 @@
 
 Here's some statistics about the code base as of V0.8.2, because why not:
 
-Kotlin Files: 47
-Blank Kotlin Lines: 929
-Comment Kotlin Lines: 873
-Code Kotlin Lines: 5416
+Kotlin Files: 47 Blank Kotlin Lines: 929 Comment Kotlin Lines: 873 Code Kotlin Lines: 5416
 
 That's more code than I thought!
 
@@ -54,8 +61,7 @@ That's more code than I thought!
 
 - Improve database caching.
 - Add a bot announcement system.
-- Add the role module, which provides 'reaction role'-like functionality using slash commands rather than 
-  reactions.
+- Add the role module, which provides 'reaction role'-like functionality using slash commands rather than reactions.
 
 ## Version 0.7.8
 
@@ -106,7 +112,7 @@ That's more code than I thought!
 - Fixed an issue when specifying a duration longer than 30 days in mute commands.
 - Explicitly depend on KordEx `extra-common`, rather than relying on transient dependencies.
 - Clean up Gitignore.
-- Increase DBL posting delay to stop rate limit.
+- Increase DBL posting delay (to stop rate limit).
 - Fix typos in some presence statuses.
 - Fix incorrect log title when creating tag (`deleted` instead of `created`).
 - Fix incorrect `/user-info` response.
@@ -116,7 +122,8 @@ That's more code than I thought!
 - Add message content and link to reaction removed logging.
 - Add an `/admin server count` admin command.
 - Log files are now saved in `/logs/` and have a date/time based name.
-- Config files no longer use `.env`, the bot is configured using a `config.yml` file for better UX.
+- Config files no longer use `.env`, the bot is configured using a `config.yml`
+  file for better UX.
 - Add autocomplete to `/tag use` and `/tag delete`.
 - Add tag requester username to `/tag use` response.
 - Add `/fun color`.
@@ -154,19 +161,20 @@ That's more code than I thought!
 ### Features
 
 - Log levels can now be specified through the `LOG_LEVEL` environment variable (default `INFO`).
-- Logs are now sent to a file (`pinguino.log`), which can be configured using the `LOG_FILE` environment variable.
+- Logs are now sent to a file (`pinguino.log`), which can be configured using the `LOG_FILE`
+  environment variable.
 - Uses of the `/embed` command are now logged.
 - Add a `/uptime` command
 - Add new status messages:
-  - `Listening to 103.5, DawnFM`
-  - `Listening to Two Door Cinema Club`
-  - `Listening for {uptime}`
-  - `Watching the world burn`
-  - `Watching over your server`
-  - `Wathcing for scammers`
-  - `Watching TV`
-  - `Playing the piano`
-  - `Playing for {uptime}`
+    - `Listening to 103.5, DawnFM`
+    - `Listening to Two Door Cinema Club`
+    - `Listening for {uptime}`
+    - `Watching the world burn`
+    - `Watching over your server`
+    - `Wathcing for scammers`
+    - `Watching TV`
+    - `Playing the piano`
+    - `Playing for {uptime}`
 - Added extra information to some logs where necessary.
 - Add `/module phishing set-moderators-exempt` to set whether phishing checks should be applied to moderators.
 
@@ -206,14 +214,14 @@ That's more code than I thought!
 
 - You can no longer quote yourself/your own messages.
 - New logging features:
-  - Reaction removed.
-  - Message scheduled.
-  - Member nickname updated.
-  - Member avatar updated.
-  - Member roles added/removed.
-  - Guild role added/updated/removed.
-  - Message pinned/unpinned.
-  - Message published.
+    - Reaction removed.
+    - Message scheduled.
+    - Member nickname updated.
+    - Member avatar updated.
+    - Member roles added/removed.
+    - Guild role added/updated/removed.
+    - Message pinned/unpinned.
+    - Message published.
 - Durations in logs are now more readable.
 - KordEx built-in error responses now use embeds.
 - A new phishing-detection extension.
@@ -225,19 +233,19 @@ That's more code than I thought!
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.6.1...v0.7.0)**
 
 ### Fixes
-- When channels are locked, the message sent to the channel is now an embed, to be in 
-  line with the rest of the bot.
-- The code package is now `io.github.jamalam`, changed from `io.github.jamalam360`, to
-  reflect my username transitioning I have been attempting to do.
+
+- When channels are locked, the message sent to the channel is now an embed, to be in line with the rest of the bot.
+- The code package is now `io.github.jamalam`, changed from `io.github.jamalam360`, to reflect my username transitioning
+  I have been attempting to do.
 - Sending `@Pinguino` to get the help message now works with trailing whitespace.
 - Mod-log unmute logging now uses the correct embed colour.
 - Logging events now respect whether the logging module is enabled or disabled.
 - Trying to quote when the quotes channel has not been configured now responds accordingly.
-  
+
 ### Features
 
-- Mute commands now use native discord timeouts, rather than a custom system. This means that
-  the duration argument for mute commands is no longer optional.
+- Mute commands now use native discord timeouts, rather than a custom system. This means that the duration argument for
+  mute commands is no longer optional.
 - Added logging for the modification of guild emojis.
 - Update to latest KordEx snapshots.
 
@@ -248,6 +256,7 @@ That's more code than I thought!
 Note: for this release, I have updated the structure of the changelog, as an ongoing change.
 
 ### Fixes
+
 - Fix an error caused by an unsafe cast.
 - Quotes created by reacting with `:star:` no longer quote multiple times for each reaction.
 - Fixed the formatting of `/fun coin` response.
@@ -255,6 +264,7 @@ Note: for this release, I have updated the structure of the changelog, as an ong
 - `/module [enable | disable]` commands now use the standard response author.
 
 ### Features
+
 - Display `Content` on top of `Author` in `Quote sent` logging.
 - Pinging the bot will now display a help message.
 - `/fun` commands that had a delay now have a random delay.
@@ -266,8 +276,8 @@ Note: for this release, I have updated the structure of the changelog, as an ong
 
 - Re-licensed to GPLv3.
 - Added license headers to all files, and updated GitHub actions to account for that.
-- Update Git structure; development for new versions now occurs on the `develop` branch, while
-  stable releases are on the `release` branch.
+- Update Git structure; development for new versions now occurs on the `develop` branch, while stable releases are on
+  the `release` branch.
 - Removed an arbitrary limitation saying that you couldn't quote Pinguino.
 - All responses now use a standardised embed format. This also applies to logging messages.
 
