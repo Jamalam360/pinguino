@@ -7,10 +7,13 @@
 ### Fixes
 
 - Yet more database timeouts have been fixed - this particular one was effecting `/thread save`.
+- Throw on invalid `LOG_LEVEL` environment variable.
+- Create the `./logs` directory if it is not present.
 
 ### Features
 
 - Dynamically fetch Pinguino's profile picture so that it's always up-to-date when used in responses.
+- Use `task` for development.
 
 ## Version 0.8.2
 

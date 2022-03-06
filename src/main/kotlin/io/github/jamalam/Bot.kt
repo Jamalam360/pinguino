@@ -81,6 +81,12 @@ suspend fun main() {
                 }
             }
         }
+
+        hooks {
+            beforeStart {
+                logger.info { "Connecting to Discord..." }
+            }
+        }
     }
 
     bot.start()

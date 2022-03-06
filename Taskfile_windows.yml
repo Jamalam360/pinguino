@@ -1,0 +1,17 @@
+# You must have gradle installed to use this.
+
+version: '3'
+
+tasks:
+  # Lint and autocorrect using Detekt
+  lint:
+    cmds:
+      - gradle detekt
+  # Run the bot
+  run:
+    cmds:
+      - gradle run
+  # Build the bot for distribution
+  build:
+    cmds:
+      - gradle build

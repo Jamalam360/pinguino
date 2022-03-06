@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  # Lint and autocorrect using Detekt
+  lint:
+    cmds:
+      - ./gradlew detekt
+  # Run the bot
+  run:
+    cmds:
+      - ./gradlew run
+  # Build the bot for distribution
+  build:
+    cmds:
+      - ./gradlew build

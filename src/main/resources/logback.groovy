@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import groovy.io.FileType
 
 def defaultLevelString = System.getenv().getOrDefault("LOG_LEVEL", "INFO")
-def defaultLevel = INFO
+def defaultLevel
 
 switch (defaultLevelString) {
     case "INFO":
@@ -31,9 +31,22 @@ switch (defaultLevelString) {
         break
     case "TRACE":
         defaultLevel = TRACE
+        break
+    default:
+        throw new Exception("Invalid LOG_LEVEL ENV var: ${defaultLevelString} - possible options [INFO, DEBUG, TRACE]")
 }
 
-new File("./logs").eachFileRecurse(FileType.FILES) { file ->
+def logsDirectory = new File("./logs")
+
+if (logsDirectory.exists()) {
+    if (!logsDirectory.isDirectory()) {
+        throw new Exception("Logs directory is not a directory: ${logsDirectory.getAbsolutePath()}")
+    }
+} else {
+    logsDirectory.mkdir()
+}
+
+logsDirectory.eachFileRecurse(FileType.FILES) { file ->
     if (file.name.contains("latest")) {
         file.renameTo("./logs/" + file.name.substring("latest-".length()))
     }
@@ -53,7 +66,7 @@ appender("FILE", FileAppender) {
     }
 
     def date = new Date()
-    def dateFormat = new SimpleDateFormat("HH-mm-ss-SSSS-dd-MM-yyyy")
+    def dateFormat = new SimpleDateFormat("HH-mm-ss-dd-MM-yyyy")
 
     file = "./logs/latest-pinguino-" + dateFormat.format(date) + ".log"
     append = false
