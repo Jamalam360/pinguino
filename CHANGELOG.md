@@ -1,10 +1,12 @@
 # Pinguino Changelog
 
-## Version 0.8.3
+## Version 0.9.0
 
-**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/compare/v0.8.2...v0.9.0)**
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/comp/v0.8.02...v0.9.0)**
 
 ### Fixes
+
+- Yet more database timeouts have been fixed - this particular one was effecting `/thread save`.
 
 ### Features
 

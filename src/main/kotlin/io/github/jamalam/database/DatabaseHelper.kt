@@ -18,12 +18,23 @@
 package io.github.jamalam.database
 
 import com.mongodb.MongoSocketException
+import io.github.jamalam.util.logger
+import java.net.SocketTimeoutException
 
+@Suppress("TooGenericExceptionCaught")
 fun <T> tryOperationUntilSuccess(operation: () -> T): T {
+    var i = 1
     while (true) {
         try {
             return operation.invoke()
-        } catch (_: MongoSocketException) {
+        } catch (e: Exception) {
+            when (e) {
+                is MongoSocketException, is SocketTimeoutException -> logger.warn {
+                    "Caught socket exception ($i) when performing database operation; retrying"
+                }
+                else -> throw e
+            }
         }
+        i++
     }
 }

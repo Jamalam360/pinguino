@@ -40,3 +40,4 @@ val lenientClient = HttpClient {
         })
     }
 }
+val logger = mu.KotlinLogging.logger("Pinguino")
