@@ -9,7 +9,8 @@
 - Yet more database timeouts have been fixed - this particular one was effecting `/thread save`.
 - Throw on invalid `LOG_LEVEL` environment variable.
 - Create the `./logs` directory if it is not present.
-- Nickname updated logs nowse the nickname rather than the username.
+- Nickname updated logs now ues the nickname rather than the username.
+- Remove duplicate `Channel Locked` message.
 
 ### Features
 

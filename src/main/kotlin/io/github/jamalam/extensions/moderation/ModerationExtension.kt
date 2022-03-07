@@ -538,8 +538,6 @@ class ModerationExtension : Extension() {
                             reason = arguments.reason
                         }
 
-                        text.createMessage("Channel locked by a moderator")
-
                         channel.createEmbed {
                             info("Channel locked")
                             userAuthor(user.asUser())
