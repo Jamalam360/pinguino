@@ -89,5 +89,6 @@ suspend fun main() {
         }
     }
 
+    scheduleScheduledDatabaseCheck(bot)
     bot.start()
 }

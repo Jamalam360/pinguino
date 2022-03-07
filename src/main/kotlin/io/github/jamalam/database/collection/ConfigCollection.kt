@@ -32,7 +32,7 @@ import org.litote.kmongo.getCollection
 import org.litote.kmongo.updateOne
 
 @Suppress("RemoveExplicitTypeArguments")
-class ConfigCollection(db: MongoDatabase) : DatabaseCollection<Snowflake, ServerConfig>(db.getCollection<ServerConfig>()) {
+class ConfigCollection(db: MongoDatabase) : CachedDatabaseCollection<Snowflake, ServerConfig>(db.getCollection<ServerConfig>()) {
     fun getConfig(id: Snowflake): ServerConfig {
         val conf: ServerConfig
 

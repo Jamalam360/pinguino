@@ -42,12 +42,15 @@ import dev.kord.core.entity.channel.thread.TextChannelThread
 import dev.kord.core.event.channel.thread.TextChannelThreadCreateEvent
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.Modules
+import io.github.jamalam.database.entity.ScheduledTask
+import io.github.jamalam.database.entity.ScheduledTaskType
 import io.github.jamalam.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -55,18 +58,18 @@ import kotlin.time.ExperimentalTime
  * @author Jamalam360
  */
 
+val speakingPermissions: Array<Permission> = arrayOf(
+    Permission.SendMessages,
+    Permission.AddReactions,
+    Permission.CreatePublicThreads,
+    Permission.CreatePrivateThreads,
+    Permission.SendMessagesInThreads,
+)
+
 @Suppress("DuplicatedCode")
 @OptIn(KordPreview::class, ExperimentalTime::class)
 class ModerationExtension : Extension() {
     override val name: String = "moderation"
-
-    private val speakingPermissions: Array<Permission> = arrayOf(
-        Permission.SendMessages,
-        Permission.AddReactions,
-        Permission.CreatePublicThreads,
-        Permission.CreatePrivateThreads,
-        Permission.SendMessagesInThreads,
-    )
 
     override suspend fun setup() {
         ephemeralSlashCommand {
@@ -205,32 +208,18 @@ class ModerationExtension : Extension() {
                                 }
                             }
 
-                            scheduler.schedule(arguments.duration.seconds.toLong()) {
-                                if (!member.isBot) {
-                                    member.dm {
-                                        embed {
-                                            info("Unmuted in ${guild!!.asGuild().name}!")
-                                            userAuthor(user.asUser())
-                                            now()
-                                            success()
-                                        }
-                                    }
-                                }
-
-                                guild?.getLogChannel()?.createEmbed {
-                                    info("Member Unmuted")
-                                    userAuthor(user.asUser())
-                                    log()
-                                    userField("Member", member.asUser())
-                                }
-
-                                guild?.getPublicModLogChannel()?.createEmbed {
-                                    info("Member Unmuted")
-                                    userAuthor(user.asUser())
-                                    log()
-                                    userField("Member", member.asUser())
-                                }
-                            }
+                            database.scheduledTasks.addTask(
+                                ScheduledTask(
+                                    startTime = Date().time,
+                                    duration = arguments.duration.toSeconds(),
+                                    type = ScheduledTaskType.PostUnmutedLogs,
+                                    data = mapOf(
+                                        Pair("guild", guild!!.id.value.toString()),
+                                        Pair("member", member.id.value.toString()),
+                                        Pair("moderator", user.id.value.toString())
+                                    )
+                                )
+                            )
 
                             member.edit {
                                 timeoutUntil =
@@ -289,6 +278,13 @@ class ModerationExtension : Extension() {
                                 }
                             }
                         } else {
+                            database.scheduledTasks.removeTaskByData(mapOf(
+                                Pair("guild", guild!!.id.value.toString()),
+                                Pair("member", member.id.value.toString()),
+                                Pair("moderator", user.id.value.toString())
+                                // TODO: how do we delete tasks more reliably?
+                            ))
+
                             if (!member.isBot) {
                                 member.dm {
                                     embed {
@@ -505,27 +501,18 @@ class ModerationExtension : Extension() {
                         }
 
                         if (arguments.duration != null) {
-                            scheduler.schedule(arguments.duration!!.seconds.toLong()) {
-                                channel.edit {
-                                    locked = false
-                                    reason = arguments.reason
-                                }
-
-                                channel.createEmbed {
-                                    info("Thread unlocked")
-                                    userAuthor(user.asUser())
-                                    now()
-                                    success()
-                                }
-
-                                guild?.getLogChannel()?.createEmbed {
-                                    info("Thread unlocked automatically after timeout")
-                                    userAuthor(user.asUser())
-                                    now()
-                                    log()
-                                    channelField("Channel", channel.asChannel())
-                                }
-                            }
+                            database.scheduledTasks.addTask(
+                                ScheduledTask(
+                                    startTime = Date().time,
+                                    duration = arguments.duration!!.toSeconds(),
+                                    type = ScheduledTaskType.PostChannelUnlockedLogs,
+                                    data = mapOf(
+                                        Pair("channel", channel.id.value.toString()),
+                                        Pair("moderator", user.id.value.toString()),
+                                        Pair("type", "thread")
+                                    )
+                                )
+                            )
                         }
                     } else {
                         val text = channel as TextChannel
@@ -565,38 +552,18 @@ class ModerationExtension : Extension() {
                         }
 
                         if (arguments.duration != null) {
-                            scheduler.schedule(arguments.duration!!.seconds.toLong()) {
-                                text.editRolePermission(guild!!.id) {
-                                    speakingPermissions.forEach {
-                                        allowed += it
-                                    }
-
-                                    reason = arguments.reason
-                                }
-
-                                channel.createEmbed {
-                                    info("Channel unlocked")
-                                    userAuthor(user.asUser())
-                                    now()
-                                    success()
-                                }
-
-                                guild?.getLogChannel()?.createEmbed {
-                                    info("Channel unlocked automatically after timeout")
-                                    userAuthor(user.asUser())
-                                    now()
-                                    log()
-                                    channelField("Channel", channel.asChannel())
-                                }
-
-                                guild?.getPublicModLogChannel()?.createEmbed {
-                                    info("Channel unlocked")
-                                    userAuthor(user.asUser())
-                                    now()
-                                    log()
-                                    channelField("Channel", channel.asChannel())
-                                }
-                            }
+                            database.scheduledTasks.addTask(
+                                ScheduledTask(
+                                    startTime = Date().time,
+                                    duration = arguments.duration!!.toSeconds(),
+                                    type = ScheduledTaskType.PostChannelUnlockedLogs,
+                                    data = mapOf(
+                                        Pair("channel", channel.id.value.toString()),
+                                        Pair("moderator", user.id.value.toString()),
+                                        Pair("type", "channel")
+                                    )
+                                )
+                            )
                         }
                     }
 

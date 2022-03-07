@@ -53,7 +53,7 @@ suspend fun GuildBehavior.getLogChannel(): MessageChannel? {
     if (
         conf.loggingConfig.enabled &&
         conf.loggingConfig.channel != null &&
-        conf.loggingConfig.channel  != 0L
+        conf.loggingConfig.channel != 0L
     ) {
         val channel = this.getChannel(Snowflake(conf.loggingConfig.channel!!))
 
@@ -93,10 +93,12 @@ fun ThreadChannelBehavior.save(save: Boolean = true) {
     }
 }
 
-fun EmbedBuilder.userAuthor(user: User) {
-    author {
-        name = user.username
-        icon = user.avatar!!.url
+fun EmbedBuilder.userAuthor(user: User?) {
+    if (user != null) {
+        author {
+            name = user.username
+            icon = user.avatar!!.url
+        }
     }
 }
 

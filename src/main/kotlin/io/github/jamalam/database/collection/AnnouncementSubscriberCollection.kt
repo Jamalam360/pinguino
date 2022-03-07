@@ -29,7 +29,7 @@ import org.litote.kmongo.getCollection
  */
 @Suppress("RemoveExplicitTypeArguments")
 class AnnouncementSubscriberCollection(db: MongoDatabase) :
-    DatabaseCollection<Snowflake, AnnouncementSubscriber>(db.getCollection<AnnouncementSubscriber>()) {
+    CachedDatabaseCollection<Snowflake, AnnouncementSubscriber>(db.getCollection<AnnouncementSubscriber>()) {
 
     fun addSubscriber(channelId: Snowflake) {
         val subscriber = AnnouncementSubscriber(channelId.value.toLong())

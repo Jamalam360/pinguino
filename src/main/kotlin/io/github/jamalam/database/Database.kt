@@ -22,6 +22,7 @@ import io.github.jamalam.config.config
 import io.github.jamalam.database.collection.AnnouncementSubscriberCollection
 import io.github.jamalam.database.collection.ConfigCollection
 import io.github.jamalam.database.collection.SavedThreadCollection
+import io.github.jamalam.database.collection.ScheduledTaskCollection
 import org.litote.kmongo.KMongo
 import kotlin.time.ExperimentalTime
 
@@ -46,4 +47,5 @@ class Database {
     val serverConfig = ConfigCollection(db)
     val savedThreads = SavedThreadCollection(db)
     val announcementSubscribers = AnnouncementSubscriberCollection(db)
+    val scheduledTasks = ScheduledTaskCollection(db)
 }

@@ -30,11 +30,13 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.channel.GuildMessageChannel
-import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.database.entity.ScheduledTask
+import io.github.jamalam.database.entity.ScheduledTaskType
 import io.github.jamalam.util.*
+import java.util.*
 
 /**
  * @author  Jamalam360
@@ -53,9 +55,17 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                scheduler.schedule(arguments.delay.seconds.toLong()) {
-                    (arguments.channel.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) as MessageChannel).createMessage(arguments.message)
-                }
+                database.scheduledTasks.addTask(
+                    ScheduledTask(
+                        startTime = Date().time,
+                        duration = arguments.delay.toSeconds(),
+                        type = ScheduledTaskType.PostMessageToChannel,
+                        data = mapOf(
+                            Pair("channel", arguments.channel.id.value.toString()),
+                            Pair("message", arguments.message)
+                        )
+                    )
+                )
 
                 guild?.getLogChannel()?.createEmbed {
                     info("Message Scheduled")
@@ -64,6 +74,7 @@ class ModeratorUtilityExtension : Extension() {
                     now()
                     channelField("Channel", arguments.channel)
                     stringField("Message", arguments.message)
+                    stringField("Delay", arguments.delay.toPrettyString())
                 }
 
                 respond {
@@ -87,7 +98,8 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback)
+                    ?: channel.asChannel()) as GuildMessageChannel
 
                 channel.createMessage(arguments.message)
 
@@ -121,7 +133,8 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback)
+                    ?: channel.asChannel()) as GuildMessageChannel
 
                 val message = channel.createEmbed {
                     this.title = arguments.string
@@ -228,7 +241,8 @@ class ModeratorUtilityExtension : Extension() {
             }
 
             action {
-                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback) ?: channel.asChannel()) as GuildMessageChannel
+                val channel = (arguments.channel?.withStrategy(EntitySupplyStrategy.cacheWithCachingRestFallback)
+                    ?: channel.asChannel()) as GuildMessageChannel
 
                 guild!!.getLogChannel()?.createEmbed {
                     info("Embed command used")
@@ -264,18 +278,20 @@ class ModeratorUtilityExtension : Extension() {
                         }
                     }
                 } else {
-                    scheduler.schedule(arguments.delay!!.seconds.toLong()) {
-                        channel.createEmbed {
-                            title = arguments.title
-                            description = arguments.description
-                            image = arguments.image
-
-                            author {
-                                name = arguments.author?.username
-                                icon = arguments.author?.avatar?.url
-                            }
-                        }
-                    }
+                    database.scheduledTasks.addTask(
+                        ScheduledTask(
+                            startTime = Date().time,
+                            duration = arguments.delay!!.toSeconds(),
+                            type = ScheduledTaskType.PostEmbedToChannel,
+                            data = mapOf(
+                                Pair("channel", channel.id.value.toString()),
+                                Pair("title", arguments.title ?: ""),
+                                Pair("description", arguments.description ?: ""),
+                                Pair("image", arguments.image ?: ""),
+                                Pair("author", (arguments.author?.id ?: -1L).toString())
+                            )
+                        )
+                    )
 
                     respond {
                         embed {

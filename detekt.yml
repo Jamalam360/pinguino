@@ -593,7 +593,7 @@ style:
   OptionalUnit:
     active: false
   OptionalWhenBraces:
-    active: true
+    active: false
   PreferToOverPairSyntax:
     active: true
   ProtectedMemberInFinalClass:

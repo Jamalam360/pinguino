@@ -30,7 +30,7 @@ import org.litote.kmongo.getCollection
  */
 @Suppress("RemoveExplicitTypeArguments")
 class SavedThreadCollection(db: MongoDatabase) :
-    DatabaseCollection<Snowflake, SavedThread>(db.getCollection<SavedThread>()) {
+    CachedDatabaseCollection<Snowflake, SavedThread>(db.getCollection<SavedThread>()) {
     fun setSave(thread: Snowflake, save: Boolean = true) {
         val has: Boolean = if (cache.containsKey(thread)) {
             true

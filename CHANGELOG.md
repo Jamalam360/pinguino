@@ -16,6 +16,7 @@
 
 - Dynamically fetch Pinguino's profile picture so that it's always up-to-date when used in responses.
 - Use `task` for development.
+- Proper scheduling, finally! Mutes, locks and scheduled messages function correctly and will persist between restarts. 
 
 ## Version 0.8.2
 
