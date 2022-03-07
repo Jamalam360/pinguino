@@ -18,6 +18,8 @@
 package io.github.jamalam.util
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.time.TimestampType
+import com.kotlindiscord.kord.extensions.time.toDiscord
 import com.kotlindiscord.kord.extensions.utils.dm
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -29,9 +31,13 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.builder.message.create.embed
+import io.github.jamalam.database.entity.ScheduledTask
 import io.github.jamalam.database.entity.ScheduledTaskType
 import io.github.jamalam.extensions.moderation.speakingPermissions
+import kotlinx.datetime.toKotlinInstant
 import java.util.*
+
+private val tasksToRemove = mutableListOf<ScheduledTask>()
 
 fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
     scheduler.schedule(1) {
@@ -42,7 +48,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                         val channel =
                             bot.getKoin().get<Kord>().getChannelOf<MessageChannel>(Snowflake(it.data["channel"]!!))
                         channel?.createMessage(it.data["message"]!!)
-                        database.scheduledTasks.removeTask(it)
+                        tasksToRemove.add(it)
                     }
                 }
                 ScheduledTaskType.PostEmbedToChannel -> {
@@ -63,7 +69,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                             }
                         }
 
-                        database.scheduledTasks.removeTask(it)
+                        tasksToRemove.add(it)
                     }
                 }
                 ScheduledTaskType.PostUnmutedLogs -> {
@@ -103,7 +109,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                             }
                         }
 
-                        database.scheduledTasks.removeTask(it)
+                        tasksToRemove.add(it)
                     }
                 }
                 ScheduledTaskType.PostChannelUnlockedLogs -> {
@@ -182,10 +188,33 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                             }
                         }
 
-                        database.scheduledTasks.removeTask(it)
+                        tasksToRemove.add(it)
+                    }
+                }
+                ScheduledTaskType.SendReminder -> {
+                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                        val user =
+                            bot.getKoin().get<Kord>().getUser(Snowflake(it.data["user"]!!))
+
+                        user?.dm {
+                            embed {
+                                info("Reminder set ${Date(it.startTime).toInstant().toKotlinInstant().toDiscord(
+                                    TimestampType.RelativeTime)}")
+                                stringField("Message", it.data["message"]!!)
+                                pinguino()
+                                success()
+                                now()
+                            }
+                        }
+
+                        tasksToRemove.add(it)
                     }
                 }
             }
+        }
+
+        tasksToRemove.forEach {
+            database.scheduledTasks.removeTask(it)
         }
 
         scheduleScheduledDatabaseCheck(bot)

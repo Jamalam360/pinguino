@@ -30,6 +30,9 @@ enum class ScheduledTaskType(val validator: (data: Map<String, String>) -> Boole
     }),
     PostChannelUnlockedLogs({ data ->
         data.contains("channel") && data.containsKey("moderator") && data.containsKey("type")
+    }),
+    SendReminder({ data ->
+        data.contains("user") && data.contains("message")
     })
 }
 

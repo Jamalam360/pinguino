@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.checks.threadFor
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingBoolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.duration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.*
@@ -43,9 +44,12 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.api.HastebinApi
+import io.github.jamalam.database.entity.ScheduledTask
+import io.github.jamalam.database.entity.ScheduledTaskType
 import io.github.jamalam.util.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import java.util.*
 
 /**
  * @author  Jamalam360
@@ -425,6 +429,48 @@ class UserUtilityExtension : Extension() {
             }
         }
 
+        ephemeralSlashCommand(::RemindArgs) {
+            name = "remind"
+            description = "Set a reminder that will be DMed to you when the time is up"
+
+            action {
+                @Suppress("UnderscoresInNumericLiterals")
+                if (arguments.duration.toSeconds() > 15768017.3) {
+                    respond {
+                        embed {
+                            info("The duration cannot exceed 6 months")
+                            pinguino()
+                            now()
+                            error()
+                        }
+                    }
+
+                    return@action
+                }
+
+                database.scheduledTasks.addTask(
+                    ScheduledTask(
+                        startTime = Date().time,
+                        duration = arguments.duration.toSeconds(),
+                        type = ScheduledTaskType.SendReminder,
+                        data = mapOf(
+                            Pair("user", user.id.value.toString()),
+                            Pair("message", arguments.message),
+                        )
+                    )
+                )
+
+                respond {
+                    embed {
+                        info("Your reminder will be delivered in ${arguments.duration.toPrettyString()}")
+                        pinguino()
+                        now()
+                        success()
+                    }
+                }
+            }
+        }
+
         ephemeralMessageCommand {
             name = "Pin In Thread"
 
@@ -552,6 +598,17 @@ class UserUtilityExtension : Extension() {
         val link by string {
             name = "link"
             description = "The link"
+        }
+    }
+
+    inner class RemindArgs : Arguments() {
+        val message by string {
+            name = "message"
+            description = "The message to send once the time is up"
+        }
+        val duration by duration {
+            name = "duration"
+            description = "The time until the reminder is executed"
         }
     }
 }
