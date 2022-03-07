@@ -27,6 +27,6 @@ var PINGUINO_PFP = "https://images-ext-2.discordapp.net/external/tM2ezTNgh6TK_9I
         "/%3Fsize%3D256/https/cdn.discordapp.com/avatars/896758540784500797/507601ac" +
         "31f51ffc334fac125089f7ea.png"
 
-const val VERSION = "v0.8.3"
+const val VERSION = "v0.9.0"
 const val DBL_URL = "https://top.gg/api/bots/896758540784500797/stats"
 val BOOT_TIME = Clock.System.now()
