@@ -195,8 +195,8 @@ class LoggingExtension : Extension() {
                         userAuthor(event.member)
                         log()
                         now()
-                        stringField("Before", event.old!!.username)
-                        stringField("After", event.member.username)
+                        stringField("Before", event.old!!.nickname)
+                        stringField("After", event.member.nickname)
                     }
                 }
 
