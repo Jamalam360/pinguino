@@ -11,6 +11,7 @@
 - Create the `./logs` directory if it is not present.
 - Nickname updated logs now ues the nickname rather than the username.
 - Remove duplicate `Channel Locked` message.
+- `Thread Saved` logs are no longer sent twice on thread creation.
 
 ### Features
 
