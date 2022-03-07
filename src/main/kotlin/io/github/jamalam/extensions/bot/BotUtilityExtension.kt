@@ -23,8 +23,6 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
-import com.kotlindiscord.kord.extensions.commands.converters.impl.channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.duration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.components.components
@@ -34,7 +32,6 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
-import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
 import dev.kord.rest.builder.component.SelectOptionBuilder
@@ -364,7 +361,7 @@ class BotUtilityExtension : Extension() {
             }
         }
     }
-    
+
     inner class SetStatusArgs : Arguments() {
         val type by enum<StatusTypeArg> {
             name = "type"
