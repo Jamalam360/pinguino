@@ -12,9 +12,10 @@
 <p align="center">Documentation can be found in the <a href="/docs/README.md">/docs folder</a></p>
 
 
-<p align="center">This project is 100% open source and does <b>not</b> collect any unnecessary data. You can easily see what data is stored in the database by looking at <a href="https://github.com/JamCoreDiscord/Pinguino/tree/main/src/main/kotlin/io/github/jamalam360/database">the database package</a>.</p>
+<p align="center">This project is 100% open source and does <b>not</b> collect any unnecessary data. You can easily see what data is stored in the database by looking at <a href="https://github.com/JamCoreDiscord/Pinguino/tree/main/src/main/kotlin/io/github/jamalam360/database">the database package</a></p>
 
 <p align="center">Compiled artifacts can be found via GitHub Actions or the <a href="https://github.com/JamCoreDiscord/builds">builds</a> repository</p>
+<p align="center">Contributions in the form of pull requests, bug reports, or suggestions are always appreciated</p>
 
 <p align="center"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"> <img src="https://img.shields.io/github/license/JamCoreDiscord/Pinguino"></p>
 <p align="center"><img src="https://img.shields.io/github/issues/JamCoreDiscord/Pinguino.svg"> <img src="https://top.gg/api/widget/servers/896758540784500797.svg"></p>
