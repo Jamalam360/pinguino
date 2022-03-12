@@ -1,5 +1,14 @@
 # Pinguino Changelog
 
+## Version 0.9.2
+
+**[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/comp/v0.9.1...v0.9.2)**
+
+### Fixes
+
+### Features
+
+
 ## Version 0.9.1
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/comp/v0.9.0...v0.9.1)**
