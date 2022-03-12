@@ -212,7 +212,7 @@ class BotUtilityExtension : Extension() {
 
                 ephemeralSubCommand {
                     name = "count"
-                    description = "Return the number of not announcement subscribers"
+                    description = "Return the number of announcement subscribers"
 
                     action {
                         respond {

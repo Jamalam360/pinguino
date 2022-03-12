@@ -6,8 +6,9 @@
 
 ### Fixes
 
-### Features
+- Fix a typo in `/admin announcement count`'s description.
 
+### Features
 
 ## Version 0.9.1
 
