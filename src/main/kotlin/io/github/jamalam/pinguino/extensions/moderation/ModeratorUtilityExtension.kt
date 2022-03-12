@@ -37,7 +37,6 @@ import io.github.jamalam.pinguino.database.entity.ScheduledTask
 import io.github.jamalam.pinguino.database.entity.ScheduledTaskType
 import io.github.jamalam.pinguino.util.*
 import java.util.*
-import kotlin.error
 
 /**
  * @author  Jamalam360

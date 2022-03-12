@@ -41,7 +41,6 @@ import io.github.jamalam.pinguino.Modules
 import io.github.jamalam.pinguino.database.entity.ServerConfig
 import io.github.jamalam.pinguino.database.entity.ServerPhishingModerationType
 import io.github.jamalam.pinguino.util.*
-import kotlin.error
 
 /**
  * @author  Jamalam360

@@ -41,7 +41,6 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.pinguino.Modules
 import io.github.jamalam.pinguino.database.entity.ServerPhishingModerationType
 import io.github.jamalam.pinguino.util.*
-import kotlin.error
 import kotlin.time.ExperimentalTime
 
 /*

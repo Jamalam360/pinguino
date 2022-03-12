@@ -26,7 +26,6 @@ import io.github.jamalam.pinguino.extensions.bot.BotUtilityExtension
 import io.github.jamalam.pinguino.extensions.moderation.*
 import io.github.jamalam.pinguino.extensions.user.*
 import io.github.jamalam.pinguino.util.*
-import kotlin.error
 
 suspend fun main() {
     BOOT_TIME // init this field

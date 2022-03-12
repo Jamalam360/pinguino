@@ -8,6 +8,8 @@
 
 ### Features
 
+- Change main package from `io.github.jamalam` to `io.github.jamalam.pinguino`.
+
 ## Version 0.9.0
 
 **[Tag Comparison](https://github.com/JamCoreDiscord/Pinguino/comp/v0.8.2...v0.9.0)**
