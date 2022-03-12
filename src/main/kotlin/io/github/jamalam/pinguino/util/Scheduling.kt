@@ -34,17 +34,23 @@ import dev.kord.rest.builder.message.create.embed
 import io.github.jamalam.pinguino.database.entity.ScheduledTask
 import io.github.jamalam.pinguino.database.entity.ScheduledTaskType
 import io.github.jamalam.pinguino.extensions.moderation.speakingPermissions
+import kotlinx.datetime.toDateTimePeriod
 import kotlinx.datetime.toKotlinInstant
 import java.util.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
 private val tasksToRemove = mutableListOf<ScheduledTask>()
 
+@OptIn(ExperimentalTime::class)
 fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
     scheduler.schedule(1) {
+        val currentDate = Date()
         database.scheduledTasks.getTasks().forEach {
+            val taskDate = Date(it.startTime + it.duration * 1000)
             when (it.type) {
                 ScheduledTaskType.PostMessageToChannel -> {
-                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                    if (currentDate.after(taskDate)) {
                         val channel =
                             bot.getKoin().get<Kord>().getChannelOf<MessageChannel>(Snowflake(it.data["channel"]!!))
                         channel?.createMessage(it.data["message"]!!)
@@ -52,7 +58,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                     }
                 }
                 ScheduledTaskType.PostEmbedToChannel -> {
-                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                    if (currentDate.after(taskDate)) {
                         val channel =
                             bot.getKoin().get<Kord>().getChannelOf<MessageChannel>(Snowflake(it.data["channel"]!!))
                         channel?.createEmbed {
@@ -73,7 +79,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                     }
                 }
                 ScheduledTaskType.PostUnmutedLogs -> {
-                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                    if (currentDate.after(taskDate)) {
                         val guild =
                             bot.getKoin().get<Kord>().getGuild(Snowflake(it.data["guild"]!!))
 
@@ -113,7 +119,7 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                     }
                 }
                 ScheduledTaskType.PostChannelUnlockedLogs -> {
-                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                    if (currentDate.after(taskDate)) {
                         if (it.data["type"]!! == "thread") {
                             val channel =
                                 bot.getKoin().get<Kord>().getChannelOf<ThreadChannel>(Snowflake(it.data["channel"]!!))
@@ -192,18 +198,39 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                     }
                 }
                 ScheduledTaskType.SendReminder -> {
-                    if (Date().after(Date(it.startTime + it.duration * 1000))) {
+                    if (currentDate.after(taskDate)) {
                         val user =
                             bot.getKoin().get<Kord>().getUser(Snowflake(it.data["user"]!!))
 
+                        val diff =
+                            currentDate.toInstant().toKotlinInstant().minus(taskDate.toInstant().toKotlinInstant())
+
+                        println(diff.toDateTimePeriod().toPrettyString())
+                        println(diff.toDouble(DurationUnit.SECONDS))
+
+                        val footer = if (diff.toDouble(DurationUnit.SECONDS) > 10) {
+                            "This reminder was delivered ${diff.toDateTimePeriod().toPrettyString()} late"
+                        } else {
+                            "This reminder was delivered on-time"
+                        }
+
                         user?.dm {
                             embed {
-                                info("Reminder set ${Date(it.startTime).toInstant().toKotlinInstant().toDiscord(
-                                    TimestampType.RelativeTime)}")
+                                info(
+                                    "Reminder set ${
+                                        Date(it.startTime).toInstant().toKotlinInstant().toDiscord(
+                                            TimestampType.RelativeTime
+                                        )
+                                    }"
+                                )
                                 stringField("Message", it.data["message"]!!)
                                 pinguino()
                                 success()
                                 now()
+
+                                footer {
+                                    text = footer
+                                }
                             }
                         }
 
