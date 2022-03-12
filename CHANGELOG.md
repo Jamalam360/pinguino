@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- A NPE is no longer thrown when using `/thread archive` in some situations.
+
 ### Features
 
 - Change main package from `io.github.jamalam` to `io.github.jamalam.pinguino`.

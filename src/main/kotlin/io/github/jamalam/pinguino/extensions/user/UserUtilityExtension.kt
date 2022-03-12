@@ -221,7 +221,7 @@ class UserUtilityExtension : Extension() {
                             log()
                             stringField(
                                 "Locked",
-                                if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock!!) "Yes" else "No"
+                                if (roles.contains(guild!!.getRoleOrNull(modRole)) && arguments.lock == true) "Yes" else "No"
                             )
                         }
                     } else {
