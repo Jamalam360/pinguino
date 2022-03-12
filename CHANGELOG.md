@@ -11,6 +11,7 @@
 ### Features
 
 - Change main package from `io.github.jamalam` to `io.github.jamalam.pinguino`.
+- Include time of delivery when setting a reminder.
 
 ## Version 0.9.0
 

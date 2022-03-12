@@ -49,11 +49,15 @@ import io.github.jamalam.pinguino.database.entity.ScheduledTaskType
 import io.github.jamalam.pinguino.util.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import kotlinx.datetime.Instant
 import java.util.*
+import kotlin.time.ExperimentalTime
 
 /**
  * @author  Jamalam360
  */
+
+@OptIn(ExperimentalTime::class)
 class UserUtilityExtension : Extension() {
     override val name: String = "user-utility"
 
@@ -460,9 +464,11 @@ class UserUtilityExtension : Extension() {
                     )
                 )
 
+                val instant = Instant.fromEpochMilliseconds(Date().time + arguments.duration.toSeconds() * 1000)
+
                 respond {
                     embed {
-                        info("Your reminder will be delivered in ${arguments.duration.toPrettyString()}")
+                        info("Your reminder will be delivered ${instant.toDiscord(TimestampType.RelativeTime)} at ${instant.toDiscord(TimestampType.LongDateTime)}")
                         pinguino()
                         now()
                         success()

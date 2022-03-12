@@ -47,7 +47,7 @@ dependencies {
 application {
     // This is deprecated, but the Shadow plugin requires it
     @Suppress("DEPRECATION")
-    mainClassName = "io.github.jamalam.BotKt"
+    mainClassName = "io.github.jamalam.pinguino.BotKt"
 }
 
 gitHooks {
@@ -65,7 +65,7 @@ tasks.withType<KotlinCompile> {
 tasks.jar {
     manifest {
         attributes(
-            "Main-Class" to "io.github.jamalam.BotKt"
+            "Main-Class" to "io.github.jamalam.pinguino.BotKt"
         )
     }
 }
