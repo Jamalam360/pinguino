@@ -205,9 +205,6 @@ fun scheduleScheduledDatabaseCheck(bot: ExtensibleBot) {
                         val diff =
                             currentDate.toInstant().toKotlinInstant().minus(taskDate.toInstant().toKotlinInstant())
 
-                        println(diff.toDateTimePeriod().toPrettyString())
-                        println(diff.toDouble(DurationUnit.SECONDS))
-
                         val footer = if (diff.toDouble(DurationUnit.SECONDS) > 10) {
                             "This reminder was delivered ${diff.toDateTimePeriod().toPrettyString()} late"
                         } else {
