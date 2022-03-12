@@ -78,7 +78,8 @@ class UserUtilityExtension : Extension() {
         event<ThreadChannelCreateEvent> {
             action {
                 if (event.channel.guild.getConfig().moderationConfig.autoSaveThreads &&
-                        event.channel.member == null) { // Only thread creation, not join
+                    event.channel.member == null
+                ) { // Only thread creation, not join
                     event.channel.save(true)
 
                     event.channel.guild.getLogChannel()?.createEmbed {
@@ -468,7 +469,13 @@ class UserUtilityExtension : Extension() {
 
                 respond {
                     embed {
-                        info("Your reminder will be delivered ${instant.toDiscord(TimestampType.RelativeTime)} at ${instant.toDiscord(TimestampType.LongDateTime)}")
+                        info(
+                            "Your reminder will be delivered ${instant.toDiscord(TimestampType.RelativeTime)} at ${
+                                instant.toDiscord(
+                                    TimestampType.LongDateTime
+                                )
+                            }"
+                        )
                         pinguino()
                         now()
                         success()
