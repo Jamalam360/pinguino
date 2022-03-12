@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "io.github.jamalam"
-version = "0.9.0"
+version = "0.9.1"
 
 repositories {
     maven {
@@ -55,12 +55,6 @@ gitHooks {
         mapOf("pre-commit" to "detekt")
     )
 }
-
-//tasks.detekt {
-//    onlyIf {
-//        false
-//    }
-//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "16"
