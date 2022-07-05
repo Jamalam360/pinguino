@@ -1,6 +1,6 @@
 build:
   maxIssues: 0
-  excludeCorrectable: false
+  excludeCorrectable: true
   weights:
   # complexity: 2
   # LongParameterList: 1
@@ -9,6 +9,7 @@ build:
 
 config:
   validation: true
+  # when writing own rules with new properties, exclude the property path e.g.: 'my_rule_set,.*>.*>[my_property]'
   excludes: ''
 
 processors:
@@ -24,20 +25,20 @@ processors:
 console-reports:
   active: true
   exclude:
-      - 'ProjectStatisticsReport'
-      - 'NotificationReport'
-      - 'FileBasedFindingsReport'
+    - 'ProjectStatisticsReport'
+    - 'NotificationReport'
+    - 'FileBasedFindingsReport'
 
 output-reports:
   active: true
   exclude:
-     - 'HtmlOutputReport'
-     - 'SarifOutputReport'
-     - 'XmlOutputReport'
+    # - 'HtmlOutputReport'
+    - 'TxtOutputReport'
+    # - 'XmlOutputReport'
 
 comments:
   active: true
-
+  excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
   AbsentOrWrongFileLicense:
     active: false
     licenseTemplateFile: 'license.template'
@@ -48,7 +49,6 @@ comments:
   EndOfSentenceFormat:
     active: true
     endOfSentenceFormat: '([.?!][ \t\n\r\f<])|([.?!:]$)'
-    excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
   UndocumentedPublicClass:
     active: false
     searchInNestedClass: true
@@ -85,7 +85,7 @@ complexity:
     threshold: 600
   LongMethod:
     active: false
-    threshold: 1000
+    threshold: 60
   LongParameterList:
     active: false
     functionThreshold: 6
@@ -104,7 +104,7 @@ complexity:
   StringLiteralDuplication:
     active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
-    threshold: 8
+    threshold: 3
     ignoreAnnotation: true
     excludeStringsWithLessThan5Characters: true
     ignoreStringsRegex: '$^'
@@ -233,7 +233,7 @@ formatting:
     active: true
     autoCorrect: true
   ArgumentListWrapping:
-    active: false  # It's wrong!
+    active: false  # No idea what it wants, seems to match already
     autoCorrect: true
   ChainWrapping:
     active: true
@@ -253,7 +253,7 @@ formatting:
   ImportOrdering:
     active: true
     autoCorrect: true
-    layout: "*,java.**,javax.**,kotlin.**,^"
+    layout: '*,java.**,javax.**,kotlin.**,^'
   Indentation:
     active: false
     autoCorrect: false
@@ -261,7 +261,7 @@ formatting:
     continuationIndentSize: 4
   MaximumLineLength:
     active: true
-    maxLineLength: 200
+    maxLineLength: 120
   ModifierOrdering:
     active: true
     autoCorrect: true
@@ -299,8 +299,8 @@ formatting:
     active: true
     autoCorrect: true
   NoUnusedImports:
-    active: false
-    autoCorrect: false
+    active: true
+    autoCorrect: true
   NoWildcardImports:
     active: false
   PackageName:
@@ -388,11 +388,9 @@ naming:
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
     ignoreOverridden: true
-
-  InvalidPackageDeclaration:
-    active: true
-    rootPackage: 'io.github.jamalam360'
-
+  InvalidPackageDeclaration:  # If you want to use this, set the root package and enable it
+    active: false
+    rootPackage: 'template'
   MatchingDeclarationName:
     active: true
     mustBeFirst: true
@@ -476,7 +474,7 @@ potential-bugs:
   LateinitUsage:
     active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
-    ignoreAnnotated: []
+    excludeAnnotatedProperties: []
     ignoreOnClassesPattern: ''
   MapGetWithNotNullAssertionOperator:
     active: true
@@ -510,10 +508,10 @@ style:
   CollapsibleIfStatements:
     active: true
   DataClassContainsFunctions:
-    active: false
+    active: true
     conversionFunctionPrefix: 'to'
   DataClassShouldBeImmutable:
-    active: false
+    active: true
   EqualsNullCall:
     active: true
   EqualsOnSignatureLine:
@@ -547,7 +545,7 @@ style:
     active: true
     ignoreOverridableFunction: true
     excludedFunctions: 'describeContents'
-    ignoreAnnotated: ['dagger.Provides']
+    excludeAnnotatedFunction: ['dagger.Provides']
   LibraryCodeMustSpecifyReturnType:
     active: true
   LibraryEntitiesShouldNotBePublic:
@@ -556,7 +554,7 @@ style:
     active: true
     maxJumpCount: 3
   MagicNumber:
-    active: false
+    active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
@@ -574,7 +572,7 @@ style:
     active: true
   MaxLineLength:
     active: true
-    maxLineLength: 200
+    maxLineLength: 120
     excludePackageStatements: true
     excludeImportStatements: true
     excludeCommentStatements: false
@@ -593,7 +591,7 @@ style:
   OptionalUnit:
     active: false
   OptionalWhenBraces:
-    active: false
+    active: true
   PreferToOverPairSyntax:
     active: true
   ProtectedMemberInFinalClass:
@@ -619,13 +617,13 @@ style:
     active: false
     max: 2
   TrailingWhitespace:
-    active: false
+    active: true
   UnderscoresInNumericLiterals:
     active: true
-    acceptableLength: 5
+    acceptableDecimalLength: 5
   UnnecessaryAbstractClass:
     active: true
-    ignoreAnnotated: ['dagger.Module']
+    excludeAnnotatedClasses: ['dagger.Module']
   UnnecessaryAnnotationUseSiteTarget:
     active: true
   UnnecessaryApply:
@@ -635,7 +633,7 @@ style:
   UnnecessaryLet:
     active: true
   UnnecessaryParentheses:
-    active: true
+    active: false  # Conflicts with IJ
   UntilInsteadOfRangeTo:
     active: true
   UnusedImports:
@@ -653,7 +651,7 @@ style:
     active: true
   UseDataClass:
     active: true
-    ignoreAnnotated: []
+    excludeAnnotatedClasses: []
     allowVars: false
   UseEmptyCounterpart:
     active: true
