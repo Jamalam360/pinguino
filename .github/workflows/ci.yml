@@ -1,21 +1,12 @@
-name: Build (CI)
+name: Build
 
 on:
   push:
-    branches:
-      - release
-      - develop
   pull_request:
 
 jobs:
   update-license:
-    strategy:
-      matrix:
-        java: [
-            17
-        ]
-        os: [ ubuntu-20.04 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -26,10 +17,10 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup JDK ${{ matrix.java }}
+      - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 17
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
@@ -48,13 +39,7 @@ jobs:
           branch: ${{ github.ref }}
   build:
     needs: update-license
-    strategy:
-      matrix:
-        java: [
-            17
-        ]
-        os: [ ubuntu-20.04 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -65,10 +50,10 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup JDK ${{ matrix.java }}
+      - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 17
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
