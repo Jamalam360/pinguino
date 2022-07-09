@@ -57,6 +57,7 @@ logsDirectory.eachFileRecurse(FileType.FILES) { file ->
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         pattern = "%d{yyyy-MM-dd HH:mm:ss:SSS Z} | %5level | %40.40logger{40} | %msg%n"
+        withJansi = true
     }
 
     target = ConsoleTarget.SystemErr
@@ -71,6 +72,7 @@ appender("FILE", FileAppender) {
     def dateFormat = new SimpleDateFormat("HH-mm-ss-dd-MM-yyyy")
 
     file = "./logs/latest-pinguino-" + dateFormat.format(date) + ".log"
+    println("Logging to: ./logs/latest-pinguino-" + dateFormat.format(date) + ".log")
     append = false
     immediateFlush = true
 }
