@@ -6,4 +6,6 @@ plugins {
 
 dependencies {
     implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kaml)
+    implementation(project(":logging"))
 }

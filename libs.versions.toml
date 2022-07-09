@@ -1,0 +1,21 @@
+[versions]
+groovy = "3.0.8"
+jansi = "2.4.0"
+kaml = "0.46.0"
+kotlinx-serialization = "1.3.2"
+logback = "1.2.5"
+logging = "2.1.21"
+reflections = "0.10.2"
+slf4j-nop = "1.7.36"
+ts-generator = "1.1.1"
+
+[libraries]
+groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
+jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j-nop" }
+ts-generator = { module = "com.github.ntrrgc:ts-generator", version.ref = "ts-generator" }
