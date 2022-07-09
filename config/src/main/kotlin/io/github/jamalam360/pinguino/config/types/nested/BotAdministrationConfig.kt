@@ -1,6 +1,7 @@
 package io.github.jamalam360.pinguino.config.types.nested
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 /**
  * @author  Jamalam
@@ -8,5 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BotAdministrationConfig(
-    val admins: List<Long>
+    val admins: List<ULong>,
+    @SerialName("server_id")
+    val serverId: ULong
 )

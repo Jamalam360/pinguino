@@ -12,6 +12,8 @@ group = "io.github.jamalam360.pinguino"
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://maven.kotlindiscord.com/repository/maven-public/")
 }
 
 dependencies {
@@ -26,6 +28,8 @@ subprojects {
     repositories {
         mavenCentral()
         maven("https://jitpack.io")
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://maven.kotlindiscord.com/repository/maven-public/")
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -45,7 +49,8 @@ tasks {
 }
 
 application {
-//    mainClass.set("")
+    // Shadow requires this. The bot should actually be run with the task bot:run, not run
+    mainClass.set("io.github.jamalam360.pinguino.bot.PinguinoKt")
 }
 
 detekt {

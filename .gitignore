@@ -5,5 +5,9 @@
 build/
 
 .env
+/config/**/*.yaml
+/config/**/*.yml
+
 # This is from the pre-V1.0.0 versions, but is here for safety.
+config.yaml
 config.yml

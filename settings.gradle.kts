@@ -1,4 +1,9 @@
-include("config", "logging", "database-converter")
+include(
+    "bot",
+    "config",
+    "database-converter",
+    "logging"
+)
 
 rootProject.name = "Pinguino"
 
