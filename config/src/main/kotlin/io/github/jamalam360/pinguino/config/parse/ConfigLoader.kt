@@ -5,6 +5,7 @@ import io.github.jamalam360.pinguino.config.types.root.BotConfig
 import io.github.jamalam360.pinguino.config.types.root.CommonConfig
 import io.github.jamalam360.pinguino.logging.getLogger
 import java.nio.file.Path
+import kotlin.system.exitProcess
 
 /**
  * @author  Jamalam
@@ -36,12 +37,19 @@ class ConfigLoader {
         val commonFile = Path.of(path, "common.yaml").toFile()
         val botFile = Path.of(path, "bot.yaml").toFile()
 
-        if (!commonFile.exists()) {
-            error("Common config file does not exist")
-        }
+        if (!commonFile.exists() || !botFile.exists()) {
+            logger.warn("One or more required config files are missing, writing defaults to the config directory.")
+            logger.warn("The bot will restart to allow you to edit the default config files.")
 
-        if (!botFile.exists()) {
-            error("Bot config file does not exist")
+//            if (!commonFile.exists()) {
+//                commonFile.writeText()
+//            }
+//
+//            if (!botFile.exists()) {
+//                botFile.writeText(Yaml.default.encodeToString(BotConfig.default))
+//            }
+
+            exitProcess(1)
         }
 
         common = Yaml.default.decodeFromString(

@@ -12,7 +12,7 @@ val config = ConfigLoader.load("../config")
 suspend fun main() {
     val bot = ExtensibleBot(config.bot().credentials.discordToken) {
         applicationCommands {
-                defaultGuild(config.bot().administration.serverId)
+            defaultGuild(config.bot().administration.serverId)
         }
 
         extensions {
