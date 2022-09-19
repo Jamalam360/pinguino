@@ -125,6 +125,7 @@ class QuoteExtension : Extension() {
                             user.asUser(),
                             channel.asChannel()
                         )
+
                         respond {
                             embed {
                                 info("Quote recorded")

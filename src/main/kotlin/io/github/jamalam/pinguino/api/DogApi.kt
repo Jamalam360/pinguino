@@ -26,7 +26,7 @@ import kotlinx.serialization.Serializable
  */
 class DogApi {
     suspend fun getRandomDog(): String =
-        lenientClient.get<DogApiResponse>("https://dog.jamalam.tech/api/v0/breeds/image/random").message
+        lenientClient.get<DogApiResponse>("https://dog.ceo/api/breeds/image/random").message
 
     @Serializable
     data class DogApiResponse(val message: String, val status: String)
