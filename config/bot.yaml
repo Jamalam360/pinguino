@@ -1,0 +1,11 @@
+environment: 'dev'
+development:
+  server_id: 844100106605035540
+credentials:
+  discord_token: '$PINGUINO_CANARY_TOKEN'
+database:
+  url: ''
+administration:
+  admins:
+    - 478579885951156225
+  server_id: 857702179800481793
